@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Configuring Your Agent — AI Agent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../shared/theme.css">
+<script src="../../shared/deck.js" defer></script>
+</head>
+<body>
+<div id="deck">
+<style>
+  /* Roadmap: four steps, so titles can be wider than the five-step default */
+  .timeline-track--even .step-title { max-width: 19vw; }
+
+  /* Why: three sessions without a file, one file feeding three sessions */
+  .col-label { font: 600 clamp(0.8rem, 0.95vw, 0.95rem) 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); margin-bottom: 0.2rem; }
+  .col-label--on { color: var(--primary); }
+  .week-stack { display: flex; flex-direction: column; gap: 0.8rem; }
+  .week-stack .card { padding: 0.9rem 1.3rem; }
+  .week-stack .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
+  .why-split { flex: 1; min-height: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: center; }
+  .why-split > div { display: flex; flex-direction: column; gap: 0.6rem; min-height: 0; }
+  .why-split svg { width: 100%; max-height: 40vh; }
+  .why-right { padding-left: 2.5rem; border-left: 2px solid var(--border); }
+  .bottom-highlight { margin-top: 1.4rem; }
+
+  /* What: 2x2 configuration map */
+  .map-grid { display: grid; grid-template-columns: 11vw 1fr 1fr; gap: 1.1rem 1.2rem; align-items: stretch; }
+  .map-group { font: 600 clamp(1.05rem, 1.5vw, 1.35rem)/1.2 'Space Grotesk', sans-serif; letter-spacing: -0.01em; color: var(--text); align-self: center; }
+  .map-grid .card { display: flex; flex-direction: column; gap: 0.2rem; }
+  .map-grid .card-name { font-size: clamp(1.05rem, 1.45vw, 1.35rem); }
+  .map-grid .card-body { font-size: clamp(0.95rem, 1.25vw, 1.15rem); color: var(--text); flex: 1; }
+  .where { align-self: flex-start; margin-top: 0.6rem; font: 600 0.78rem 'Space Grotesk', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.3rem 0.85rem; border-radius: 100px; color: var(--text-muted); border: 1.5px dashed var(--border); }
+  .where--here { color: var(--bg); background: var(--primary); border: 1.5px solid var(--primary); }
+  .map-grid .card--here { background: var(--accent-medium); }
+
+  /* How: three cards, centred */
+  .piece-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .piece-grid .card-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
+  .piece-grid .card-body { font-size: clamp(1.05rem, 1.45vw, 1.35rem); color: var(--text); }
+
+  /* How: vague vs specific */
+  .compare { display: grid; grid-template-columns: auto 1fr auto 1.55fr; gap: 0.75rem 1.1rem; align-items: center; }
+  .compare-head { font: 600 clamp(0.8rem, 0.95vw, 0.95rem) 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); }
+  .compare-head--on { color: var(--primary); }
+  .compare-row { display: contents; }
+  .level { display: inline-block; text-align: center; min-width: 6.2rem; padding: 0.3rem 0.9rem; border-radius: 100px; font: 600 clamp(0.8rem, 1vw, 0.95rem) 'Space Grotesk', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; }
+  .level--global { color: var(--primary); border: 1.5px dashed var(--primary); }
+  .level--project { color: var(--bg); background: var(--primary); border: 1.5px solid var(--primary); }
+  .vague { font-size: clamp(1rem, 1.35vw, 1.25rem); color: var(--text-muted); padding: 0.85rem 1.2rem; border-radius: 12px; border: 1.5px dashed var(--border); }
+  .specific { font-size: clamp(1rem, 1.35vw, 1.25rem); line-height: 1.45; color: var(--text); padding: 0.85rem 1.2rem; border-radius: 12px; background: var(--accent-medium); border: 1px solid var(--border); }
+  .compare .flow-arrow { color: var(--text-light); font: 400 1.6rem 'Space Grotesk', sans-serif; }
+
+  .fine-print { margin-top: 1rem; font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.85rem, 1vw, 0.95rem); color: var(--text-muted); }
+  .fine-print code { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+
+  svg text { font-family: 'Space Grotesk', sans-serif; fill: var(--text); }
+  svg .body-text { font-family: 'Inter', sans-serif; fill: var(--text-muted); }
+  svg .on-primary { fill: var(--bg); }
+  svg .label { font-weight: 600; letter-spacing: 0.08em; fill: var(--primary); }
+</style>
+
+<!-- 1 · Title -->
+<section class="slide layout-cover" data-label="Title">
+  <div class="cover-decoration"></div>
+  <div class="cover-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="accent-line enter" style="--i: 0;"></div>
+  <h1 class="enter" style="--i: 1;">Configuring Your Agent</h1>
+  <div class="cover-tags enter" style="--i: 2;">
+    <span class="tag">Why</span>
+    <span class="tag">What</span>
+    <span class="tag">How</span>
+  </div>
+</section>
+
+<!-- 2 · Roadmap -->
+<section class="slide" data-label="Roadmap">
+  <div class="slide-header">
+    <h4>Module 2 &middot; Preview</h4>
+    <span class="tag">Overview</span>
+  </div>
+  <div class="slide-content">
+    <h2>Roadmap</h2>
+    <div class="timeline-track timeline-track--even">
+      <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">WHY</div><div class="step-title">Why configure</div></div>
+      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">WHAT</div><div class="step-title">Configuration and the instruction&nbsp;file</div></div>
+      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">HOW</div><div class="step-title">Where it lives and what to&nbsp;write</div></div>
+      <div class="timeline-step enter" style="--i: 4;"><div class="step-circle">4</div><div class="step-label">Takeaway</div><div class="step-title">Recap</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · WHY -->
+<section class="slide" data-label="Why">
+  <div class="slide-header">
+    <h4>Module 2 &middot; Preview</h4>
+    <span class="tag">Why</span>
+  </div>
+  <div class="slide-content">
+    <h2>A new session can&rsquo;t see your earlier conversations.</h2>
+    <p class="lede">Remember the Monday report from Module 1?</p>
+    <div class="why-split">
+      <div>
+        <div class="col-label" data-step="1">Without an instruction file</div>
+        <div class="week-stack">
+          <div class="card" data-step="1"><div class="card-name">Week 1</div><p class="card-body">You explain the format, the tone, and who reads it.</p></div>
+          <div class="card" data-step="1" style="--d: 90ms;"><div class="card-name">Week 2</div><p class="card-body">New session. You explain it all again.</p></div>
+          <div class="card" data-step="1" style="--d: 180ms;"><div class="card-name">Week 3</div><p class="card-body">Same again.</p></div>
+        </div>
+      </div>
+      <div class="why-right">
+        <div class="col-label col-label--on" data-step="2">With an instruction file</div>
+        <svg viewBox="0 0 440 290" role="img" aria-label="One instruction file, read by the Week 1, Week 2 and Week 3 sessions" data-step="2">
+          <defs>
+            <marker id="arrowW" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#6b6b6b"/>
+            </marker>
+          </defs>
+          <!-- the file -->
+          <path d="M 30 80 L 110 80 L 140 110 L 140 215 L 30 215 Z" fill="#1e2bfa"/>
+          <path d="M 110 80 L 110 110 L 140 110" fill="rgba(253,250,231,0.35)"/>
+          <rect x="48" y="128" width="72" height="6" rx="3" fill="#fdfae7" opacity="0.7"/>
+          <rect x="48" y="146" width="60" height="6" rx="3" fill="#fdfae7" opacity="0.7"/>
+          <rect x="48" y="164" width="72" height="6" rx="3" fill="#fdfae7" opacity="0.7"/>
+          <rect x="48" y="182" width="44" height="6" rx="3" fill="#fdfae7" opacity="0.7"/>
+          <text x="85" y="245" text-anchor="middle" font-size="17" font-weight="600">Written once</text>
+          <!-- connectors -->
+          <path d="M 146 140 C 210 140, 210 50, 262 50" fill="none" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowW)"/>
+          <path d="M 146 148 L 262 148" fill="none" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowW)"/>
+          <path d="M 146 156 C 210 156, 210 246, 262 246" fill="none" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowW)"/>
+          <!-- sessions -->
+          <rect x="270" y="22" width="160" height="56" rx="12" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.25)" stroke-width="1.5"/>
+          <text x="350" y="46" text-anchor="middle" font-size="19" font-weight="600">Week 1</text>
+          <text x="350" y="67" text-anchor="middle" font-size="14" class="body-text">reads it</text>
+          <rect x="270" y="120" width="160" height="56" rx="12" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.25)" stroke-width="1.5"/>
+          <text x="350" y="144" text-anchor="middle" font-size="19" font-weight="600">Week 2</text>
+          <text x="350" y="165" text-anchor="middle" font-size="14" class="body-text">reads it</text>
+          <rect x="270" y="218" width="160" height="56" rx="12" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.25)" stroke-width="1.5"/>
+          <text x="350" y="242" text-anchor="middle" font-size="19" font-weight="600">Week 3</text>
+          <text x="350" y="263" text-anchor="middle" font-size="14" class="body-text">reads it</text>
+        </svg>
+      </div>
+    </div>
+    <p class="split-highlight bottom-highlight" data-step="3">Write it in an instruction file once. Every new session reads it.</p>
+  </div>
+</section>
+
+<!-- 4 · WHAT: configuration -->
+<section class="slide" data-label="What configuration">
+  <div class="slide-header">
+    <h4>Module 2 &middot; Preview</h4>
+    <span class="tag">What &middot; Configuration</span>
+  </div>
+  <div class="slide-content">
+    <h2>This course focuses on four areas of configuration.</h2>
+    <div class="body-center">
+      <div class="map-grid">
+        <div class="map-group" data-step="1">What it knows</div>
+        <div class="card card--here" data-step="1" style="--d: 60ms;">
+          <div class="card-name">01 &nbsp; Always-on instructions</div>
+          <p class="card-body">What it should know in every session.</p>
+          <span class="where where--here">This module</span>
+        </div>
+        <div class="card" data-step="1" style="--d: 130ms;">
+          <div class="card-name">02 &nbsp; Skills</div>
+          <p class="card-body">Reusable instructions and workflows, loaded when needed.</p>
+          <span class="where">AI Basics</span>
+        </div>
+        <div class="map-group" data-step="2">What it can do</div>
+        <div class="card" data-step="2" style="--d: 60ms;">
+          <div class="card-name">03 &nbsp; External tools</div>
+          <p class="card-body">Connections to other tools, services, and data.</p>
+          <span class="where">Module 3</span>
+        </div>
+        <div class="card" data-step="2" style="--d: 130ms;">
+          <div class="card-name">04 &nbsp; Permissions</div>
+          <p class="card-body">What it may do, what it may not, and when it must ask.</p>
+          <span class="where">Module 3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · WHAT: the instruction file -->
+<section class="slide" data-label="What instruction file">
+  <div class="slide-header">
+    <h4>Module 2 &middot; Preview</h4>
+    <span class="tag">What &middot; Instruction file</span>
+  </div>
+  <div class="slide-content">
+    <h2>CLAUDE.md and AGENTS.md serve the same purpose: instructions the agent reads at the start of every session.</h2>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 400 360" role="img" aria-label="An instruction file in your folder is loaded automatically when a session starts">
+          <defs>
+            <marker id="arrowF" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#6b6b6b"/>
+            </marker>
+          </defs>
+          <!-- folder -->
+          <g data-step="1">
+            <path d="M 45 40 L 135 40 L 155 60 L 370 60 L 370 175 L 45 175 Z" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.3)" stroke-width="1.5"/>
+            <text x="65" y="88" font-size="14" class="label">YOUR FOLDER</text>
+            <!-- the file inside -->
+            <path d="M 170 100 L 222 100 L 240 118 L 240 162 L 170 162 Z" fill="#1e2bfa"/>
+            <rect x="182" y="126" width="44" height="5" rx="2.5" fill="#fdfae7" opacity="0.7"/>
+            <rect x="182" y="140" width="34" height="5" rx="2.5" fill="#fdfae7" opacity="0.7"/>
+            <text x="255" y="130" font-size="14" class="body-text">CLAUDE.md</text>
+            <text x="255" y="150" font-size="14" class="body-text">or AGENTS.md</text>
+          </g>
+          <!-- loaded automatically -->
+          <g data-step="2">
+            <line x1="205" y1="182" x2="205" y2="238" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowF)"/>
+            <text x="222" y="215" font-size="15" class="body-text">loaded automatically</text>
+            <rect x="105" y="248" width="200" height="72" rx="36" fill="#1e2bfa"/>
+            <text x="205" y="280" text-anchor="middle" font-size="22" font-weight="600" class="on-primary">Agent</text>
+            <text x="205" y="303" text-anchor="middle" font-size="14" class="on-primary" opacity="0.8">at session start</text>
+          </g>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="card" data-step="1"><div class="card-name">01 &nbsp; Plain text</div><p class="card-body">A file written in everyday language.</p></div>
+        <div class="card" data-step="2"><div class="card-name">02 &nbsp; Read automatically</div><p class="card-body">Put it in the right place, and the agent loads it when a session starts.</p></div>
+        <div class="card" data-step="3"><div class="card-name">03 &nbsp; Guidance, not a lock</div><p class="card-body">It guides what the agent does. Hard limits come from permissions, in Module&nbsp;3.</p></div>
+      </div>
+    </div>
+    <p class="fine-print">Claude Code uses <code>CLAUDE.md</code>. Codex uses <code>AGENTS.md</code>.</p>
+  </div>
+</section>
+
+<!-- 6 · HOW: where it lives -->
+<section class="slide" data-label="How where">
+  <div class="slide-header">
+    <h4>Module 2 &middot; Preview</h4>
+    <span class="tag">How &middot; Where it lives</span>
+  </div>
+  <div class="slide-content">
+    <h2>There are two levels: global and project.</h2>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 400 330" role="img" aria-label="The global level covers every project; each project level covers only that project">
+          <!-- global scope -->
+          <g data-step="1">
+            <rect x="15" y="15" width="370" height="300" rx="20" fill="rgba(30,43,250,0.04)" stroke="#1e2bfa" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="8 7"/>
+            <text x="40" y="54" font-size="15" class="label">GLOBAL</text>
+            <text x="40" y="78" font-size="15" class="body-text">applies to every project</text>
+          </g>
+          <!-- project scopes -->
+          <g data-step="2">
+            <rect x="40" y="105" width="150" height="180" rx="14" fill="#1e2bfa"/>
+            <text x="115" y="140" text-anchor="middle" font-size="14" font-weight="600" letter-spacing="0.08em" class="on-primary" opacity="0.8">PROJECT</text>
+            <text x="115" y="192" text-anchor="middle" font-size="20" font-weight="600" class="on-primary">Monday</text>
+            <text x="115" y="216" text-anchor="middle" font-size="20" font-weight="600" class="on-primary">report</text>
+            <text x="115" y="262" text-anchor="middle" font-size="13.5" class="on-primary" opacity="0.8">its own rules</text>
+            <rect x="210" y="105" width="150" height="180" rx="14" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+            <text x="285" y="140" text-anchor="middle" font-size="14" class="label">PROJECT</text>
+            <text x="285" y="192" text-anchor="middle" font-size="20" font-weight="600">Another</text>
+            <text x="285" y="216" text-anchor="middle" font-size="20" font-weight="600">project</text>
+            <text x="285" y="262" text-anchor="middle" font-size="13.5" class="body-text">its own rules</text>
+          </g>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="card" data-step="1"><div class="card-name">Global</div><p class="card-body">Your habits and preferences. Applies to every project.</p></div>
+        <div class="card" data-step="2"><div class="card-name">Project</div><p class="card-body">This project&rsquo;s goal and rules. Applies only to this project.</p></div>
+        <p class="split-highlight" data-step="3">Keep the two consistent. Tools handle conflicts differently, so don&rsquo;t write rules that contradict each other.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · HOW: what usually goes in -->
+<section class="slide" data-label="How contents">
+  <div class="slide-header">
+    <h4>Module 2 &middot; Preview</h4>
+    <span class="tag">How &middot; What goes in</span>
+  </div>
+  <div class="slide-content">
+    <h2>It usually covers three things.</h2>
+    <div class="body-center">
+      <div class="piece-grid">
+        <div class="card" data-step="1"><div class="card-name">01 &nbsp; The project</div><p class="card-body">What it is and what it&rsquo;s for.</p></div>
+        <div class="card" data-step="2"><div class="card-name">02 &nbsp; Your preferences</div><p class="card-body">Language, tone, format.</p></div>
+        <div class="card" data-step="3"><div class="card-name">03 &nbsp; Standing rules</div><p class="card-body">What to always do, and what never to do.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · HOW: short and specific -->
+<section class="slide" data-label="How writing">
+  <div class="slide-header">
+    <h4>Module 2 &middot; Preview</h4>
+    <span class="tag">How &middot; Keep it short</span>
+  </div>
+  <div class="slide-content">
+    <h2>Short, specific, and easy to check.</h2>
+    <p class="lede">The file is loaded every session. The longer it gets, the more space it takes and the less reliably the agent follows it.</p>
+    <div class="body-center">
+      <div class="compare">
+        <span></span><span class="compare-head">Vague</span><span></span><span class="compare-head compare-head--on">Specific</span>
+        <div class="compare-row">
+          <span class="level level--global" data-step="1">Global</span>
+          <div class="vague" data-step="1">&ldquo;Understand what I want.&rdquo;</div>
+          <span class="flow-arrow" data-step="1">&rarr;</span>
+          <div class="specific" data-step="1" style="--d: 90ms;">&ldquo;Before a multi-step task, confirm in one sentence the goal, what&rsquo;s out of scope, and what &lsquo;done&rsquo; looks like.&rdquo;</div>
+        </div>
+        <div class="compare-row">
+          <span class="level level--project" data-step="2">Project</span>
+          <div class="vague" data-step="2">&ldquo;Make the report clear.&rdquo;</div>
+          <span class="flow-arrow" data-step="2">&rarr;</span>
+          <div class="specific" data-step="2" style="--d: 90ms;">&ldquo;Open with three bullet points on what changed since last week. Put the full numbers in a table below.&rdquo;</div>
+        </div>
+        <div class="compare-row">
+          <span class="level level--project" data-step="3">Project</span>
+          <div class="vague" data-step="3">&ldquo;Keep it short.&rdquo;</div>
+          <span class="flow-arrow" data-step="3">&rarr;</span>
+          <div class="specific" data-step="3" style="--d: 90ms;">&ldquo;Keep the summary under 200 words, because the team reads it on their phones.&rdquo;</div>
+        </div>
+      </div>
+    </div>
+    <p class="source">Global example adapted from the instructor&rsquo;s own instruction file.</p>
+  </div>
+</section>
+
+<!-- 9 · Takeaway -->
+<section class="slide layout-closing" data-label="Takeaway">
+  <div class="closing-decoration"></div>
+  <div class="closing-decoration-2"></div>
+  <div class="accent-line enter" style="--i: 0; margin: 0 auto 1.5rem;"></div>
+  <h1 class="enter" style="--i: 1;">Takeaway</h1>
+  <div class="closing-grid">
+    <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Write it down</div><p class="card-body">If you&rsquo;ve had to explain it twice, put it in the instruction file.</p></div>
+    <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">Guidance, not a lock</div><p class="card-body">The agent usually follows it, but not always.</p></div>
+    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Be specific</div><p class="card-body">If you can&rsquo;t tell whether it followed a rule, the rule is too vague.</p></div>
+  </div>
+</section>
+</div>
+</body>
+</html>

@@ -1,0 +1,316 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What Is an Agent — AI Agent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../shared/theme.css">
+<script src="../../shared/deck.js" defer></script>
+</head>
+<body>
+<div id="deck">
+<style>
+  /* Who-does-the-work flow (slide 3) */
+  .flow-wrap { display: flex; flex-direction: column; gap: 2rem; }
+  .flow-row { display: flex; align-items: center; gap: 1.2rem; }
+  .flow-name { width: 10vw; flex: none; font: 600 clamp(1.3rem, 2.1vw, 1.9rem) 'Space Grotesk', sans-serif; letter-spacing: -0.02em; color: var(--text); }
+  .flow-box { flex: 1 1 0; width: 0; min-height: 9.5rem; display: flex; flex-direction: column; justify-content: center; gap: 0.5rem; border-radius: 14px; padding: 1.2rem 1.5rem; }
+  .flow-box--you { border: 1.5px dashed var(--border); }
+  .flow-box--ai { background: var(--accent-medium); border: 1px solid var(--border); }
+  .flow-who { font: 600 clamp(0.8rem, 0.95vw, 0.95rem) 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); }
+  .flow-box--ai .flow-who { color: var(--primary); }
+  .flow-text { margin: 0; font: 500 clamp(1.2rem, 1.9vw, 1.7rem)/1.25 'Space Grotesk', sans-serif; color: var(--text); }
+  .flow-arrow { flex: none; color: var(--text-light); font: 400 1.8rem 'Space Grotesk', sans-serif; }
+
+  /* Same-task table (slide 4) */
+  .task-quote { margin-bottom: 1.2rem; max-width: 62vw; }
+  .task-table { border-collapse: separate; border-spacing: 0 0.5rem; width: 100%; }
+  .task-table th { font: 600 clamp(0.85rem, 1vw, 1rem) 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); text-align: center; padding: 0 1.2rem 0.1rem; }
+  .task-table th:first-child { text-align: left; color: var(--text-light); }
+  .task-table td { background: var(--card-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); padding: 0.8rem 1.4rem; text-align: center; font-size: clamp(1.05rem, 1.5vw, 1.4rem); color: var(--text); }
+  .task-table td:first-child { border-left: 1px solid var(--border); border-radius: 12px 0 0 12px; text-align: left; width: 46%; }
+  .task-table td:last-child { border-right: 1px solid var(--border); border-radius: 0 12px 12px 0; }
+  .who { display: inline-block; min-width: 5.2rem; padding: 0.3rem 1rem; border-radius: 100px; font: 600 clamp(0.9rem, 1.15vw, 1.1rem) 'Space Grotesk', sans-serif; letter-spacing: 0.02em; }
+  .who--you { color: var(--text-muted); border: 1.5px dashed var(--border); }
+  .who--ai { color: var(--bg); background: var(--primary); }
+
+  /* Concept A */
+  .loop-figure { flex: 1; display: flex; align-items: center; justify-content: center; min-height: 0; padding: 0.5rem 0 1.5rem; }
+  .loop-figure svg { width: 80%; max-height: 32vh; }
+  .piece-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .piece-grid .card-name { font-size: clamp(1.1rem, 1.5vw, 1.4rem); }
+  .piece-grid .card-body { font-size: clamp(1rem, 1.35vw, 1.25rem); color: var(--text); }
+
+  svg text { font-family: 'Space Grotesk', sans-serif; fill: var(--text); }
+  svg .body-text { font-family: 'Inter', sans-serif; fill: var(--text-muted); }
+  svg .on-primary { fill: var(--bg); }
+  svg .label { font-weight: 600; letter-spacing: 0.08em; fill: var(--primary); }
+</style>
+
+<!-- 1 · Title -->
+<section class="slide layout-cover" data-label="Title">
+  <div class="cover-decoration"></div>
+  <div class="cover-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="accent-line enter" style="--i: 0;"></div>
+  <h1 class="enter" style="--i: 1;">What Is an Agent</h1>
+  <div class="cover-tags enter" style="--i: 2;">
+    <span class="tag">Why</span>
+    <span class="tag">What</span>
+    <span class="tag">How</span>
+    <span class="tag">Inside</span>
+  </div>
+</section>
+
+<!-- 2 · Roadmap -->
+<section class="slide" data-label="Roadmap">
+  <div class="slide-header">
+    <h4>Module 1 &middot; Preview</h4>
+    <span class="tag">Overview</span>
+  </div>
+  <div class="slide-content">
+    <h2>Roadmap</h2>
+    <div class="timeline-track">
+      <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">WHY</div><div class="step-title">Why&nbsp;this&nbsp;matters to&nbsp;you</div></div>
+      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">Concept A</div><div class="step-title">What is an&nbsp;agent</div></div>
+      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">Concept B</div><div class="step-title">How it works</div></div>
+      <div class="timeline-step enter" style="--i: 4;"><div class="step-circle">4</div><div class="step-label">Concept C</div><div class="step-title">What&rsquo;s inside</div></div>
+      <div class="timeline-step enter" style="--i: 5;"><div class="step-circle">5</div><div class="step-label">Takeaway</div><div class="step-title">Recap</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · WHY -->
+<section class="slide" data-label="Why">
+  <div class="slide-header">
+    <h4>Module 1 &middot; Preview</h4>
+    <span class="tag">Why</span>
+  </div>
+  <div class="slide-content">
+    <h2>Why this matters to you</h2>
+    <p class="lede">A basic chatbot mainly answers. An agent can take actions to complete a task.</p>
+    <div class="body-center">
+    <div class="flow-wrap">
+      <div class="flow-row" data-step="1">
+        <div class="flow-name">Chatbot</div>
+        <div class="flow-box flow-box--you"><span class="flow-who">You</span><p class="flow-text">You ask</p></div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box flow-box--ai"><span class="flow-who">AI</span><p class="flow-text">It answers</p></div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box flow-box--you"><span class="flow-who">You</span><p class="flow-text">You do the work</p></div>
+      </div>
+      <div class="flow-row" data-step="2">
+        <div class="flow-name">Agent</div>
+        <div class="flow-box flow-box--you"><span class="flow-who">You</span><p class="flow-text">You hand over the task</p></div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box flow-box--ai"><span class="flow-who">AI</span><p class="flow-text">It does the steps</p></div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="flow-box flow-box--you"><span class="flow-who">You</span><p class="flow-text">You check the result</p></div>
+      </div>
+    </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · WHY example -->
+<section class="slide" data-label="Why example">
+  <div class="slide-header">
+    <h4>Module 1 &middot; Preview</h4>
+    <span class="tag">Why &middot; Example</span>
+  </div>
+  <div class="slide-content">
+    <h2>Same task, two experiences</h2>
+    <div class="body-center">
+    <div class="split-highlight task-quote">&ldquo;Every Monday, turn last week&rsquo;s sales numbers into the team report.&rdquo;</div>
+    <table class="task-table">
+      <thead>
+        <tr><th>Step</th><th data-step="1">Chatbot</th><th data-step="2">Agent</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Open the spreadsheet</td><td><span class="who who--you" data-step="1" style="--d: 60ms;">You</span></td><td><span class="who who--ai" data-step="2" style="--d: 60ms;">AI</span></td></tr>
+        <tr><td>Pull last week&rsquo;s numbers</td><td><span class="who who--you" data-step="1" style="--d: 120ms;">You</span></td><td><span class="who who--ai" data-step="2" style="--d: 120ms;">AI</span></td></tr>
+        <tr><td>Write the summary</td><td><span class="who who--ai" data-step="1" style="--d: 180ms;">AI</span></td><td><span class="who who--ai" data-step="2" style="--d: 180ms;">AI</span></td></tr>
+        <tr><td>Put it in the report template</td><td><span class="who who--you" data-step="1" style="--d: 240ms;">You</span></td><td><span class="who who--ai" data-step="2" style="--d: 240ms;">AI</span></td></tr>
+        <tr><td>Check it and send</td><td><span class="who who--you" data-step="1" style="--d: 300ms;">You</span></td><td><span class="who who--you" data-step="2" style="--d: 300ms;">You</span></td></tr>
+      </tbody>
+    </table>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · Concept A -->
+<section class="slide" data-label="Concept A">
+  <div class="slide-header">
+    <h4>Module 1 &middot; Preview</h4>
+    <span class="tag">Concept A &middot; What is an agent</span>
+  </div>
+  <div class="slide-content">
+    <h2>An agent is an AI that can take actions on its own to finish a task.</h2>
+    <div class="loop-figure" data-step="1">
+      <svg viewBox="0 28 1000 180" role="img" aria-label="Goal, then decide, act with a tool, observe the result, and either continue the loop or finish">
+        <defs>
+          <marker id="arrowA" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+            <path d="M0 0 L10 5 L0 10 z" fill="#6b6b6b"/>
+          </marker>
+        </defs>
+        <!-- Goal -->
+        <rect x="10" y="130" width="150" height="64" rx="32" fill="#1e2bfa"/>
+        <text x="85" y="170" text-anchor="middle" font-size="26" font-weight="600" class="on-primary">Goal</text>
+        <line x1="165" y1="162" x2="205" y2="162" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowA)"/>
+        <!-- Agent loop -->
+        <rect x="215" y="126" width="165" height="72" rx="12" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.25)" stroke-width="1.5"/>
+        <text x="297" y="155" text-anchor="middle" font-size="15" class="label">DECIDE</text>
+        <text x="297" y="182" text-anchor="middle" font-size="22" font-weight="500">next step</text>
+        <line x1="385" y1="162" x2="415" y2="162" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowA)"/>
+        <rect x="425" y="126" width="165" height="72" rx="12" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.25)" stroke-width="1.5"/>
+        <text x="507" y="155" text-anchor="middle" font-size="15" class="label">ACT</text>
+        <text x="507" y="182" text-anchor="middle" font-size="22" font-weight="500">use a tool</text>
+        <line x1="595" y1="162" x2="625" y2="162" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowA)"/>
+        <rect x="635" y="126" width="165" height="72" rx="12" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.25)" stroke-width="1.5"/>
+        <text x="717" y="155" text-anchor="middle" font-size="15" class="label">OBSERVE</text>
+        <text x="717" y="182" text-anchor="middle" font-size="22" font-weight="500">check result</text>
+        <line x1="805" y1="162" x2="835" y2="162" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowA)"/>
+        <text x="820" y="147" text-anchor="middle" font-size="14" class="body-text">done</text>
+        <!-- Result -->
+        <rect x="840" y="130" width="150" height="64" rx="32" fill="#1e2bfa"/>
+        <text x="915" y="170" text-anchor="middle" font-size="26" font-weight="600" class="on-primary">Result</text>
+        <!-- If the task is not done, the observation informs the next decision. -->
+        <path d="M 717 120 C 717 40, 297 40, 297 120" fill="none" stroke="#6b6b6b" stroke-width="2.5" stroke-dasharray="7 6" marker-end="url(#arrowA)"/>
+        <text x="507" y="54" text-anchor="middle" font-size="19" class="body-text">not done: choose the next step</text>
+      </svg>
+    </div>
+    <div class="piece-grid">
+      <div class="card" data-step="2">
+        <div class="card-name">01 &nbsp; Goal</div>
+        <p class="card-body">You describe the goal and what &ldquo;done&rdquo; looks like.</p>
+      </div>
+      <div class="card" data-step="2" style="--d: 70ms;">
+        <div class="card-name">02 &nbsp; Tools</div>
+        <p class="card-body">It can open files, search, write, and run things.</p>
+      </div>
+      <div class="card" data-step="2" style="--d: 140ms;">
+        <div class="card-name">03 &nbsp; Loop</div>
+        <p class="card-body">It works step by step, checking progress as it goes.</p>
+      </div>
+    </div>
+    <p class="source">Source: Anthropic, <a href="https://www.anthropic.com/engineering/building-effective-agents" target="_blank">&ldquo;Building Effective Agents&rdquo;</a></p>
+  </div>
+</section>
+
+<!-- 6 · Concept B -->
+<section class="slide" data-label="Concept B">
+  <div class="slide-header">
+    <h4>Module 1 &middot; Preview</h4>
+    <span class="tag">Concept B &middot; How it works</span>
+  </div>
+  <div class="slide-content">
+    <h2>It works in a loop.</h2>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 400 400" role="img" aria-label="Reason, act, observe, repeat">
+          <defs>
+            <marker id="arrowB" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#6b6b6b"/>
+            </marker>
+          </defs>
+          <!-- ring arcs: nodes at top (200,70), bottom-right (312,265), bottom-left (88,265); centre (200,200), r=130 -->
+          <path data-step="2" style="--d: 120ms;" d="M 252 100 A 130 130 0 0 1 316 210" fill="none" stroke="#6b6b6b" stroke-width="3" marker-end="url(#arrowB)"/>
+          <path data-step="3" style="--d: 120ms;" d="M 260 302 A 130 130 0 0 1 140 302" fill="none" stroke="#6b6b6b" stroke-width="3" marker-end="url(#arrowB)"/>
+          <path data-step="4" d="M 84 210 A 130 130 0 0 1 148 100" fill="none" stroke="#6b6b6b" stroke-width="3" marker-end="url(#arrowB)"/>
+          <!-- nodes -->
+          <g data-step="1">
+            <circle cx="200" cy="70" r="54" fill="#1e2bfa"/>
+            <text x="200" y="62" text-anchor="middle" font-size="14" font-weight="600" class="on-primary" opacity="0.7">1</text>
+            <text x="200" y="86" text-anchor="middle" font-size="23" font-weight="600" class="on-primary">Reason</text>
+          </g>
+          <g data-step="2">
+            <circle cx="312" cy="265" r="54" fill="#1e2bfa"/>
+            <text x="312" y="257" text-anchor="middle" font-size="14" font-weight="600" class="on-primary" opacity="0.7">2</text>
+            <text x="312" y="281" text-anchor="middle" font-size="23" font-weight="600" class="on-primary">Act</text>
+          </g>
+          <g data-step="3">
+            <circle cx="88" cy="265" r="54" fill="#1e2bfa"/>
+            <text x="88" y="257" text-anchor="middle" font-size="14" font-weight="600" class="on-primary" opacity="0.7">3</text>
+            <text x="88" y="281" text-anchor="middle" font-size="23" font-weight="600" class="on-primary">Observe</text>
+          </g>
+          <text data-step="4" style="--d: 120ms;" x="200" y="208" text-anchor="middle" font-size="18" class="body-text">repeat as needed</text>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="card" data-step="1"><div class="card-name">01 &nbsp; Reason</div><p class="card-body">Given what I know so far, what is the best next step?</p></div>
+        <div class="card" data-step="2"><div class="card-name">02 &nbsp; Act</div><p class="card-body">Do that one step, usually with a tool.</p></div>
+        <div class="card" data-step="3"><div class="card-name">03 &nbsp; Observe</div><p class="card-body">What came back? Did it work? Anything unexpected?</p></div>
+        <p class="split-highlight" data-step="4">It stops when the task is done, blocked, or needs your input.</p>
+      </div>
+    </div>
+    <p class="source">Source: Yao et al., <a href="https://arxiv.org/abs/2210.03629" target="_blank">&ldquo;ReAct: Synergizing Reasoning and Acting in Language Models&rdquo;</a> (2022)</p>
+  </div>
+</section>
+
+<!-- 7 · Concept C -->
+<section class="slide" data-label="Concept C">
+  <div class="slide-header">
+    <h4>Module 1 &middot; Preview</h4>
+    <span class="tag">Concept C &middot; What&rsquo;s inside</span>
+  </div>
+  <div class="slide-content">
+    <h2>Think of an agent as three parts.</h2>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 40 400 330" role="img" aria-label="Model and tools inside an agent loop: the model picks the next step, a tool runs it, the result comes back, and the loop repeats or stops">
+          <defs>
+            <marker id="arrowC" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="8" markerHeight="8" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#6b6b6b"/>
+            </marker>
+          </defs>
+          <!-- the loop: a dashed ring around both parts -->
+          <g class="agent-part" data-step="3">
+            <circle cx="200" cy="205" r="150" fill="rgba(30,43,250,0.04)" stroke="#1e2bfa" stroke-opacity="0.35" stroke-width="2" stroke-dasharray="8 7"/>
+            <text x="200" y="88" text-anchor="middle" font-size="22" font-weight="600">Agent loop</text>
+            <text x="200" y="109" text-anchor="middle" font-size="13.5" class="body-text">context &middot; results &middot; repeat or stop</text>
+            <!-- result flows back: Tools -> Model -->
+            <path d="M 236 282 Q 200 318 164 282" fill="none" stroke="#6b6b6b" stroke-width="3" marker-end="url(#arrowC)"/>
+            <text x="200" y="336" text-anchor="middle" font-size="16" class="body-text">result</text>
+          </g>
+          <!-- the model -->
+          <g class="agent-part" data-step="1">
+            <circle cx="112" cy="228" r="60" fill="#1e2bfa"/>
+            <text x="112" y="216" text-anchor="middle" font-size="23" font-weight="600" class="on-primary">Model</text>
+            <text x="112" y="238" text-anchor="middle" font-size="13" class="on-primary" opacity="0.8">chooses the</text>
+            <text x="112" y="254" text-anchor="middle" font-size="13" class="on-primary" opacity="0.8">next step</text>
+          </g>
+          <!-- the tools, and the step that goes to them -->
+          <g class="agent-part" data-step="2">
+            <circle cx="288" cy="228" r="60" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+            <text x="288" y="216" text-anchor="middle" font-size="23" font-weight="600">Tools</text>
+            <text x="288" y="238" text-anchor="middle" font-size="13" class="body-text">get information</text>
+            <text x="288" y="254" text-anchor="middle" font-size="13" class="body-text">and act</text>
+            <path d="M 164 174 Q 200 138 236 174" fill="none" stroke="#6b6b6b" stroke-width="3" marker-end="url(#arrowC)"/>
+            <text x="200" y="136" text-anchor="middle" font-size="16" class="body-text">next step</text>
+          </g>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="card" data-step="1"><div class="card-name">01 &nbsp; Model</div><p class="card-body">Understands the situation and chooses the next step.</p></div>
+        <div class="card" data-step="2"><div class="card-name">02 &nbsp; Tools</div><p class="card-body">Let it get information and take action.</p></div>
+        <div class="card" data-step="3"><div class="card-name">03 &nbsp; Agent loop</div><p class="card-body">Keeps context, returns results, and repeats or stops.</p></div>
+        <p class="split-highlight" data-step="4">The model decides. Tools act. The loop connects them.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Takeaway -->
+<section class="slide layout-closing" data-label="Takeaway">
+  <div class="closing-decoration"></div>
+  <div class="closing-decoration-2"></div>
+  <div class="accent-line enter" style="--i: 0; margin: 0 auto 1.5rem;"></div>
+  <h1 class="enter" style="--i: 1;">Takeaway</h1>
+  <div class="closing-grid">
+    <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Concept A</div><p class="card-body">An AI that takes actions on its own to finish a task.</p></div>
+    <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">Concept B</div><p class="card-body">Reason, act, observe. Repeat as needed.</p></div>
+    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Concept C</div><p class="card-body">Model, tools, and loop work together.</p></div>
+  </div>
+</section>
+</div>
+</body>
+</html>

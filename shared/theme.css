@@ -1,0 +1,641 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap');
+
+/* Visual system: Blue Professional
+   https://github.com/zarazhangrui/beautiful-html-templates/tree/main/templates/blue-professional
+   Cream canvas, one cobalt accent, Space Grotesk (display + chrome) + Inter (body). */
+
+:root {
+  --bg: #fdfae7;
+  --primary: #1e2bfa;
+  --text: #111111;
+  --text-muted: #6b6b6b;
+  --text-light: #9a9a9a;
+  --accent-light: rgba(30, 43, 250, 0.08);
+  --accent-medium: rgba(30, 43, 250, 0.15);
+  --border: rgba(30, 43, 250, 0.2);
+  --card-bg: rgba(30, 43, 250, 0.04);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+#deck {
+  width: 100vw;
+  height: 100vh;
+  position: relative;
+  overflow: hidden;
+}
+
+/* ---------- Slide canvas ---------- */
+.slide {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 3.5vw 4vw 8.5vh 4vw;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(40px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  overflow: hidden;
+}
+
+.slide.is-active {
+  opacity: 1;
+  pointer-events: all;
+  transform: translateX(0);
+  z-index: 10;
+}
+
+.slide.is-prev {
+  transform: translateX(-40px);
+}
+
+/* ---------- Typography ---------- */
+h1, h2, h3, h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: clamp(2.8rem, 5vw, 4.2rem);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: clamp(1.8rem, 3vw, 2.6rem);
+  margin-bottom: 1.5rem;
+}
+
+h3 {
+  font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+h4 {
+  font-size: clamp(0.85rem, 1.2vw, 1rem);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--primary);
+}
+
+p, li {
+  font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+  line-height: 1.6;
+  color: var(--text-muted);
+}
+
+.lede {
+  font-size: clamp(0.95rem, 1.3vw, 1.2rem);
+  margin: -0.8rem 0 1.5rem;
+  max-width: 60vw;
+}
+
+/* ---------- Slide header: eyebrow left, tag pill right ---------- */
+.slide-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 2.5vh;
+  flex-shrink: 0;
+}
+
+.tag {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--primary);
+  background: var(--accent-light);
+  padding: 0.35rem 0.9rem;
+  border-radius: 100px;
+  display: inline-block;
+}
+
+.slide-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Body block that sits vertically centred in the space under the h2. */
+.body-center {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 0;
+  padding-bottom: 3vh;
+}
+
+.source {
+  margin-top: auto;
+  padding-top: 1rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.02em;
+  color: var(--text-light);
+}
+
+.source a {
+  color: inherit;
+}
+
+/* ---------- Shared components ---------- */
+.accent-line {
+  width: 60px;
+  height: 4px;
+  background: var(--primary);
+  border-radius: 2px;
+  margin-bottom: 1.5rem;
+}
+
+.card {
+  padding: 1.4rem 1.5rem;
+  border-radius: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+}
+
+.card-name {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+  font-weight: 600;
+  color: var(--primary);
+  line-height: 1.35;
+}
+
+.card-body {
+  font-size: clamp(0.85rem, 1.05vw, 1rem);
+  color: var(--text-muted);
+  line-height: 1.5;
+  padding-top: 0.5rem;
+  margin-top: 0.5rem;
+  border-top: 1px solid var(--border);
+}
+
+.split-highlight {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.1rem, 1.5vw, 1.4rem);
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.4;
+  padding: 1.1rem 1.4rem;
+  background: var(--accent-light);
+  border-radius: 12px;
+  border-left: 4px solid var(--primary);
+}
+
+.step-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--primary);
+  color: var(--bg);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ---------- Layout: cover ---------- */
+.layout-cover {
+  justify-content: center;
+  align-items: flex-start;
+  padding-left: 8vw;
+}
+
+.layout-cover h1 {
+  max-width: 55vw;
+  margin-bottom: 1.5rem;
+  line-height: 1.05;
+}
+
+.layout-cover .cover-tags {
+  display: flex;
+  gap: 0.6rem;
+  margin-bottom: 3rem;
+}
+
+.layout-cover .cover-tags .tag {
+  font-size: 0.85rem;
+  padding: 0.45rem 1.1rem;
+}
+
+.layout-cover .meta {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  color: var(--text-light);
+  letter-spacing: 0.05em;
+}
+
+.cover-decoration {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 35vw;
+  height: 100vh;
+  background: var(--accent-light);
+  clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%);
+}
+
+.cover-dots {
+  position: absolute;
+  bottom: 12vh;
+  right: 8vw;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  opacity: 0.25;
+}
+
+.cover-dots i {
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: var(--primary);
+  border-radius: 50%;
+}
+
+/* ---------- Layout: timeline (Roadmap) ---------- */
+/* Grid, not flex: steps stay top-aligned so every circle sits on one line
+   even when titles wrap to different lengths; the row is centred as a whole. */
+.timeline-track {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 1.5rem;
+  flex: 1;
+  align-content: center;
+  align-items: start;
+}
+
+.timeline-step {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  position: relative;
+}
+
+.timeline-step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 36px;
+  right: -0.75rem;
+  width: 1.5rem;
+  height: 2px;
+  background: var(--border);
+}
+
+.timeline-step .step-circle {
+  width: 72px;
+  height: 72px;
+  font-size: 1.7rem;
+  margin-bottom: 1.4rem;
+}
+
+
+.step-label {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(0.95rem, 1.2vw, 1.15rem);
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--primary);
+  margin-bottom: 0.6rem;
+}
+
+.step-title {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.3rem, 2.1vw, 1.9rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: var(--text);
+  line-height: 1.25;
+  max-width: 16vw;
+}
+
+/* ---------- Layout: split (diagram left, notes right) ---------- */
+.split-body {
+  display: grid;
+  grid-template-columns: 1fr 1.05fr;
+  gap: 3.5rem;
+  flex: 1;
+  min-height: 0;
+  align-items: center;
+}
+
+.split-left {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  min-height: 0;
+}
+
+.split-left svg {
+  width: 100%;
+  height: 100%;
+  max-height: 58vh;
+}
+
+.split-right {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  padding-left: 2.5rem;
+  border-left: 2px solid var(--border);
+}
+
+.split-right .card {
+  padding: 1rem 1.3rem;
+}
+
+/* ---------- Layout: closing (Takeaway) ---------- */
+.layout-closing {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.layout-closing h1 {
+  margin-bottom: 2.5rem;
+}
+
+.closing-decoration,
+.closing-decoration-2 {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.closing-decoration { width: 500px; height: 500px; opacity: 0.4; }
+.closing-decoration-2 { width: 360px; height: 360px; opacity: 0.3; }
+
+.closing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.2rem;
+  width: 78vw;
+  position: relative;
+}
+
+.closing-grid .card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.6rem 1.5rem;
+  background: var(--bg);
+}
+
+.closing-grid .card-name {
+  font-size: clamp(1.2rem, 1.7vw, 1.6rem);
+}
+
+.closing-grid .card-body {
+  font-size: clamp(1.05rem, 1.5vw, 1.4rem);
+  color: var(--text);
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.closing-grid .step-circle {
+  width: 52px;
+  height: 52px;
+  font-size: 1.3rem;
+}
+
+/* ---------- Persistent chrome ---------- */
+.slide-counter {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0.05em;
+  position: fixed;
+  bottom: 2.5vh;
+  left: 3vw;
+  z-index: 100;
+}
+
+.progress-bar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  background: var(--primary);
+  transition: width 0.4s ease;
+  z-index: 100;
+}
+
+.nav-controls {
+  position: fixed;
+  bottom: 2.5vh;
+  right: 3vw;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  z-index: 100;
+}
+
+.nav-btn {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  background: var(--bg);
+  color: var(--primary);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.nav-btn:hover:not(:disabled) {
+  background: var(--primary);
+  color: var(--bg);
+  border-color: var(--primary);
+}
+
+.nav-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.keyboard-hint {
+  position: fixed;
+  bottom: 2.5vh;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.7rem;
+  color: var(--text-light);
+  z-index: 100;
+  opacity: 0.6;
+}
+
+@media (max-height: 700px) {
+  .slide { padding: 2.5vh 3vw 8vh; }
+  h2 { margin-bottom: 1rem; }
+  .card { padding: 0.9rem 1rem; }
+}
+
+/* ---------- Motion ---------- */
+:root {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --dur-step: 320ms;
+}
+
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: none; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+/* Entry stagger: .enter elements rise in one after another each time their slide becomes active. */
+.slide.is-active .enter {
+  animation: rise-in 480ms var(--ease-out) both;
+  animation-delay: calc(var(--i, 0) * 70ms + 180ms);
+}
+
+/* Build steps: [data-step] elements stay hidden until the presenter reveals that step. */
+[data-step] {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity var(--dur-step) var(--ease-out), transform var(--dur-step) var(--ease-out);
+  transition-delay: var(--d, 0ms);
+}
+
+[data-step].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+svg [data-step] {
+  transform-box: fill-box;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slide { transition: opacity 200ms ease-out; transform: none; }
+  .slide.is-prev { transform: none; }
+  .slide.is-active .enter { animation-name: fade-in; animation-duration: 200ms; }
+  [data-step] { transform: none; transition: opacity 200ms ease-out; }
+}
+
+/* ---------- Catalog pages (site index + module indexes) ---------- */
+/* Directory pages scroll like normal web pages, unlike the fixed slide canvas. */
+
+body.catalog {
+  height: auto;
+  min-height: 100%;
+  overflow: auto;
+}
+
+.catalog-wrap {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: clamp(3rem, 10vh, 6rem) 1.5rem 4rem;
+}
+
+.catalog-eyebrow {
+  font: 600 0.8rem 'Space Grotesk', sans-serif;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--primary);
+}
+
+.catalog-eyebrow a { color: inherit; text-decoration: none; }
+.catalog-eyebrow a:hover { text-decoration: underline; }
+
+.catalog-wrap h1 {
+  font: 700 clamp(2.2rem, 5vw, 3.2rem)/1.1 'Space Grotesk', sans-serif;
+  letter-spacing: -0.02em;
+  margin: 0.6rem 0 0.8rem;
+}
+
+.catalog-lede {
+  font-size: 1.1rem;
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+}
+
+.catalog-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.catalog-list a {
+  display: flex;
+  align-items: baseline;
+  gap: 1.2rem;
+  padding: 1.1rem 1.4rem;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  background: var(--card-bg);
+  color: var(--text);
+  text-decoration: none;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.catalog-list a:hover {
+  background: var(--accent-light);
+  border-color: var(--primary);
+}
+
+.catalog-num {
+  font: 600 0.85rem 'Space Grotesk', sans-serif;
+  color: var(--primary);
+  min-width: 2rem;
+}
+
+.catalog-title {
+  font: 600 1.2rem 'Space Grotesk', sans-serif;
+}
+
+.catalog-desc {
+  display: block;
+  margin-top: 0.2rem;
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+.catalog-empty {
+  color: var(--text-light);
+  font-style: italic;
+}

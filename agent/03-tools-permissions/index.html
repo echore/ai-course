@@ -1,0 +1,324 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Tools and Permissions — AI Agent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../shared/theme.css">
+<script src="../../shared/deck.js" defer></script>
+</head>
+<body>
+<div id="deck">
+<style>
+  /* Where we are: the configuration map from Module 2, with this module highlighted */
+  .map-grid { display: grid; grid-template-columns: 11vw 1fr 1fr; gap: 1.1rem 1.2rem; align-items: stretch; }
+  .map-group { font: 600 clamp(1.05rem, 1.5vw, 1.35rem)/1.2 'Space Grotesk', sans-serif; letter-spacing: -0.01em; color: var(--text); align-self: center; }
+  .map-group--done { color: var(--text-light); }
+  .map-grid .card { display: flex; flex-direction: column; gap: 0.2rem; }
+  .map-grid .card-name { font-size: clamp(1.05rem, 1.45vw, 1.35rem); }
+  .map-grid .card-body { font-size: clamp(0.95rem, 1.25vw, 1.15rem); color: var(--text); flex: 1; }
+  /* Dimmed by colour, not opacity: the entry animation animates opacity to 1. */
+  .map-grid .card--done { background: transparent; border-style: dashed; }
+  .map-grid .card--done .card-name,
+  .map-grid .card--done .card-body { color: var(--text-light); }
+  .map-grid .card--here { background: var(--accent-medium); }
+  .where { align-self: flex-start; margin-top: 0.6rem; font: 600 0.78rem 'Space Grotesk', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.3rem 0.85rem; border-radius: 100px; color: var(--text-muted); border: 1.5px dashed var(--border); }
+  .where--here { color: var(--bg); background: var(--primary); border: 1.5px solid var(--primary); }
+  .route { display: flex; align-items: center; gap: 0.8rem; margin-top: 1.6rem; font: 600 clamp(0.95rem, 1.2vw, 1.1rem) 'Space Grotesk', sans-serif; color: var(--primary); }
+  .route .tag { font-size: 0.85rem; padding: 0.4rem 1rem; }
+
+  /* Tools: what it has vs what it can't open */
+  .reach { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; align-items: start; }
+  .reach-col { display: flex; flex-direction: column; gap: 0.7rem; }
+  .reach-col--right { padding-left: 2.5rem; border-left: 2px solid var(--border); }
+  .col-label { font: 600 clamp(0.8rem, 0.95vw, 0.95rem) 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); margin-bottom: 0.2rem; }
+  .col-label--off { color: var(--text-light); }
+  .has-item { font-size: clamp(1.05rem, 1.4vw, 1.3rem); color: var(--text); padding: 0.75rem 1.2rem; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); }
+  .app-chips { display: grid; grid-template-columns: 1fr 1fr; gap: 0.7rem; }
+  .app-chip { font: 600 clamp(1.05rem, 1.4vw, 1.3rem) 'Space Grotesk', sans-serif; color: var(--text-muted); padding: 0.75rem 1.2rem; border-radius: 12px; border: 1.5px dashed var(--border); text-align: center; }
+  .reach-note { font-size: clamp(0.95rem, 1.2vw, 1.1rem); color: var(--text-muted); margin-top: 0.3rem; }
+  .bottom-highlight { margin-top: 1.6rem; }
+
+  /* Tools: connected report workflow */
+  .split-right .card-name { font-size: clamp(1.05rem, 1.4vw, 1.3rem); }
+  .split-right .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
+
+  /* MCP: before and after */
+  .mcp-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; align-items: start; }
+  .mcp-panel { display: flex; flex-direction: column; gap: 0.7rem; }
+  .mcp-panel svg { width: 100%; max-height: 34vh; }
+  .mcp-panel--after { padding-left: 2.5rem; border-left: 2px solid var(--border); }
+  .mcp-caption { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); line-height: 1.45; }
+
+  /* Permissions: four modes along one dial */
+  .dial-axis { display: flex; justify-content: space-between; align-items: center; gap: 1rem; margin-bottom: 0.9rem; font: 600 clamp(0.8rem, 0.95vw, 0.95rem) 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-light); }
+  .dial-axis .dial-line { flex: 1; height: 2px; background: linear-gradient(to right, var(--border), var(--primary)); position: relative; }
+  .dial-axis .dial-line::after { content: ''; position: absolute; right: -2px; top: -5px; border: 6px solid transparent; border-left: 9px solid var(--primary); }
+  .mode-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; }
+  .mode-grid .card-name { font-size: clamp(1.1rem, 1.55vw, 1.45rem); }
+  .mode-grid .card-body { font-size: clamp(0.98rem, 1.3vw, 1.2rem); color: var(--text); }
+  .fine-print { margin-top: 1rem; font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.85rem, 1vw, 0.95rem); color: var(--text-muted); }
+
+  /* Permissions: the routine */
+  .routine { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.4rem; }
+  .routine-step { display: flex; flex-direction: column; gap: 0.9rem; }
+  .routine-step .step-circle { width: 52px; height: 52px; font-size: 1.3rem; }
+  .routine-title { font: 600 clamp(1.15rem, 1.65vw, 1.55rem)/1.25 'Space Grotesk', sans-serif; letter-spacing: -0.01em; color: var(--text); }
+  .routine-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text-muted); line-height: 1.5; }
+
+  svg text { font-family: 'Space Grotesk', sans-serif; fill: var(--text); }
+  svg .body-text { font-family: 'Inter', sans-serif; fill: var(--text-muted); }
+  svg .on-primary { fill: var(--bg); }
+  svg .label { font-weight: 600; letter-spacing: 0.08em; fill: var(--primary); }
+</style>
+
+<!-- 1 · Title -->
+<section class="slide layout-cover" data-label="Title">
+  <div class="cover-decoration"></div>
+  <div class="cover-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="accent-line enter" style="--i: 0;"></div>
+  <h1 class="enter" style="--i: 1;">Tools and Permissions</h1>
+  <div class="cover-tags enter" style="--i: 2;">
+    <span class="tag">Tools</span>
+    <span class="tag">Permissions</span>
+  </div>
+</section>
+
+<!-- 2 · Where we are -->
+<section class="slide" data-label="Where we are">
+  <div class="slide-header">
+    <h4>Module 3 &middot; Preview</h4>
+    <span class="tag">Overview</span>
+  </div>
+  <div class="slide-content">
+    <h2>Last module: what the agent knows. This module: what it can do.</h2>
+    <div class="body-center">
+      <div class="map-grid">
+        <div class="map-group map-group--done enter" style="--i: 1;">What it knows</div>
+        <div class="card card--done enter" style="--i: 1;">
+          <div class="card-name">01 &nbsp; Always-on instructions</div>
+          <p class="card-body">What it should know in every session.</p>
+          <span class="where">Module 2</span>
+        </div>
+        <div class="card card--done enter" style="--i: 2;">
+          <div class="card-name">02 &nbsp; Skills</div>
+          <p class="card-body">Reusable instructions and workflows, loaded when needed.</p>
+          <span class="where">AI Basics</span>
+        </div>
+        <div class="map-group enter" style="--i: 3;">What it can do</div>
+        <div class="card card--here enter" style="--i: 3;">
+          <div class="card-name">03 &nbsp; External tools</div>
+          <p class="card-body">Connections to other tools, services, and data.</p>
+          <span class="where where--here">This module</span>
+        </div>
+        <div class="card card--here enter" style="--i: 4;">
+          <div class="card-name">04 &nbsp; Permissions</div>
+          <p class="card-body">What it may do, what it may not, and when it must ask.</p>
+          <span class="where where--here">This module</span>
+        </div>
+      </div>
+      <div class="route enter" style="--i: 5;"><span class="tag">Tools</span>&rarr;<span class="tag">Permissions</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Tools: what it can't reach -->
+<section class="slide" data-label="Tools reach">
+  <div class="slide-header">
+    <h4>Module 3 &middot; Preview</h4>
+    <span class="tag">Tools &middot; What it can&rsquo;t reach</span>
+  </div>
+  <div class="slide-content">
+    <h2>Out of the box, it can&rsquo;t open your other apps.</h2>
+    <p class="lede">In Module 1, tools are how an agent takes action. It comes with a few.</p>
+    <div class="body-center">
+      <div class="reach">
+        <div class="reach-col">
+          <div class="col-label" data-step="1">It comes with</div>
+          <div class="has-item" data-step="1">Reading and editing files in your folder</div>
+          <div class="has-item" data-step="1" style="--d: 70ms;">Running commands on your computer</div>
+          <div class="has-item" data-step="1" style="--d: 140ms;">Searching the web</div>
+        </div>
+        <div class="reach-col reach-col--right">
+          <div class="col-label col-label--off" data-step="2">It can&rsquo;t open</div>
+          <div class="app-chips">
+            <div class="app-chip" data-step="2">Google Sheets</div>
+            <div class="app-chip" data-step="2" style="--d: 60ms;">Google Drive</div>
+            <div class="app-chip" data-step="2" style="--d: 120ms;">Slack</div>
+            <div class="app-chip" data-step="2" style="--d: 180ms;">Notion</div>
+          </div>
+          <p class="reach-note" data-step="2" style="--d: 240ms;">They live in other apps, behind your login.</p>
+        </div>
+      </div>
+      <p class="split-highlight bottom-highlight" data-step="3">So for the Monday report, you copy the numbers in by hand, every week.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · Tools: from copying to connecting -->
+<section class="slide" data-label="Tools connected">
+  <div class="slide-header">
+    <h4>Module 3 &middot; Preview</h4>
+    <span class="tag">Tools &middot; From copying to connecting</span>
+  </div>
+  <div class="slide-content">
+    <h2>Connect the apps your weekly report needs.</h2>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 420 330" role="img" aria-label="The agent reads numbers from Google Sheets and last week's report from Google Drive, then writes a draft in Google Docs">
+          <defs>
+            <marker id="arrowT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#6b6b6b"/>
+            </marker>
+          </defs>
+          <!-- Google Sheets -->
+          <g data-step="1">
+            <rect x="10" y="30" width="150" height="64" rx="12" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.3)" stroke-width="1.5"/>
+            <text x="85" y="58" text-anchor="middle" font-size="17" font-weight="600">Google Sheets</text>
+            <text x="85" y="80" text-anchor="middle" font-size="13.5" class="body-text">sales numbers</text>
+            <path d="M 162 70 C 200 80, 205 130, 222 150" fill="none" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowT)"/>
+          </g>
+          <!-- Google Drive -->
+          <g data-step="2">
+            <rect x="10" y="236" width="150" height="64" rx="12" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.3)" stroke-width="1.5"/>
+            <text x="85" y="264" text-anchor="middle" font-size="17" font-weight="600">Google Drive</text>
+            <text x="85" y="286" text-anchor="middle" font-size="13.5" class="body-text">last week&#8217;s report</text>
+            <path d="M 162 260 C 200 250, 205 200, 222 180" fill="none" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowT)"/>
+          </g>
+          <!-- Agent -->
+          <circle cx="262" cy="165" r="42" fill="#1e2bfa"/>
+          <text x="262" y="171" text-anchor="middle" font-size="18" font-weight="600" class="on-primary">Agent</text>
+          <!-- Google Docs -->
+          <g data-step="3">
+            <line x1="262" y1="210" x2="262" y2="238" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowT)"/>
+            <rect x="192" y="246" width="140" height="64" rx="12" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+            <text x="262" y="274" text-anchor="middle" font-size="17" font-weight="600">Google Docs</text>
+            <text x="262" y="296" text-anchor="middle" font-size="13.5" class="body-text">draft for you</text>
+          </g>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="card" data-step="1"><div class="card-name">Google Sheets</div><p class="card-body">It reads last week&rsquo;s sales numbers.</p></div>
+        <div class="card" data-step="2"><div class="card-name">Google Drive</div><p class="card-body">It finds last week&rsquo;s report and follows the same format.</p></div>
+        <div class="card" data-step="3"><div class="card-name">Google Docs</div><p class="card-body">It writes this week&rsquo;s draft for you to review.</p></div>
+        <p class="split-highlight" data-step="4">You review the report instead of moving the data.</p>
+      </div>
+    </div>
+    <p class="source">What it can do depends on the connection and the access you give it.</p>
+  </div>
+</section>
+
+<!-- 5 · Tools: MCP -->
+<section class="slide" data-label="Tools MCP">
+  <div class="slide-header">
+    <h4>Module 3 &middot; Preview</h4>
+    <span class="tag">Tools &middot; MCP</span>
+  </div>
+  <div class="slide-content">
+    <h2>MCP is the standard way to make these connections.</h2>
+    <div class="body-center">
+      <div class="mcp-pair">
+        <div class="mcp-panel" data-step="1">
+          <div class="col-label col-label--off">Before</div>
+          <svg viewBox="0 0 360 250" role="img" aria-label="Three AI apps each wired separately to four other apps: twelve separate links">
+            <g stroke="#9a9a9a" stroke-width="1.5" fill="none">
+              <line x1="110" y1="55" x2="250" y2="35"/><line x1="110" y1="55" x2="250" y2="95"/><line x1="110" y1="55" x2="250" y2="155"/><line x1="110" y1="55" x2="250" y2="215"/>
+              <line x1="110" y1="125" x2="250" y2="35"/><line x1="110" y1="125" x2="250" y2="95"/><line x1="110" y1="125" x2="250" y2="155"/><line x1="110" y1="125" x2="250" y2="215"/>
+              <line x1="110" y1="195" x2="250" y2="35"/><line x1="110" y1="195" x2="250" y2="95"/><line x1="110" y1="195" x2="250" y2="155"/><line x1="110" y1="195" x2="250" y2="215"/>
+            </g>
+            <g font-size="14.5" font-weight="600">
+              <rect x="10" y="37" width="100" height="36" rx="18" fill="#1e2bfa"/><text x="60" y="60" text-anchor="middle" class="on-primary">Claude</text>
+              <rect x="10" y="107" width="100" height="36" rx="18" fill="#1e2bfa"/><text x="60" y="130" text-anchor="middle" class="on-primary">ChatGPT</text>
+              <rect x="10" y="177" width="100" height="36" rx="18" fill="#1e2bfa"/><text x="60" y="200" text-anchor="middle" class="on-primary">Cursor</text>
+              <rect x="250" y="19" width="100" height="32" rx="8" fill="#fdfae7" stroke="rgba(30,43,250,0.35)"/><text x="300" y="40" text-anchor="middle">Sheets</text>
+              <rect x="250" y="79" width="100" height="32" rx="8" fill="#fdfae7" stroke="rgba(30,43,250,0.35)"/><text x="300" y="100" text-anchor="middle">Drive</text>
+              <rect x="250" y="139" width="100" height="32" rx="8" fill="#fdfae7" stroke="rgba(30,43,250,0.35)"/><text x="300" y="160" text-anchor="middle">Slack</text>
+              <rect x="250" y="199" width="100" height="32" rx="8" fill="#fdfae7" stroke="rgba(30,43,250,0.35)"/><text x="300" y="220" text-anchor="middle">Notion</text>
+            </g>
+          </svg>
+          <p class="mcp-caption">Every AI app needed its own custom link to every other app.</p>
+        </div>
+        <div class="mcp-panel mcp-panel--after" data-step="2">
+          <div class="col-label">With MCP</div>
+          <svg viewBox="0 0 360 250" role="img" aria-label="The same apps, all linked through one MCP connection point in the middle">
+            <g stroke="#1e2bfa" stroke-opacity="0.55" stroke-width="2" fill="none">
+              <line x1="110" y1="55" x2="152" y2="125"/><line x1="110" y1="125" x2="152" y2="125"/><line x1="110" y1="195" x2="152" y2="125"/>
+              <line x1="208" y1="125" x2="250" y2="35"/><line x1="208" y1="125" x2="250" y2="95"/><line x1="208" y1="125" x2="250" y2="155"/><line x1="208" y1="125" x2="250" y2="215"/>
+            </g>
+            <circle cx="180" cy="125" r="30" fill="#1e2bfa"/>
+            <text x="180" y="131" text-anchor="middle" font-size="16" font-weight="700" class="on-primary">MCP</text>
+            <g font-size="14.5" font-weight="600">
+              <rect x="10" y="37" width="100" height="36" rx="18" fill="#1e2bfa"/><text x="60" y="60" text-anchor="middle" class="on-primary">Claude</text>
+              <rect x="10" y="107" width="100" height="36" rx="18" fill="#1e2bfa"/><text x="60" y="130" text-anchor="middle" class="on-primary">ChatGPT</text>
+              <rect x="10" y="177" width="100" height="36" rx="18" fill="#1e2bfa"/><text x="60" y="200" text-anchor="middle" class="on-primary">Cursor</text>
+              <rect x="250" y="19" width="100" height="32" rx="8" fill="#fdfae7" stroke="rgba(30,43,250,0.35)"/><text x="300" y="40" text-anchor="middle">Sheets</text>
+              <rect x="250" y="79" width="100" height="32" rx="8" fill="#fdfae7" stroke="rgba(30,43,250,0.35)"/><text x="300" y="100" text-anchor="middle">Drive</text>
+              <rect x="250" y="139" width="100" height="32" rx="8" fill="#fdfae7" stroke="rgba(30,43,250,0.35)"/><text x="300" y="160" text-anchor="middle">Slack</text>
+              <rect x="250" y="199" width="100" height="32" rx="8" fill="#fdfae7" stroke="rgba(30,43,250,0.35)"/><text x="300" y="220" text-anchor="middle">Notion</text>
+            </g>
+          </svg>
+          <p class="mcp-caption">An app builds one MCP connection, and every AI app that supports MCP can use it.</p>
+        </div>
+      </div>
+      <p class="split-highlight bottom-highlight" data-step="3">Think of it as USB-C for AI: one port that works everywhere.</p>
+    </div>
+    <p class="source">Products call these connectors, apps, or plugins. You&rsquo;ll add one in the Live session.</p>
+  </div>
+</section>
+
+<!-- 6 · Permissions: modes -->
+<section class="slide" data-label="Permissions modes">
+  <div class="slide-header">
+    <h4>Module 3 &middot; Preview</h4>
+    <span class="tag">Permissions &middot; Modes</span>
+  </div>
+  <div class="slide-content">
+    <h2>A permission mode decides what the agent can do without&nbsp;asking&nbsp;you.</h2>
+    <p class="lede">Your instruction file can&rsquo;t stop an action. A permission can.</p>
+    <div class="body-center">
+      <div class="dial-axis" data-step="1"><span>Asks you more</span><span class="dial-line"></span><span>Works more on its own</span></div>
+      <div class="mode-grid">
+        <div class="card" data-step="1" style="--d: 60ms;"><div class="card-name">Plan</div><p class="card-body">It only reads and writes a plan. Nothing changes yet.</p></div>
+        <div class="card" data-step="1" style="--d: 130ms;"><div class="card-name">Manual</div><p class="card-body">It asks before every edit or command.</p></div>
+        <div class="card" data-step="1" style="--d: 200ms;"><div class="card-name">Accept edits</div><p class="card-body">It edits files on its own, and asks before most commands.</p></div>
+        <div class="card" data-step="1" style="--d: 270ms;"><div class="card-name">Auto</div><p class="card-body">It works on its own, and a safety check reviews each action.</p></div>
+      </div>
+    </div>
+    <p class="fine-print">Mode names from Claude Code. Other tools have similar modes.</p>
+  </div>
+</section>
+
+<!-- 7 · Permissions: how to use them -->
+<section class="slide" data-label="Permissions routine">
+  <div class="slide-header">
+    <h4>Module 3 &middot; Preview</h4>
+    <span class="tag">Permissions &middot; How to use them</span>
+  </div>
+  <div class="slide-content">
+    <h2>A simple routine for any task.</h2>
+    <div class="body-center">
+      <div class="routine">
+        <div class="routine-step" data-step="1"><span class="step-circle">1</span><div class="routine-title">Start in Plan.</div><p class="routine-body">Read its plan and fix anything wrong before it touches your files.</p></div>
+        <div class="routine-step" data-step="2"><span class="step-circle">2</span><div class="routine-title">Save a version with Git.</div><p class="routine-body">Git keeps saved versions of your project, so you can go back if something breaks. You can ask the agent to do it for you.</p></div>
+        <div class="routine-step" data-step="3"><span class="step-circle">3</span><div class="routine-title">Switch to Auto and let it work.</div><p class="routine-body">Switch to Manual when a step feels risky or new.</p></div>
+      </div>
+      <p class="split-highlight bottom-highlight" data-step="4">Never use a mode that skips every check on your own computer.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Takeaway -->
+<section class="slide layout-closing" data-label="Takeaway">
+  <div class="closing-decoration"></div>
+  <div class="closing-decoration-2"></div>
+  <div class="accent-line enter" style="--i: 0; margin: 0 auto 1.5rem;"></div>
+  <h1 class="enter" style="--i: 1;">Takeaway</h1>
+  <div class="closing-grid">
+    <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Connect when you copy</div><p class="card-body">If you keep copying things in from another app, consider connecting it.</p></div>
+    <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">Allow only what the task needs</div><p class="card-body">A report draft doesn&rsquo;t need permission to email your whole team.</p></div>
+    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Plan, save, then let go</div><p class="card-body">Approve its plan and save a version with Git before it works on its own.</p></div>
+  </div>
+</section>
+</div>
+</body>
+</html>

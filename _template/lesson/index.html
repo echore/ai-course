@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Lesson Title — Module Name</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../shared/theme.css">
+<script src="../../shared/deck.js" defer></script>
+</head>
+<body>
+<div id="deck">
+<style>
+  /* Layout that only this lesson needs goes here.
+     Use the theme variables (var(--primary), var(--text-muted), ...) for colour,
+     and 'Space Grotesk' / 'Inter' for type. Do not add new colours or fonts. */
+</style>
+
+<!-- 1 · Title -->
+<section class="slide layout-cover" data-label="Title">
+  <div class="cover-decoration"></div>
+  <div class="cover-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="accent-line enter" style="--i: 0;"></div>
+  <h1 class="enter" style="--i: 1;">Lesson Title</h1>
+  <div class="cover-tags enter" style="--i: 2;">
+    <span class="tag">Why</span>
+    <span class="tag">What</span>
+    <span class="tag">How</span>
+  </div>
+</section>
+
+<!-- 2 · Content -->
+<section class="slide" data-label="Content">
+  <div class="slide-header">
+    <h4>Module Name &middot; Lesson 1</h4>
+    <span class="tag">Why</span>
+  </div>
+  <div class="slide-content">
+    <h2>One sentence that states the point of this slide.</h2>
+    <p class="lede">A short line of context.</p>
+    <div class="body-center">
+      <!-- data-step="N" hides an element until the Nth click on this slide -->
+      <div class="card" data-step="1"><div class="card-name">First idea</div><p class="card-body">Appears on the first click.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Takeaway -->
+<section class="slide layout-closing" data-label="Takeaway">
+  <div class="closing-decoration"></div>
+  <div class="closing-decoration-2"></div>
+  <div class="accent-line enter" style="--i: 0; margin: 0 auto 1.5rem;"></div>
+  <h1 class="enter" style="--i: 1;">Takeaway</h1>
+  <div class="closing-grid">
+    <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Point one</div><p class="card-body">One line.</p></div>
+    <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">Point two</div><p class="card-body">One line.</p></div>
+    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Point three</div><p class="card-body">One line.</p></div>
+  </div>
+</section>
+</div>
+</body>
+</html>
