@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 02-02: AI Landscape & LLM Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fdfae7;
+      --primary: #1e2bfa;
+      --text: #111111;
+      --text-muted: #6b6b6b;
+      --text-light: #9a9a9a;
+      --accent-light: rgba(30, 43, 250, 0.08);
+      --accent-medium: rgba(30, 43, 250, 0.15);
+      --border: rgba(30, 43, 250, 0.2);
+      --card-bg: rgba(30, 43, 250, 0.04);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+    }
+
+    .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; padding: 3.5vw 4vw 8.5vh 4vw;
+      opacity: 0; pointer-events: none; transform: translateX(40px);
+      transition: opacity 0.5s ease, transform 0.5s ease; overflow: hidden;
+    }
+
+    .slide.active { opacity: 1; pointer-events: all; transform: translateX(0); z-index: 10; }
+    .slide.prev { transform: translateX(-40px); }
+
+    h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
+    h1 { font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 700; }
+    h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 1.5rem; }
+    h3 { font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: 500; line-height: 1.3; }
+    h4 { font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); }
+    p, li { font-size: clamp(0.85rem, 1.1vw, 1.05rem); line-height: 1.6; color: var(--text-muted); }
+    .numeral { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--primary); }
+
+    .slide-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5vh; flex-shrink: 0; }
+    .slide-header .tag { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 500; color: var(--primary); background: var(--accent-light); padding: 0.35rem 0.9rem; border-radius: 100px; }
+    .slide-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+    .nav-controls { position: fixed; bottom: 2.5vh; right: 3vw; display: flex; align-items: center; gap: 0.8rem; z-index: 100; }
+    .nav-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg); color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; font-size: 1.1rem; }
+    .nav-btn:hover { background: var(--primary); color: var(--bg); border-color: var(--primary); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .slide-counter { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.05em; position: fixed; bottom: 2.5vh; left: 3vw; z-index: 100; }
+    .progress-bar { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--primary); transition: width 0.4s ease; z-index: 100; }
+    .accent-line { width: 60px; height: 4px; background: var(--primary); border-radius: 2px; margin-bottom: 1.5rem; }
+
+    /* Layouts */
+    .layout-cover { justify-content: center; align-items: flex-start; padding-left: 8vw; }
+    .layout-cover h1 { max-width: 75vw; margin-bottom: 1.5rem; line-height: 1.05; }
+    .layout-cover .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 3rem; }
+    .layout-cover .meta { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; color: var(--text-light); letter-spacing: 0.05em; }
+    .layout-cover .cover-decoration { position: absolute; top: 0; right: 0; width: 35vw; height: 100vh; background: var(--accent-light); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
+
+    .layout-detail .detail-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem 3rem; flex: 1; margin-top: 0.5rem; overflow: hidden; }
+    .detail-col { display: flex; flex-direction: column; gap: 1.2rem; }
+    .detail-block { padding: 1.4rem 1.6rem; border-radius: 12px; background: var(--card-bg); border: 1.5px solid var(--border); }
+    .detail-block h3 { font-size: clamp(1rem, 1.3vw, 1.1rem); margin-bottom: 0.8rem; color: var(--text); }
+    .detail-block ul { list-style: none; margin: 0; padding: 0; }
+    .detail-block ul li { position: relative; padding-left: 1.1rem; padding-bottom: 0.5rem; font-size: clamp(0.85rem, 1vw, 0.95rem); line-height: 1.5; }
+    .detail-block ul li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 5px; height: 5px; border-radius: 50%; background: var(--primary); }
+
+    .layout-dashboard .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 0.5rem; }
+    .stat-cell { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.4rem 1.5rem; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); }
+    .stat-cell .stat-name { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.1vw, 1.05rem); color: var(--primary); line-height: 1.35; font-weight: 600; }
+    .stat-cell .stat-context { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; padding-top: 0.4rem; border-top: 1px solid var(--border); flex: 1; }
+
+    .layout-split .split-body { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; margin-top: 0.5rem; }
+    .split-left, .split-right { display: flex; flex-direction: column; gap: 1.4rem; }
+    .split-right { padding-left: 2.5rem; border-left: 2px solid var(--border); }
+    .split-highlight { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.15rem, 1.55vw, 1.5rem); font-weight: 500; color: var(--text); line-height: 1.4; padding: 1.3rem 1.5rem; background: var(--accent-light); border-radius: 12px; border-left: 4px solid var(--primary); }
+    .split-highlight cite { display: block; margin-top: 0.7rem; font-style: normal; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; margin: 0; padding-top: 1rem; counter-reset: insight;}
+    .insight-list li { position: relative; padding-left: 1.8rem; font-size: clamp(0.9rem, 1.05vw, 1rem); color: var(--text); line-height: 1.55; counter-increment: insight;}
+    .insight-list li::before { content: counter(insight, decimal-leading-zero); position: absolute; left: 0; top: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+
+    .layout-timeline .timeline-track { display: flex; gap: 1.5rem; flex: 1; align-items: center; justify-content: center; margin-top: 0.5rem; }
+    .timeline-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+    .timeline-step:not(:last-child)::after { content: ''; position: absolute; top: 28px; right: -0.75rem; width: 1.5rem; height: 2px; background: var(--border); }
+    .step-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 1.2rem; flex-shrink: 0; }
+    .timeline-step:nth-child(2) .step-circle { opacity: 0.85; }
+    .timeline-step:nth-child(3) .step-circle { opacity: 0.7; }
+    .timeline-step:nth-child(4) .step-circle { opacity: 0.55; }
+    .step-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.4vw, 1.15rem); font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+    .step-desc { font-size: clamp(0.75rem, 1vw, 0.9rem); color: var(--text-muted); line-height: 1.5; max-width: 220px; }
+
+    .layout-closing { justify-content: center; align-items: center; text-align: center; }
+    .layout-closing .closing-sub { font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 2.5rem; }
+    .layout-closing .cta-btn { display: inline-block; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--bg); background: var(--primary); padding: 0.9rem 2.2rem; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .layout-closing .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30, 43, 250, 0.25); }
+    .layout-closing .closing-decoration { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.4; pointer-events: none; }
+    .layout-closing .closing-decoration-2 { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; height: 360px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.3; pointer-events: none; }
+
+    .keyboard-hint { position: fixed; bottom: 2.5vh; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--text-light); z-index: 100; opacity: 0.6; }
+  
+.cards {display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;margin-top:3vh;}
+.cards.two {grid-template-columns:repeat(2,1fr)}
+.card {padding:1.6rem;border:1.5px solid var(--border);background:var(--card-bg);border-radius:14px;}
+.card h3 {color:var(--primary);margin-bottom:1rem;}
+.card p {font-size:clamp(17px,1.5vw,25px);line-height:1.5;}
+.lead {font-size:clamp(19px,1.8vw,29px);max-width:1000px;line-height:1.5;}
+.takeaway {margin-top:3vh;padding:1.1rem 1.5rem;border-left:4px solid var(--primary);background:var(--accent-light);font-size:clamp(18px,1.5vw,25px);color:var(--text);border-radius:0 12px 12px 0;}
+.flow {display:flex;align-items:stretch;gap:1rem;margin:5vh 0 2vh;}
+.flow .card {flex:1;text-align:center;padding:1.3rem 1rem;}
+.flow .card p {font-size:clamp(16px,1.3vw,22px)}
+.arrow {align-self:center;color:var(--primary);font-size:2rem;}
+.big {font-family:'Space Grotesk',sans-serif;font-size:clamp(30px,3vw,48px);color:var(--primary);margin:1.2rem 0;}
+.compare {width:100%;border-collapse:collapse;margin-top:2vh;font-size:clamp(17px,1.4vw,24px);}
+.compare th,.compare td {padding:1rem 1.2rem;text-align:left;border-bottom:1px solid var(--border);line-height:1.4;}
+.compare th {color:var(--primary);font-family:'Space Grotesk',sans-serif;}
+.compare td:first-child {font-weight:600;width:22%;}
+.compare td {width:39%;}
+.hub {position:fixed;top:1rem;right:1.5rem;z-index:100;color:var(--primary);font-size:12px;text-decoration:none;}
+@media(max-width:700px) {.slide {padding:4rem 6vw 6rem;overflow-y:auto}.cards,.cards.two {grid-template-columns:1fr}.flow {flex-wrap:wrap;margin-top:1rem}.flow .card {flex-basis:40%}.arrow {display:none}.card {padding:1rem}.compare {font-size:14px}.compare th,.compare td {padding:.6rem}.layout-cover .subtitle {max-width:85vw}.keyboard-hint {display:none}.layout-cover h1 {max-width:85vw;font-size:2.8rem}.layout-closing .closing-sub {max-width:85vw}}
+@media(prefers-reduced-motion:reduce) {.slide,.progress-bar {transition:none}}
+
+</style>
+</head>
+<body>
+<a class="hub" href="../index.html">Course hub ↗</a><main class="deck"><section class="slide layout-cover active"><div class="cover-decoration"></div><div class="accent-line"></div><h1>AI Landscape<br>&amp; LLM Systems</h1><p class="subtitle">Choose the right runtime architecture for the customer’s workflow.</p><p class="meta">Module 02-02 · AI Forward Deployed Engineer · 8–9 minute lesson</p></section>
+<section class="slide"><div class="slide-header"><h4>The architectural distinction</h4><span class="tag">02-02</span></div><div class="slide-content"><h2>Who decides the next step?</h2><p class="lead">Classify the system by how it operates at runtime.</p><div class="cards two"><div class="card"><h3>Non-agentic workflow</h3><p>Application code defines the processing path.</p></div><div class="card"><h3>Agentic system</h3><p>The model selects the next action using results from earlier steps.</p></div></div><div class="takeaway">Model capability and system autonomy are separate decisions.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>LLM-based non-agentic systems</h4><span class="tag">02-02</span></div><div class="slide-content"><h2>A fixed path can solve valuable problems</h2><div class="flow"><div class="card"><h3>Input</h3><p>A contract or customer email</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>LLM</h3><p>Extract, summarize, or classify</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Output</h3><p>Structured summary or queue label</p></div></div><div class="cards two"><div class="card"><h3>Common tasks</h3><p>Clause extraction · summarization · support routing</p></div><div class="card"><h3>FDE advantage</h3><p>A contained scope, traceable stages, and clearer ownership</p></div></div><div class="takeaway">A fixed path does not guarantee identical model outputs.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>A useful boundary case</h4><span class="tag">02-02</span></div><div class="slide-content"><h2>Retrieval does not automatically mean agentic</h2><div class="flow"><div class="card"><h3>Retrieve</h3><p>Fetch relevant documents</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Generate</h3><p>Answer using retrieved context</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Validate</h3><p>Check format and evidence</p></div></div><div class="takeaway">Several steps can still form a predefined workflow.</div><p class="lead" style="margin-top:3vh">Ask: Does the model choose whether to search again or change its approach?</p></div></section>
+<section class="slide"><div class="slide-header"><h4>Agentic systems</h4><span class="tag">02-02</span></div><div class="slide-content"><h2>An agent works through a feedback loop</h2><div class="flow"><div class="card"><h3>Decide</h3><p>Choose the next action</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Act</h3><p>Request a tool call</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Observe</h3><p>Read the tool result</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Repeat or stop</h3><p>Continue toward the goal</p></div></div><div class="takeaway">The application executes allowed actions; the model proposes them.</div><p class="lead" style="margin-top:3vh">Stop on completion, a budget limit, a blocked task, or a required human decision.</p></div></section>
+<section class="slide"><div class="slide-header"><h4>Support example</h4><span class="tag">02-02</span></div><div class="slide-content"><h2>Same customer, different architecture</h2><div class="cards two"><div class="card"><h3>Route this email</h3><p>Email → category → queue<br><br>A predefined workflow is usually enough.</p></div><div class="card"><h3>Investigate a failed delivery</h3><p>Check order → inspect tracking → choose a follow-up<br><br>An agent may help when the next step depends on what it finds.</p></div></div><div class="takeaway">A refund or account change can require approval before execution.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Model choice</h4><span class="tag">02-02</span></div><div class="slide-content"><h2>Reasoning ability is not autonomy</h2><div class="cards two"><div class="card"><h3>Reasoning</h3><p>The model’s ability to work through a difficult problem.</p></div><div class="card"><h3>Autonomy</h3><p>The system’s permission to select and take actions.</p></div></div><div class="takeaway">A reasoning model can sit inside a fixed extraction pipeline.</div><p class="lead" style="margin-top:3vh">Evaluate the model on the actual task; evaluate the system on its behavior.</p></div></section>
+<section class="slide"><div class="slide-header"><h4>System engineering</h4><span class="tag">02-02</span></div><div class="slide-content"><h2>The harness makes the loop operable</h2><p class="lead">The harness is the surrounding software that manages execution.</p><div class="cards"><div class="card"><h3>Context & tools</h3><p>Provide relevant state and well-defined tool interfaces.</p></div><div class="card"><h3>Control</h3><p>Enforce permissions, approvals, timeouts, and step limits.</p></div><div class="card"><h3>Visibility & recovery</h3><p>Log execution, handle tool failures, and support escalation.</p></div></div><div class="takeaway">A stronger model does not replace these system responsibilities.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>FDE delivery</h4><span class="tag">02-02</span></div><div class="slide-content"><h2>Evaluate the output—and the execution</h2><table class="compare"><thead><tr><th>Delivery question</th><th>Fixed workflow</th><th>Agentic system</th></tr></thead><tbody><tr><td>Scope</td><td>Inputs, outputs, processing stages</td><td>Goals, tools, allowed actions, stop rules</td></tr><tr><td>Evaluate</td><td>Accuracy, format, evidence, latency</td><td>Task success, tool choices, recovery, total cost</td></tr><tr><td>Hand off</td><td>Pipeline configuration and failure cases</td><td>Permissions, execution traces, escalation runbook</td></tr></tbody></table><div class="takeaway">For an agent, a correct answer can still come from an unacceptable action.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Scoping checklist</h4><span class="tag">02-02</span></div><div class="slide-content"><h2>Start with the simplest sufficient system</h2><div class="cards"><div class="card"><h3>01 · Define success</h3><p>What observable outcome must the customer get?</p></div><div class="card"><h3>02 · Test a fixed path</h3><p>Can a predefined workflow reliably deliver it?</p></div><div class="card"><h3>03 · Bound autonomy</h3><p>If adaptive steps help, define tools, limits, and ownership.</p></div></div><div class="takeaway">Add autonomy when measured customer value justifies the added complexity.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Apply the distinction</h4><span class="tag">02-02</span></div><div class="slide-content"><h2>Quick check: which one needs an agent?</h2><div class="cards two"><div class="card"><h3>A · Extract renewal dates</h3><p>Return dates from a batch of contracts.</p></div><div class="card"><h3>B · Investigate an invoice mismatch</h3><p>Compare records and choose the next check based on discrepancies.</p></div></div><div class="takeaway">A: start with a fixed workflow. B: consider an agent if the investigation path varies.</div><p class="lead" style="margin-top:3vh">Your next scoping document: outcome + runtime path + evaluation + owner.</p></div></section><section class="slide layout-closing"><div class="closing-decoration"></div><div class="closing-decoration-2"></div><div class="accent-line"></div><h1>Scope the behavior.<br>Own the system.</h1><p class="closing-sub" style="margin-top:2rem">Choose the runtime path that solves the customer’s problem—and make it testable, bounded, and maintainable.</p></section></main>
+  <div class="slide-counter"><span id="current">1</span> / <span id="total">12</span></div>
+  <div class="keyboard-hint">← → navigate · F fullscreen</div>
+  <div class="progress-bar" id="progress"></div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)" aria-label="Next slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const currentEl = document.getElementById('current');
+    const totalEl = document.getElementById('total');
+    const progressEl = document.getElementById('progress');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let current = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+    const total = slides.length;
+    totalEl.textContent = total;
+
+    function updateSlide() {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'prev');
+        if (i === current) {
+          slide.classList.add('active');
+        } else if (i < current) {
+          slide.classList.add('prev');
+        }
+      });
+      currentEl.textContent = current + 1;
+      slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',i !== current));
+      history.replaceState(null, '', '#' + (current + 1));
+      progressEl.style.width = ((current + 1) / total * 100) + '%';
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+    }
+
+    function changeSlide(dir) {
+      const next = current + dir;
+      if (next >= 0 && next < total) {
+        current = next;
+        updateSlide();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 'f') { if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+      else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); changeSlide(-1); }
+      else if (e.key === 'Home') { e.preventDefault(); current = 0; updateSlide(); }
+      else if (e.key === 'End') { e.preventDefault(); current = total - 1; updateSlide(); }
+    });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) { changeSlide(diff > 0 ? 1 : -1); }
+    }, { passive: true });
+
+    window.addEventListener('hashchange', () => { current = Math.max(0, Math.min(total - 1, (parseInt(location.hash.slice(1)) || 1) - 1)); updateSlide(); });
+    updateSlide();
+  </script>
+
+</body>
+</html>
