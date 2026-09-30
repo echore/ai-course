@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 01-01: Foundations of AI Forward Deployed Engineer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fdfae7;
+      --primary: #1e2bfa;
+      --text: #111111;
+      --text-muted: #6b6b6b;
+      --text-light: #9a9a9a;
+      --accent-light: rgba(30, 43, 250, 0.08);
+      --accent-medium: rgba(30, 43, 250, 0.15);
+      --border: rgba(30, 43, 250, 0.2);
+      --card-bg: rgba(30, 43, 250, 0.04);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      font-family: 'Inter', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    .deck {
+      width: 100vw;
+      height: 100vh;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .slide {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding: 3.5vw 4vw 8.5vh 4vw;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(40px);
+      transition: opacity 0.5s ease, transform 0.5s ease;
+      overflow: hidden;
+    }
+
+    .slide.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateX(0);
+      z-index: 10;
+    }
+
+    .slide.prev {
+      transform: translateX(-40px);
+    }
+
+    h1, h2, h3, h4 {
+      font-family: 'Space Grotesk', sans-serif;
+      font-weight: 600;
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 5vw, 4.2rem);
+      font-weight: 700;
+    }
+
+    h2 {
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      margin-bottom: 1.5rem;
+    }
+
+    h3 {
+      font-size: clamp(1.1rem, 1.8vw, 1.5rem);
+      font-weight: 500;
+      line-height: 1.3;
+    }
+
+    h4 {
+      font-size: clamp(0.85rem, 1.2vw, 1rem);
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--primary);
+    }
+
+    p, li {
+      font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+      line-height: 1.6;
+      color: var(--text-muted);
+    }
+
+    .slide-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2.5vh;
+      flex-shrink: 0;
+    }
+
+    .slide-header .tag {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 500;
+      color: var(--primary);
+      background: var(--accent-light);
+      padding: 0.35rem 0.9rem;
+      border-radius: 100px;
+    }
+
+    .slide-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+
+    .nav-controls {
+      position: fixed;
+      bottom: 2.5vh;
+      right: 3vw;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      z-index: 100;
+    }
+
+    .nav-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      border: 1.5px solid var(--border);
+      background: var(--bg);
+      color: var(--primary);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      font-size: 1.1rem;
+    }
+
+    .nav-btn:hover {
+      background: var(--primary);
+      color: var(--bg);
+      border-color: var(--primary);
+    }
+
+    .nav-btn:disabled {
+      opacity: 0.3;
+      cursor: not-allowed;
+    }
+
+    .slide-counter {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 0.8rem;
+      font-weight: 500;
+      color: var(--text-muted);
+      letter-spacing: 0.05em;
+      position: fixed;
+      bottom: 2.5vh;
+      left: 3vw;
+      z-index: 100;
+    }
+
+    .progress-bar {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      height: 3px;
+      background: var(--primary);
+      transition: width 0.4s ease;
+      z-index: 100;
+    }
+
+    .accent-line {
+      width: 60px;
+      height: 4px;
+      background: var(--primary);
+      border-radius: 2px;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Layout 1: Cover */
+    .layout-cover { justify-content: center; align-items: flex-start; padding-left: 8vw; }
+    .layout-cover h1 { max-width: 65vw; margin-bottom: 1.5rem; line-height: 1.05; }
+    .layout-cover .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-muted); max-width: 45vw; margin-bottom: 3rem; }
+    .layout-cover .meta { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; color: var(--text-light); letter-spacing: 0.05em; }
+    .layout-cover .cover-decoration { position: absolute; top: 0; right: 0; width: 35vw; height: 100vh; background: var(--accent-light); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
+
+    /* Layout 2: Detail Grid */
+    .layout-detail .detail-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem 3rem; flex: 1; margin-top: 0.5rem; overflow: hidden; }
+    .detail-col { display: flex; flex-direction: column; gap: 1.2rem; }
+    .detail-block { padding: 1.4rem 1.6rem; border-radius: 12px; background: var(--card-bg); border: 1.5px solid var(--border); }
+    .detail-block h3 { font-size: clamp(1rem, 1.3vw, 1.1rem); margin-bottom: 0.8rem; color: var(--text); }
+    .detail-block ul { list-style: none; margin: 0; padding: 0; }
+    .detail-block ul li { position: relative; padding-left: 1.1rem; padding-bottom: 0.5rem; font-size: clamp(0.85rem, 1vw, 0.95rem); line-height: 1.5; }
+    .detail-block ul li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 5px; height: 5px; border-radius: 50%; background: var(--primary); }
+
+    /* Layout 3: Dashboard Grid */
+    .layout-dashboard .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 0.5rem; }
+    .stat-cell { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.4rem 1.5rem; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); }
+    .stat-cell .stat-name { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.1vw, 1.05rem); color: var(--primary); line-height: 1.35; font-weight: 600; }
+    .stat-cell .stat-context { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; padding-top: 0.4rem; border-top: 1px solid var(--border); flex: 1; }
+
+    /* Layout 4: Split Layout */
+    .layout-split .split-body { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; margin-top: 0.5rem; }
+    .split-left, .split-right { display: flex; flex-direction: column; gap: 1.4rem; }
+    .split-right { padding-left: 2.5rem; border-left: 2px solid var(--border); }
+    .split-highlight { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.15rem, 1.55vw, 1.5rem); font-weight: 500; color: var(--text); line-height: 1.4; padding: 1.3rem 1.5rem; background: var(--accent-light); border-radius: 12px; border-left: 4px solid var(--primary); }
+    .split-highlight cite { display: block; margin-top: 0.7rem; font-style: normal; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; margin: 0; padding-top: 1rem; counter-reset: insight;}
+    .insight-list li { position: relative; padding-left: 1.8rem; font-size: clamp(0.9rem, 1.05vw, 1rem); color: var(--text); line-height: 1.55; counter-increment: insight;}
+    .insight-list li::before { content: counter(insight, decimal-leading-zero); position: absolute; left: 0; top: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+
+    /* Layout 5: Quote */
+    .layout-quote { justify-content: center; align-items: center; text-align: center; }
+    .layout-quote .quote-mark { font-family: 'Space Grotesk', sans-serif; font-size: 8rem; font-weight: 700; color: var(--primary); opacity: 0.15; line-height: 0.5; margin-bottom: 1rem; }
+    .layout-quote blockquote { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.6rem, 2.8vw, 2.4rem); font-weight: 500; line-height: 1.35; color: var(--text); max-width: 65vw; margin-bottom: 2rem; }
+    .layout-quote .quote-source { font-size: clamp(0.85rem, 1.1vw, 1rem); color: var(--text-muted); }
+    .layout-quote .quote-source strong { color: var(--text); font-weight: 600; }
+    .layout-quote .quote-decoration { position: absolute; top: 10vh; left: 5vw; width: 80px; height: 80px; border: 2px solid var(--border); border-radius: 50%; }
+    .layout-quote .quote-decoration-2 { position: absolute; bottom: 12vh; right: 6vw; width: 60px; height: 60px; background: var(--accent-light); border-radius: 50%; }
+
+    /* Layout 6: Closing */
+    .layout-closing { justify-content: center; align-items: center; text-align: center; }
+    .layout-closing .closing-sub { font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-muted); max-width: 45vw; margin-bottom: 2.5rem; }
+    .layout-closing .cta-btn { display: inline-block; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--bg); background: var(--primary); padding: 0.9rem 2.2rem; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .layout-closing .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30, 43, 250, 0.25); }
+    .layout-closing .closing-decoration { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.4; pointer-events: none; }
+    .layout-closing .closing-decoration-2 { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; height: 360px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.3; pointer-events: none; }
+
+    .keyboard-hint { position: fixed; bottom: 2.5vh; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--text-light); z-index: 100; opacity: 0.6; }
+  </style>
+</head>
+<body>
+
+  <div class="deck">
+
+    <!-- SLIDE 1: Cover -->
+    <div class="slide layout-cover active">
+      <div class="cover-decoration"></div>
+      <div class="accent-line"></div>
+      <h1>Foundations of the<br>AI Forward Deployed Engineer</h1>
+      <p class="subtitle">Bridging the gap between AI prototypes and real-world operational systems, while navigating enterprise constraints and stakeholder dynamics.</p>
+      <p class="meta">Module 01-01 &nbsp;&middot;&nbsp; End-to-End Delivery</p>
+    </div>
+
+    <!-- SLIDE 2: Who is FDE & The Gap -->
+    <div class="slide layout-split">
+      <div class="slide-header">
+        <h4>Role Definition</h4>
+        <span class="tag">OVERVIEW</span>
+      </div>
+      <div class="slide-content">
+        <h2>Who is AI Forward Deployed Engineer?</h2>
+        <div class="split-body">
+          <div class="split-left">
+            <p>Many enterprise AI projects never move from a working pilot into production. The problem usually appears when a working demo has to connect to production data and handle operational constraints.</p>
+            <ul class="insight-list" style="margin-top: 1rem;">
+              <li><strong>Traditional Software Engineer:</strong> Follows requirements, implements code, and deploys.</li>
+              <li><strong>Forward Deployed Engineer (FDE):</strong> Embeds in the context, implements, gathers feedback, and manages the handoff.</li>
+            </ul>
+          </div>
+          <div class="split-right">
+            <div class="split-highlight">
+              Closing that gap takes more than technical ability. It requires someone who can work inside the customer environment... in conditions that no specification document fully describes. 
+              <cite>The Deployment Gap</cite>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 3: The 6-Stage Cycle -->
+    <div class="slide layout-dashboard">
+      <div class="slide-header">
+        <h4>Operating Cycle</h4>
+        <span class="tag">LIFECYCLE</span>
+      </div>
+      <div class="slide-content">
+        <h2>The FDE Delivery Workflow</h2>
+        <div class="stats-grid">
+          <div class="stat-cell">
+            <div class="stat-name">01 &nbsp; Customer Discovery</div>
+            <div class="stat-context">The process of finding the real problem under the stated request. Customers rarely describe their actual constraint in the first conversation.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">02 &nbsp; Project Scoping</div>
+            <div class="stat-context">Translating discovery into a bounded system. Defining the problem, success criterion, data sources, and explicit boundaries.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">03 &nbsp; POC Delivery</div>
+            <div class="stat-context">Speed and measurability matter more than architectural elegance. Answering the core question in ten days beats six weeks.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">04 &nbsp; Stakeholder Comms</div>
+            <div class="stat-context">Presenting technical work in terms that allow non-technical stakeholders to make decisions.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">05 &nbsp; Project Handoff</div>
+            <div class="stat-context">Leaving behind a system and documentation that another team can own, maintain, and extend.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">06 &nbsp; Field Feedback</div>
+            <div class="stat-context">Converting field observations into product intelligence to improve the core platform over time.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 4: AI Engineering Foundations -->
+    <div class="slide layout-detail">
+      <div class="slide-header">
+        <h4>Prerequisites</h4>
+        <span class="tag">TECHNICAL FOUNDATION</span>
+      </div>
+      <div class="slide-content">
+        <h2>The AI Engineering Foundation</h2>
+        <div class="detail-body">
+          <div class="detail-col">
+            <div class="detail-block">
+              <h3>LLMs and APIs</h3>
+              <ul>
+                <li>Call model APIs from OpenAI, Anthropic, and Gemini in code.</li>
+                <li>Write effective system prompts and get structured outputs reliably.</li>
+                <li>Manage context windows and token costs.</li>
+              </ul>
+            </div>
+            <div class="detail-block">
+              <h3>RAG Pipelines</h3>
+              <ul>
+                <li>Build retrieval-augmented generation pipelines end to end.</li>
+                <li>Manage embeddings, chunking, and vector search.</li>
+                <li>Diagnose failure modes under real data conditions.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="detail-col">
+            <div class="detail-block">
+              <h3>Agentic Frameworks</h3>
+              <ul>
+                <li>Build single and multi-agent systems with tool use.</li>
+                <li>Understand multi-step orchestration without human direction.</li>
+                <li>Deploy multi-agent workflows reliably.</li>
+              </ul>
+            </div>
+            <div class="detail-block">
+              <h3>Evals and LLMOps</h3>
+              <ul>
+                <li>Measure model output quality with a repeatable, systematic approach.</li>
+                <li>Understand deployment, latency management, and cost tracking.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 5: Navigating Constraints -->
+    <div class="slide layout-detail">
+      <div class="slide-header">
+        <h4>Enterprise Constraints</h4>
+        <span class="tag">ENVIRONMENT</span>
+      </div>
+      <div class="slide-content">
+        <h2>Navigating Security and Data Access</h2>
+        <div class="detail-body">
+          <div class="detail-col">
+            <div class="detail-block">
+              <h3>Data Access Realities</h3>
+              <ul>
+                <li>The person describing the data rarely controls access to it.</li>
+                <li>Access requests require specific details: system names, permission types, and data fields.</li>
+                <li>Sample data must represent real production edge-cases, not just clean examples.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="detail-col">
+            <div class="detail-block">
+              <h3>Security & Compliance Hurdles</h3>
+              <ul>
+                <li><strong>Data residency:</strong> Data cannot leave a specific jurisdiction.</li>
+                <li><strong>No-internet-egress:</strong> Deployment environment has no outbound external connection.</li>
+                <li><strong>PII Handling:</strong> Specific fields must be anonymized before API processing.</li>
+                <li><strong>Private Models:</strong> Running open-weight models locally when API access is denied.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Org Politics -->
+    <div class="slide layout-split">
+      <div class="slide-header">
+        <h4>Organizational Dynamics</h4>
+        <span class="tag">POLITICS</span>
+      </div>
+      <div class="slide-content">
+        <h2>Champions and Shadow IT</h2>
+        <div class="split-body">
+          <div class="split-left">
+            <p>Every enterprise project involves people whose jobs and workflows are affected. The FDE who understands this landscape early can work with it.</p>
+            <ul class="insight-list" style="margin-top: 1rem;">
+              <li><strong>Finding the Champion:</strong> You need someone with both the motivation and the internal influence to clear blockers.</li>
+              <li><strong>Titles Don't Matter:</strong> A senior individual contributor with cross-team relationships is often more useful than an absent VP.</li>
+              <li><strong>When Champions Leave:</strong> Identify replacements quickly, or the project will stall at the first obstacle.</li>
+            </ul>
+          </div>
+          <div class="split-right">
+            <div class="split-highlight">
+              The workflow that the FDE is automating may be owned by someone whose current role is built around doing it manually. Surfacing this early prevents resistance.
+              <cite>The Shadow IT Problem</cite>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: When Projects Go Sideways -->
+    <div class="slide layout-dashboard">
+      <div class="slide-header">
+        <h4>Risk Management</h4>
+        <span class="tag">COURSE CORRECTION</span>
+      </div>
+      <div class="slide-content">
+        <h2>When the Project Goes Sideways</h2>
+        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="stat-cell">
+            <div class="stat-name">01 &nbsp; Early Warning Signs</div>
+            <div class="stat-context">Check-ins get rescheduled, the champion becomes unreachable, and unexpected stakeholders appear. All three signal a crisis.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">02 &nbsp; Technical Dead Ends</div>
+            <div class="stat-context">Communicate technical pivots before the milestone. A pivot communicated early is a course correction; at the demo, it is a failure.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">03 &nbsp; Escalation as a Skill</div>
+            <div class="stat-context">Escalating every issue creates noise, but never escalating lets solvable problems compound into crises.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">04 &nbsp; The Failed Demo</div>
+            <div class="stat-context">Live demos fail. Have a recorded backup ready, acknowledge the failure calmly, and switch over to demonstrate confidence.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 8: Stakeholder Map -->
+    <div class="slide layout-dashboard">
+      <div class="slide-header">
+        <h4>Communication</h4>
+        <span class="tag">STAKEHOLDERS</span>
+      </div>
+      <div class="slide-content">
+        <h2>Communicating Across Stakeholder Types</h2>
+        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="stat-cell">
+            <div class="stat-name">Executive Sponsor</div>
+            <div class="stat-context">Cares about ROI, organizational risk, and timeline. Lead with outcomes using a Situation, Recommendation, Impact, and Ask structure.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">Technical Lead</div>
+            <div class="stat-context">Cares about architectural soundness and integration. Present decisions with reasoning and acknowledge real tradeoffs honestly.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">End User</div>
+            <div class="stat-context">Cares if the system makes their job easier. Their behavior during the pilot is the most honest signal about adoption.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">Procurement & Legal</div>
+            <div class="stat-context">Cares about compliance, liability, and whether contract terms account for the risks of an AI system making decisions.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Written Artifacts -->
+    <div class="slide layout-split">
+      <div class="slide-header">
+        <h4>Documentation</h4>
+        <span class="tag">ARTIFACTS</span>
+      </div>
+      <div class="slide-content">
+        <h2>The Written Record</h2>
+        <div class="split-body">
+          <div class="split-left">
+            <ul class="insight-list">
+              <li><strong>Discovery Notes:</strong> Captures the problem, data, stakeholders, and constraints.</li>
+              <li><strong>Scope Document:</strong> Defines what will be built, success criteria, and what is out of scope.</li>
+              <li><strong>Weekly Status:</strong> What was completed, what is blocked, and what is needed.</li>
+              <li><strong>POC Readout:</strong> What was built, what was measured, and the recommendation.</li>
+              <li><strong>Handoff Document:</strong> System overview, data flow, failure modes, and escalation path.</li>
+            </ul>
+          </div>
+          <div class="split-right">
+            <div class="split-highlight">
+              Written communication outlasts verbal communication. The stakeholder who cannot recall what was said in a meeting will remember what was written.
+              <cite>Building Long-Term Trust</cite>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: Closing -->
+    <div class="slide layout-closing">
+      <div class="closing-decoration"></div>
+      <div class="closing-decoration-2"></div>
+      <div class="accent-line" style="margin: 0 auto 1.5rem;"></div>
+      <h1>The Golden Rule of Scoping</h1>
+      <p class="closing-sub">Always scope to the time available, rather than scoping to the ideal solution. The first deliverable is the smallest working system that earns the right to build more.</p>
+    </div>
+
+  </div>
+
+  <!-- Navigation -->
+  <div class="slide-counter"><span id="current">1</span> / <span id="total">10</span></div>
+  <div class="keyboard-hint">Use arrow keys to navigate</div>
+  <div class="progress-bar" id="progress"></div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)" aria-label="Next slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const currentEl = document.getElementById('current');
+    const totalEl = document.getElementById('total');
+    const progressEl = document.getElementById('progress');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let current = 0;
+    const total = slides.length;
+    totalEl.textContent = total;
+
+    function updateSlide() {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'prev');
+        if (i === current) {
+          slide.classList.add('active');
+        } else if (i < current) {
+          slide.classList.add('prev');
+        }
+      });
+      currentEl.textContent = current + 1;
+      progressEl.style.width = ((current + 1) / total * 100) + '%';
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+    }
+
+    function changeSlide(dir) {
+      const next = current + dir;
+      if (next >= 0 && next < total) {
+        current = next;
+        updateSlide();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        e.preventDefault();
+        changeSlide(1);
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        e.preventDefault();
+        changeSlide(-1);
+      } else if (e.key === 'Home') {
+        e.preventDefault();
+        current = 0;
+        updateSlide();
+      } else if (e.key === 'End') {
+        e.preventDefault();
+        current = total - 1;
+        updateSlide();
+      }
+    });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+
+    document.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) {
+        changeSlide(diff > 0 ? 1 : -1);
+      }
+    }, { passive: true });
+
+    updateSlide();
+  </script>
+
+</body>
+</html>
