@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 02-03: Harness Engineering & Guardrails</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fdfae7;
+      --primary: #1e2bfa;
+      --text: #111111;
+      --text-muted: #6b6b6b;
+      --text-light: #9a9a9a;
+      --accent-light: rgba(30, 43, 250, 0.08);
+      --accent-medium: rgba(30, 43, 250, 0.15);
+      --border: rgba(30, 43, 250, 0.2);
+      --card-bg: rgba(30, 43, 250, 0.04);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+    }
+
+    .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; padding: 3.5vw 4vw 8.5vh 4vw;
+      opacity: 0; pointer-events: none; transform: translateX(40px);
+      transition: opacity 0.5s ease, transform 0.5s ease; overflow: hidden;
+    }
+
+    .slide.active { opacity: 1; pointer-events: all; transform: translateX(0); z-index: 10; }
+    .slide.prev { transform: translateX(-40px); }
+
+    h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
+    h1 { font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 700; }
+    h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 1.5rem; }
+    h3 { font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: 500; line-height: 1.3; }
+    h4 { font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); }
+    p, li { font-size: clamp(0.85rem, 1.1vw, 1.05rem); line-height: 1.6; color: var(--text-muted); }
+    .numeral { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--primary); }
+
+    .slide-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5vh; flex-shrink: 0; }
+    .slide-header .tag { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 500; color: var(--primary); background: var(--accent-light); padding: 0.35rem 0.9rem; border-radius: 100px; }
+    .slide-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+    .nav-controls { position: fixed; bottom: 2.5vh; right: 3vw; display: flex; align-items: center; gap: 0.8rem; z-index: 100; }
+    .nav-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg); color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; font-size: 1.1rem; }
+    .nav-btn:hover { background: var(--primary); color: var(--bg); border-color: var(--primary); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .slide-counter { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.05em; position: fixed; bottom: 2.5vh; left: 3vw; z-index: 100; }
+    .progress-bar { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--primary); transition: width 0.4s ease; z-index: 100; }
+    .accent-line { width: 60px; height: 4px; background: var(--primary); border-radius: 2px; margin-bottom: 1.5rem; }
+
+    /* Layouts */
+    .layout-cover { justify-content: center; align-items: flex-start; padding-left: 8vw; }
+    .layout-cover h1 { max-width: 75vw; margin-bottom: 1.5rem; line-height: 1.05; }
+    .layout-cover .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 3rem; }
+    .layout-cover .meta { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; color: var(--text-light); letter-spacing: 0.05em; }
+    .layout-cover .cover-decoration { position: absolute; top: 0; right: 0; width: 35vw; height: 100vh; background: var(--accent-light); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
+
+    .layout-detail .detail-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem 3rem; flex: 1; margin-top: 0.5rem; overflow: hidden; }
+    .detail-col { display: flex; flex-direction: column; gap: 1.2rem; }
+    .detail-block { padding: 1.4rem 1.6rem; border-radius: 12px; background: var(--card-bg); border: 1.5px solid var(--border); }
+    .detail-block h3 { font-size: clamp(1rem, 1.3vw, 1.1rem); margin-bottom: 0.8rem; color: var(--text); }
+    .detail-block ul { list-style: none; margin: 0; padding: 0; }
+    .detail-block ul li { position: relative; padding-left: 1.1rem; padding-bottom: 0.5rem; font-size: clamp(0.85rem, 1vw, 0.95rem); line-height: 1.5; }
+    .detail-block ul li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 5px; height: 5px; border-radius: 50%; background: var(--primary); }
+
+    .layout-dashboard .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 0.5rem; }
+    .stat-cell { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.4rem 1.5rem; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); }
+    .stat-cell .stat-name { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.1vw, 1.05rem); color: var(--primary); line-height: 1.35; font-weight: 600; }
+    .stat-cell .stat-context { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; padding-top: 0.4rem; border-top: 1px solid var(--border); flex: 1; }
+
+    .layout-split .split-body { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; margin-top: 0.5rem; }
+    .split-left, .split-right { display: flex; flex-direction: column; gap: 1.4rem; }
+    .split-right { padding-left: 2.5rem; border-left: 2px solid var(--border); }
+    .split-highlight { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.15rem, 1.55vw, 1.5rem); font-weight: 500; color: var(--text); line-height: 1.4; padding: 1.3rem 1.5rem; background: var(--accent-light); border-radius: 12px; border-left: 4px solid var(--primary); }
+    .split-highlight cite { display: block; margin-top: 0.7rem; font-style: normal; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; margin: 0; padding-top: 1rem; counter-reset: insight;}
+    .insight-list li { position: relative; padding-left: 1.8rem; font-size: clamp(0.9rem, 1.05vw, 1rem); color: var(--text); line-height: 1.55; counter-increment: insight;}
+    .insight-list li::before { content: counter(insight, decimal-leading-zero); position: absolute; left: 0; top: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+
+    .layout-timeline .timeline-track { display: flex; gap: 1.5rem; flex: 1; align-items: center; justify-content: center; margin-top: 0.5rem; }
+    .timeline-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+    .timeline-step:not(:last-child)::after { content: ''; position: absolute; top: 28px; right: -0.75rem; width: 1.5rem; height: 2px; background: var(--border); }
+    .step-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 1.2rem; flex-shrink: 0; }
+    .timeline-step:nth-child(2) .step-circle { opacity: 0.85; }
+    .timeline-step:nth-child(3) .step-circle { opacity: 0.7; }
+    .timeline-step:nth-child(4) .step-circle { opacity: 0.55; }
+    .step-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.4vw, 1.15rem); font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+    .step-desc { font-size: clamp(0.75rem, 1vw, 0.9rem); color: var(--text-muted); line-height: 1.5; max-width: 220px; }
+
+    .layout-closing { justify-content: center; align-items: center; text-align: center; }
+    .layout-closing .closing-sub { font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 2.5rem; }
+    .layout-closing .cta-btn { display: inline-block; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--bg); background: var(--primary); padding: 0.9rem 2.2rem; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .layout-closing .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30, 43, 250, 0.25); }
+    .layout-closing .closing-decoration { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.4; pointer-events: none; }
+    .layout-closing .closing-decoration-2 { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; height: 360px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.3; pointer-events: none; }
+
+    .keyboard-hint { position: fixed; bottom: 2.5vh; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--text-light); z-index: 100; opacity: 0.6; }
+  
+    /* Typography follows the existing course decks exactly. */
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:1.5rem; }
+    .cards.two { grid-template-columns:repeat(2,1fr); }
+    .card { padding:1.4rem 1.6rem; border:1.5px solid var(--border); background:var(--card-bg); border-radius:12px; }
+    .card h3 { font-size:clamp(1rem,1.3vw,1.1rem); line-height:1.3; color:var(--text); margin-bottom:.8rem; }
+    .card p,.lead,.takeaway,.compare { font-size:clamp(.85rem,1.1vw,1.05rem); line-height:1.6; }
+    .card p + p { margin-top:.7rem; }
+    .card ul { list-style:none; padding:0; }
+    .card li { position:relative; padding-left:1.1rem; padding-bottom:.5rem; font-size:clamp(.85rem,1vw,.95rem); line-height:1.5; }
+    .card li::before { content:''; position:absolute; left:0; top:.55rem; width:5px; height:5px; border-radius:50%; background:var(--primary); }
+    .lead { max-width:1100px; }
+    .takeaway { margin-top:1.5rem; padding:1.1rem 1.5rem; border-left:4px solid var(--primary); background:var(--accent-light); color:var(--text); border-radius:0 12px 12px 0; }
+    .flow { display:flex; align-items:stretch; gap:1rem; margin:1.5rem 0 .5rem; }
+    .flow .card { flex:1; text-align:center; padding:1.2rem; }
+    .flow .card h3 { font-size:clamp(.95rem,1.4vw,1.15rem); color:var(--primary); }
+    .flow .card p { font-size:clamp(.75rem,1vw,.9rem); line-height:1.5; }
+    .arrow { align-self:center; color:var(--primary); font-size:1.3rem; }
+    .compare { width:100%; border-collapse:collapse; margin-top:1rem; }
+    .compare th,.compare td { padding:.85rem 1.1rem; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; }
+    .compare th { color:var(--primary); font-family:'Space Grotesk',sans-serif; font-weight:600; }
+    .compare td:first-child { font-weight:600; width:22%; }
+    .compare td { width:39%; }
+    .hub { position:fixed; top:1rem; right:1.5rem; z-index:100; color:var(--primary); font-size:.75rem; text-decoration:none; }
+    .cards.four { grid-template-columns:repeat(2,1fr); }
+    @media(max-width:700px) { .slide { padding:4rem 6vw 6rem; overflow-y:auto; } .cards,.cards.two,.cards.four { grid-template-columns:1fr; } .flow { flex-wrap:wrap; } .flow .card { flex-basis:40%; } .arrow { display:none; } .card { padding:1rem; } .compare th,.compare td { padding:.6rem; } .layout-cover .subtitle,.layout-closing .closing-sub { max-width:85vw; } .keyboard-hint { display:none; } .layout-cover h1 { max-width:85vw; } }
+    @media(prefers-reduced-motion:reduce) { .slide,.progress-bar { transition:none; } }
+  </style>
+</head>
+<body>
+<a class="hub" href="../index.html">Course hub ↗</a><main class="deck">
+<section class="slide layout-cover active"><div class="cover-decoration"></div><div class="accent-line"></div><h1>Harness Engineering<br>&amp; Guardrails</h1><p class="subtitle">Design the environment around an agent so it can act reliably—and the customer can operate it.</p><p class="meta">Module 02-03 · AI Forward Deployed Engineer</p></section>
+<section class="slide"><div class="slide-header"><h4>The reasoning loop</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>The harness supports every turn of the loop</h2><p class="lead">The model selects a next action. The surrounding software manages the state, execution, and result.</p><div class="flow"><div class="card"><h3>Perceive</h3><p>Receive the goal, task state, and previous results.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Reason</h3><p>Choose a useful next action from the available context.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Act</h3><p>Execute an allowed tool request or generate an output.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Observe</h3><p>Return the result and update the state for the next turn.</p></div></div><div class="takeaway">Define when the loop stops, what happens when a step fails, and the budget for a realistic task.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Harness responsibilities</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>A functional loop needs an operating design</h2><div class="cards"><div class="card"><h3>Tools, memory &amp; context</h3><ul><li>Tools interact with external systems.</li><li>Memory carries information within and across sessions.</li><li>Context management selects what each model call receives.</li></ul></div><div class="card"><h3>Controls, traces &amp; review</h3><ul><li>Guardrails constrain actions and outputs.</li><li>Observability records execution and failures.</li><li>AI review checks outputs against explicit criteria.</li></ul></div><div class="card"><h3>Human escalation</h3><p>An operational workflow designed alongside the harness.</p><ul><li>Names the reviewer and the review package.</li><li>Defines how the system waits and records the decision.</li></ul></div></div><div class="takeaway">The FDE scopes these pieces together, validates them during the pilot, and documents ownership at handoff.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Tool scope</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Choose tools by capability and consequences</h2><p class="lead">Tools are functions the agent can request to retrieve information, change records, or run processes.</p><div class="cards"><div class="card"><h3>Read tools</h3><p>Query an order database, retrieve documents, or inspect tracking.</p><p>They do not change external state, but still need appropriate data access.</p></div><div class="card"><h3>Write tools</h3><p>Update a record, send a notification, or trigger a workflow.</p><p>Errors can affect customers; define approvals and protection against duplicate changes.</p></div><div class="card"><h3>Execution tools</h3><p>Run a script or start a compute job.</p><p>Constrain the environment and resources. The impact depends on the capabilities granted.</p></div></div><div class="takeaway">Scope the minimum tool set that solves the task; a read-only workflow does not need write access.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Tool execution</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Tool calls need clear contracts and coordination</h2><div class="flow"><div class="card"><h3>Model request</h3><p>Select a tool and supply arguments.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Harness execution</h3><p>Validate inputs and permissions, then call the external function.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Result or error</h3><p>Return a structured observation to the next model call.</p></div></div><div class="cards two"><div class="card"><h3>A clear tool contract</h3><ul><li>Name the purpose, required arguments, and expected result.</li><li>Return useful errors; define timeouts and retry behavior.</li><li>Record whether an external change actually completed.</li></ul></div><div class="card"><h3>Dependencies determine order</h3><ul><li>An order lookup may supply the tracking ID for the next call.</li><li>Independent read tasks may run in parallel.</li><li>Combine results before making decisions that depend on them.</li></ul></div></div><div class="takeaway">A request to call a tool is different from confirmation that the tool succeeded.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Memory architecture</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Memory requirements come from session continuity</h2><div class="cards two"><div class="card"><h3>Short-term memory</h3><p>The information available during the current session: the goal, previous observations, and running task state.</p><ul><li>Directly available when included in the model’s context.</li><li>Bounded by the context window and context-management decisions.</li></ul></div><div class="card"><h3>Long-term memory</h3><p>Persistent storage that can be retrieved across sessions, such as a structured database or a semantic search store.</p><ul><li>Supports prior interactions, accumulated findings, and task resumption.</li><li>Stored information must be retrieved into context before the model can use it.</li></ul></div></div><div class="takeaway">Discovery question: must the agent remember last week’s conversation or resume an unfinished task?</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Context management</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Context is assembled for each model call</h2><p class="lead">The context window is finite. The harness selects the goal, instructions, observations, records, and task state needed now.</p><div class="cards"><div class="card"><h3>Step summarization</h3><p>Compress earlier steps while preserving outcomes, constraints, and unresolved work.</p></div><div class="card"><h3>Selective retrieval</h3><p>Store detailed results externally and retrieve only what is relevant to the current decision.</p></div><div class="card"><h3>Running state</h3><p>Maintain a structured view of progress, completed actions, evidence, and remaining tasks.</p></div></div><div class="takeaway">Test realistic session lengths. Excess context can fail requests or lose critical information through truncation or poor summarization.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Worked example</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>A support case connects tools, memory, and context</h2><div class="flow"><div class="card"><h3>Start the investigation</h3><p>Read the order and fetch tracking using its ID.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Continue the session</h3><p>Record the carrier exception and the checks already completed.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Resume tomorrow</h3><p>Retrieve the case state and verify fresh tracking before proceeding.</p></div></div><div class="cards two"><div class="card"><h3>Retain what matters</h3><ul><li>Goal, case identifier, verified observations, and remaining questions.</li><li>Which actions completed and whether anything changed.</li></ul></div><div class="card"><h3>Keep context current</h3><ul><li>Retrieve the relevant case rather than every previous conversation.</li><li>Summarize large results without discarding key evidence.</li></ul></div></div><div class="takeaway">The next decision should use the right case state and current evidence.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Four types of constraints</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Guardrails define runtime boundaries</h2><div class="cards four"><div class="card"><h3>Scope limits</h3><p>Allow only the tools and actions required for the agreed function. A research task should not gain an unrelated write capability.</p></div><div class="card"><h3>Budget ceilings</h3><p>Bound tokens, cost, iterations, and elapsed time. Specify what happens when a limit is reached.</p></div><div class="card"><h3>Output checks</h3><p>Validate required format, disallowed content, sensitive fields, and evidence before delivery. Flag or route failures.</p></div><div class="card"><h3>Permission controls</h3><p>Limit which records and systems the workflow can read or modify, using enforced access controls.</p></div></div><div class="takeaway">Define the configuration during scoping; verify it during the pilot and document how it can be changed.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Pilot checks</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Validate guardrails with concrete failure cases</h2><table class="compare"><thead><tr><th>Boundary</th><th>Test input or event</th><th>Expected behavior</th></tr></thead><tbody><tr><td>Scope &amp; access</td><td>Request a refund or another customer’s record outside the investigation scope.</td><td>Deny the action; route a valid escalation with context.</td></tr><tr><td>Budget</td><td>Repeated unsuccessful searches reach the configured step limit.</td><td>Stop and preserve state; prevent another automatic iteration.</td></tr><tr><td>Output</td><td>A response contains restricted data or a claim without supporting evidence.</td><td>Block, revise, or route the response according to defined checks.</td></tr></tbody></table><div class="takeaway">Passing an output filter is not proof of factual accuracy. Evaluate the checks and their failure handling.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Six trace dimensions</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Observability makes execution reconstructable</h2><p class="lead">A wrong final answer may originate several steps earlier. Record enough evidence to find where the behavior diverged.</p><div class="cards two"><div class="card"><h3>Actions and information</h3><ul><li>Tool requests, results, errors, and retries.</li><li>Model inputs and outputs or controlled references to them.</li><li>Memory reads and writes, including retrieved case state.</li></ul></div><div class="card"><h3>Operations and decisions</h3><ul><li>Token use and cost per step and session.</li><li>Timeouts, error states, and recovery behavior.</li><li>Review decisions and validated confidence signals, where available.</li></ul></div></div><div class="takeaway">Use readable session and step IDs. Protect sensitive trace data; record observable execution rather than requiring hidden model reasoning.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Failure diagnosis</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Trace the cause before changing the model</h2><div class="flow"><div class="card"><h3>Step 1 · Lookup</h3><p>Tracking times out; the trace records the error.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Step 2 · State update</h3><p>The harness incorrectly records “delivered” despite missing evidence.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Step 3 · Final answer</h3><p>The model tells the customer the parcel was delivered.</p></div></div><div class="cards two"><div class="card"><h3>Locate the divergence</h3><p>Compare the external result, stored state, and context supplied to the next model call.</p></div><div class="card"><h3>Fix and re-evaluate</h3><p>Correct error-to-state handling, then rerun the timeout case and similar failures.</p></div></div><div class="takeaway">Handoff test: can the receiving team explain this failure from the session trace?</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Review before delivery</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>AI review adds a bounded quality check</h2><div class="flow"><div class="card"><h3>Generate</h3><p>Produce the proposed output.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Review</h3><p>Check explicit criteria and return useful feedback.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Pass or revise</h3><p>Deliver a pass; revise a failure within the retry budget.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Escalate</h3><p>Send unresolved failures to a human owner.</p></div></div><div class="cards two"><div class="card"><h3>Define verifiable criteria</h3><ul><li>Required fields and format.</li><li>Evidence for important claims.</li><li>Completion of required workflow steps.</li></ul></div><div class="card"><h3>Account for the overhead</h3><ul><li>Measure added tokens, cost, and latency.</li><li>Set a regeneration limit.</li><li>Keep unresolved cases out of automatic delivery.</li></ul></div></div><div class="takeaway">Use AI review where it helps measured quality; retain human escalation for unresolved cases.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Review approaches</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Self-reflection and a critic have different roles</h2><div class="cards two"><div class="card"><h3>Self-reflection</h3><p>Ask the generating agent to check its own output against named criteria.</p><ul><li>Can catch omissions and format problems.</li><li>May repeat the assumptions that caused the original error.</li></ul></div><div class="card"><h3>Critic model or prompt</h3><p>Use a separate review call or model to evaluate the proposed output and evidence.</p><ul><li>Return acceptance, specific revision feedback, or escalation.</li><li>A separate call can still share blind spots; validate its judgments.</li></ul></div></div><div class="takeaway">Review signals must be evaluated on real cases. A model’s stated confidence is not automatically a calibrated probability.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Four decisions to document</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Human escalation needs a working operating path</h2><div class="cards four"><div class="card"><h3>Who receives the case</h3><p>Name a role or team with responsibility for reviewing the output or proposed action.</p></div><div class="card"><h3>What accompanies it</h3><p>Include the original request, relevant records, execution evidence, and the trigger for review.</p></div><div class="card"><h3>How the decision is recorded</h3><p>Log the reviewer’s decision and resulting action so recurring failures can inform improvements.</p></div><div class="card"><h3>What happens while waiting</h3><p>Pause the task, return an agreed fallback, or use an existing manual process. Define timeout ownership.</p></div></div><div class="takeaway">Trigger escalation for unresolved errors, failed review, consequential actions requiring approval, or validated uncertainty signals.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Validation and calibration</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Pilot the harness under realistic conditions</h2><div class="cards"><div class="card"><h3>Runtime behavior</h3><ul><li>Use realistic session lengths and document volumes.</li><li>Test long-term recall and task resumption.</li><li>Inject timeouts, missing results, and repeated-action cases.</li></ul></div><div class="card"><h3>Control and review</h3><ul><li>Test permissions, scope limits, and budget stops.</li><li>Evaluate output checks and critic decisions.</li><li>Calibrate any thresholds using real outcomes.</li></ul></div><div class="card"><h3>Customer operations</h3><ul><li>Have the receiving team interpret a failed-run trace.</li><li>Test the escalation queue and waiting behavior.</li><li>Measure review burden, end-to-end latency, and total cost.</li></ul></div></div><div class="takeaway">Overly strict thresholds overload reviewers; overly loose thresholds can allow unacceptable cases through.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>FDE delivery</h4><span class="tag">02-03</span></div><div class="slide-content"><h2>Carry the design through scope, pilot, and handoff</h2><div class="cards"><div class="card"><h3>Scope the agreement</h3><ul><li>Tool set and permitted actions.</li><li>Memory and session-continuity requirements.</li><li>Context strategy, limits, review criteria, and escalation owner.</li></ul></div><div class="card"><h3>Validate during the pilot</h3><ul><li>Representative runs and failure cases.</li><li>Measured review quality, latency, cost, and operational burden.</li><li>Verified recovery and human intervention.</li></ul></div><div class="card"><h3>Hand off the operating package</h3><ul><li>Configuration and access boundaries.</li><li>Readable trace examples and recovery runbooks.</li><li>Named owners and guidance for changing controls and thresholds.</li></ul></div></div><div class="takeaway">The customer should know how to investigate, intervene, and retest the system as it evolves.</div></div></section>
+<section class="slide layout-closing"><div class="closing-decoration"></div><div class="closing-decoration-2"></div><div class="accent-line"></div><h1>Make the loop reliable<br>and the system ownable</h1><p class="closing-sub" style="margin-top:2rem">Tools enable action. Memory and context support decisions. Controls, traces, review, and escalation support operation.</p></section>
+</main>
+  <div class="slide-counter"><span id="current">1</span> / <span id="total">18</span></div>
+  <div class="keyboard-hint">← → navigate · F fullscreen</div>
+  <div class="progress-bar" id="progress"></div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)" aria-label="Next slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const currentEl = document.getElementById('current');
+    const totalEl = document.getElementById('total');
+    const progressEl = document.getElementById('progress');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let current = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+    const total = slides.length;
+    totalEl.textContent = total;
+
+    function updateSlide() {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'prev');
+        if (i === current) {
+          slide.classList.add('active');
+        } else if (i < current) {
+          slide.classList.add('prev');
+        }
+      });
+      currentEl.textContent = current + 1;
+      slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',i !== current));
+      history.replaceState(null, '', '#' + (current + 1));
+      progressEl.style.width = ((current + 1) / total * 100) + '%';
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+    }
+
+    function changeSlide(dir) {
+      const next = current + dir;
+      if (next >= 0 && next < total) {
+        current = next;
+        updateSlide();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 'f') { if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+      else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); changeSlide(-1); }
+      else if (e.key === 'Home') { e.preventDefault(); current = 0; updateSlide(); }
+      else if (e.key === 'End') { e.preventDefault(); current = total - 1; updateSlide(); }
+    });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) { changeSlide(diff > 0 ? 1 : -1); }
+    }, { passive: true });
+
+    window.addEventListener('hashchange', () => { current = Math.max(0, Math.min(total - 1, (parseInt(location.hash.slice(1)) || 1) - 1)); updateSlide(); });
+    updateSlide();
+  </script>
+
+</body>
+</html>
