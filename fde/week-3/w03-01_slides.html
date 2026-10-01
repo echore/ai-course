@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 03-01: Decomposing & Designing RAG</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fdfae7;
+      --primary: #1e2bfa;
+      --text: #111111;
+      --text-muted: #6b6b6b;
+      --text-light: #9a9a9a;
+      --accent-light: rgba(30, 43, 250, 0.08);
+      --accent-medium: rgba(30, 43, 250, 0.15);
+      --border: rgba(30, 43, 250, 0.2);
+      --card-bg: rgba(30, 43, 250, 0.04);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+    }
+
+    .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; padding: 3.5vw 4vw 8.5vh 4vw;
+      opacity: 0; pointer-events: none; transform: translateX(40px);
+      transition: opacity 0.5s ease, transform 0.5s ease; overflow: hidden;
+    }
+
+    .slide.active { opacity: 1; pointer-events: all; transform: translateX(0); z-index: 10; }
+    .slide.prev { transform: translateX(-40px); }
+
+    h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
+    h1 { font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 700; }
+    h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 1.5rem; }
+    h3 { font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: 500; line-height: 1.3; }
+    h4 { font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); }
+    p, li { font-size: clamp(0.85rem, 1.1vw, 1.05rem); line-height: 1.6; color: var(--text-muted); }
+    .numeral { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--primary); }
+
+    .slide-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5vh; flex-shrink: 0; }
+    .slide-header .tag { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 500; color: var(--primary); background: var(--accent-light); padding: 0.35rem 0.9rem; border-radius: 100px; }
+    .slide-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+    .nav-controls { position: fixed; bottom: 2.5vh; right: 3vw; display: flex; align-items: center; gap: 0.8rem; z-index: 100; }
+    .nav-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg); color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; font-size: 1.1rem; }
+    .nav-btn:hover { background: var(--primary); color: var(--bg); border-color: var(--primary); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .slide-counter { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.05em; position: fixed; bottom: 2.5vh; left: 3vw; z-index: 100; }
+    .progress-bar { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--primary); transition: width 0.4s ease; z-index: 100; }
+    .accent-line { width: 60px; height: 4px; background: var(--primary); border-radius: 2px; margin-bottom: 1.5rem; }
+
+    /* Layouts */
+    .layout-cover { justify-content: center; align-items: flex-start; padding-left: 8vw; }
+    .layout-cover h1 { max-width: 75vw; margin-bottom: 1.5rem; line-height: 1.05; }
+    .layout-cover .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 3rem; }
+    .layout-cover .meta { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; color: var(--text-light); letter-spacing: 0.05em; }
+    .layout-cover .cover-decoration { position: absolute; top: 0; right: 0; width: 35vw; height: 100vh; background: var(--accent-light); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
+
+    .layout-detail .detail-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem 3rem; flex: 1; margin-top: 0.5rem; overflow: hidden; }
+    .detail-col { display: flex; flex-direction: column; gap: 1.2rem; }
+    .detail-block { padding: 1.4rem 1.6rem; border-radius: 12px; background: var(--card-bg); border: 1.5px solid var(--border); }
+    .detail-block h3 { font-size: clamp(1rem, 1.3vw, 1.1rem); margin-bottom: 0.8rem; color: var(--text); }
+    .detail-block ul { list-style: none; margin: 0; padding: 0; }
+    .detail-block ul li { position: relative; padding-left: 1.1rem; padding-bottom: 0.5rem; font-size: clamp(0.85rem, 1vw, 0.95rem); line-height: 1.5; }
+    .detail-block ul li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 5px; height: 5px; border-radius: 50%; background: var(--primary); }
+
+    .layout-dashboard .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 0.5rem; }
+    .stat-cell { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.4rem 1.5rem; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); }
+    .stat-cell .stat-name { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.1vw, 1.05rem); color: var(--primary); line-height: 1.35; font-weight: 600; }
+    .stat-cell .stat-context { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; padding-top: 0.4rem; border-top: 1px solid var(--border); flex: 1; }
+
+    .layout-split .split-body { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; margin-top: 0.5rem; }
+    .split-left, .split-right { display: flex; flex-direction: column; gap: 1.4rem; }
+    .split-right { padding-left: 2.5rem; border-left: 2px solid var(--border); }
+    .split-highlight { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.15rem, 1.55vw, 1.5rem); font-weight: 500; color: var(--text); line-height: 1.4; padding: 1.3rem 1.5rem; background: var(--accent-light); border-radius: 12px; border-left: 4px solid var(--primary); }
+    .split-highlight cite { display: block; margin-top: 0.7rem; font-style: normal; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; margin: 0; padding-top: 1rem; counter-reset: insight;}
+    .insight-list li { position: relative; padding-left: 1.8rem; font-size: clamp(0.9rem, 1.05vw, 1rem); color: var(--text); line-height: 1.55; counter-increment: insight;}
+    .insight-list li::before { content: counter(insight, decimal-leading-zero); position: absolute; left: 0; top: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+
+    .layout-timeline .timeline-track { display: flex; gap: 1.5rem; flex: 1; align-items: center; justify-content: center; margin-top: 0.5rem; }
+    .timeline-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+    .timeline-step:not(:last-child)::after { content: ''; position: absolute; top: 28px; right: -0.75rem; width: 1.5rem; height: 2px; background: var(--border); }
+    .step-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 1.2rem; flex-shrink: 0; }
+    .timeline-step:nth-child(2) .step-circle { opacity: 0.85; }
+    .timeline-step:nth-child(3) .step-circle { opacity: 0.7; }
+    .timeline-step:nth-child(4) .step-circle { opacity: 0.55; }
+    .step-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.4vw, 1.15rem); font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+    .step-desc { font-size: clamp(0.75rem, 1vw, 0.9rem); color: var(--text-muted); line-height: 1.5; max-width: 220px; }
+
+    .layout-closing { justify-content: center; align-items: center; text-align: center; }
+    .layout-closing .closing-sub { font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 2.5rem; }
+    .layout-closing .cta-btn { display: inline-block; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--bg); background: var(--primary); padding: 0.9rem 2.2rem; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .layout-closing .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30, 43, 250, 0.25); }
+    .layout-closing .closing-decoration { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.4; pointer-events: none; }
+    .layout-closing .closing-decoration-2 { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; height: 360px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.3; pointer-events: none; }
+
+    .keyboard-hint { position: fixed; bottom: 2.5vh; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--text-light); z-index: 100; opacity: 0.6; }
+  
+    /* Typography follows the existing course decks exactly. */
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:1.5rem; }
+    .cards.two { grid-template-columns:repeat(2,1fr); }
+    .card { padding:1.4rem 1.6rem; border:1.5px solid var(--border); background:var(--card-bg); border-radius:12px; }
+    .card h3 { font-size:clamp(1rem,1.3vw,1.1rem); line-height:1.3; color:var(--text); margin-bottom:.8rem; }
+    .card p,.lead,.takeaway,.compare { font-size:clamp(.85rem,1.1vw,1.05rem); line-height:1.6; }
+    .card p + p { margin-top:.7rem; }
+    .card ul { list-style:none; padding:0; }
+    .card li { position:relative; padding-left:1.1rem; padding-bottom:.5rem; font-size:clamp(.85rem,1vw,.95rem); line-height:1.5; }
+    .card li::before { content:''; position:absolute; left:0; top:.55rem; width:5px; height:5px; border-radius:50%; background:var(--primary); }
+    .lead { max-width:1100px; }
+    .takeaway { margin-top:1.5rem; padding:1.1rem 1.5rem; border-left:4px solid var(--primary); background:var(--accent-light); color:var(--text); border-radius:0 12px 12px 0; }
+    .flow { display:flex; align-items:stretch; gap:1rem; margin:1.5rem 0 .5rem; }
+    .flow .card { flex:1; text-align:center; padding:1.2rem; }
+    .flow .card h3 { font-size:clamp(.95rem,1.4vw,1.15rem); color:var(--primary); }
+    .flow .card p { font-size:clamp(.75rem,1vw,.9rem); line-height:1.5; }
+    .arrow { align-self:center; color:var(--primary); font-size:1.3rem; }
+    .compare { width:100%; border-collapse:collapse; margin-top:1rem; }
+    .compare th,.compare td { padding:.85rem 1.1rem; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; }
+    .compare th { color:var(--primary); font-family:'Space Grotesk',sans-serif; font-weight:600; }
+    .compare td:first-child { font-weight:600; width:22%; }
+    .compare td { width:39%; }
+    .hub { position:fixed; top:1rem; right:1.5rem; z-index:100; color:var(--primary); font-size:.75rem; text-decoration:none; }
+    .cards.four { grid-template-columns:repeat(2,1fr); }
+    @media(max-width:700px) { .slide { padding:4rem 6vw 6rem; overflow-y:auto; } .cards,.cards.two,.cards.four { grid-template-columns:1fr; } .flow { flex-wrap:wrap; } .flow .card { flex-basis:40%; } .arrow { display:none; } .card { padding:1rem; } .compare th,.compare td { padding:.6rem; } .layout-cover .subtitle,.layout-closing .closing-sub { max-width:85vw; } .keyboard-hint { display:none; } .layout-cover h1 { max-width:85vw; } }
+    @media(prefers-reduced-motion:reduce) { .slide,.progress-bar { transition:none; } }
+  </style>
+</head>
+<body>
+<a class="hub" href="../index.html">Course hub ↗</a><main class="deck">
+<section class="slide layout-cover active"><div class="cover-decoration"></div><div class="accent-line"></div><h1>Decomposing<br>&amp; Designing RAG</h1><p class="subtitle">Turn a bank’s knowledge-search problem into a private, permission-aware retrieval and generation system.</p><p class="meta">Module 03-01 · AI Forward Deployed Engineer</p></section>
+<section class="slide"><div class="slide-header"><h4>The case study</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>One bank, three different information needs</h2><p class="lead">Around 4,000 employees across New York, London, and Hong Kong need accurate answers from internal documents.</p><div class="cards"><div class="card"><h3>Research analysts</h3><p>Spend 2–3 hours locating prior research, comparable filings, and sector memos before writing a note.</p><p>Need useful synthesis with verifiable sources.</p></div><div class="card"><h3>Compliance officers</h3><p>Manually search policies and regulatory guidance to answer business questions.</p><p>Need precise references and complete coverage.</p></div><div class="card"><h3>Senior advisors</h3><p>Spend half a day locating deal precedents and internal models for a pitch book.</p><p>Need relevant prior transactions and source material.</p></div></div><div class="takeaway">The ask is broad: plain-language questions and accurate answers. Discovery must make “accurate” measurable.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Hard requirements</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Three constraints determine the available design</h2><div class="cards"><div class="card"><h3>Private processing</h3><ul><li>Documents, chunks, queries, and model processing stay inside the bank’s approved private environment.</li><li>No external embedding, generation, or reranking service receives this data.</li></ul></div><div class="card"><h3>Existing permissions</h3><ul><li>An answer must not expose information from documents the requester cannot access.</li><li>Apply this rule across SharePoint, email, and the file server.</li></ul></div><div class="card"><h3>Heterogeneous sources</h3><ul><li>SharePoint research, policies, and deal memos.</li><li>Eight years of Bloomberg and Outlook threads.</li><li>File-server PDFs, transcripts, and scanned material.</li></ul></div></div><div class="takeaway">Confirm source hosting and approved connectivity: a cloud connector must not silently violate the private-boundary requirement.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Discovery</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Clarifying questions turn the ask into a scope</h2><div class="cards four"><div class="card"><h3>Users &amp; workflows</h3><ul><li>Do query patterns differ by role?</li><li>Cited summary, excerpt, or ranked documents?</li><li>What workarounds and peak-use periods exist?</li></ul></div><div class="card"><h3>Documents &amp; sources</h3><ul><li>What volume, formats, and scan quality?</li><li>How are threads, attachments, and duplicates handled?</li><li>What changes and how often?</li></ul></div><div class="card"><h3>Infrastructure &amp; permissions</h3><ul><li>What hosting, compute, and model approval are available?</li><li>Which permissions are direct or inherited?</li><li>How quickly must access changes take effect?</li></ul></div><div class="card"><h3>Success &amp; measurement</h3><ul><li>What counts as a correct, complete answer for each group?</li><li>Who supplies reference answers and reviews results?</li><li>What latency and business outcome define success?</li></ul></div></div><div class="takeaway">Ask before building: the answers change connectors, retrieval behavior, access enforcement, and the evaluation set.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Engineering boundaries</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Decompose the work into seven subproblems</h2><div class="cards two"><div class="card"><h3>Prepare searchable knowledge</h3><ul><li><strong>1 · Ingestion:</strong> connect all three sources.</li><li><strong>2 · Parsing:</strong> extract usable text and structure.</li><li><strong>3 · Embedding &amp; indexing:</strong> store chunk vectors and metadata.</li></ul></div><div class="card"><h3>Serve and validate answers</h3><ul><li><strong>4 · Retrieval:</strong> find evidence for the question.</li><li><strong>5 · Access enforcement:</strong> restrict every candidate to authorized content.</li><li><strong>6 · Generation:</strong> answer from selected evidence and cite it.</li><li><strong>7 · Evaluation:</strong> measure retrieval and answer quality by user group.</li></ul></div></div><div class="takeaway">Each subproblem needs defined inputs, outputs, ownership, and failure handling.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>From request to architecture</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Why RAG fits the refined problem</h2><p class="lead">Build private question answering over three document sources, limited to the requester’s authorized evidence and evaluated against role-specific quality criteria.</p><div class="cards two"><div class="card"><h3>Retrieve relevant evidence</h3><p>The corpus is too large to send in full. Retrieve useful sections at query time rather than relying on model memory.</p><p>Document updates can be indexed without retraining the generation model.</p></div><div class="card"><h3>Generate a grounded response</h3><p>Supply the question and selected chunks to a self-hosted language model.</p><p>Return citations and an explicit limitation when the evidence is insufficient.</p></div></div><div class="takeaway">RAG supplies evidence to the model; it does not guarantee that the model’s answer is correct.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Architecture overview</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Two pipelines share one searchable corpus</h2><p class="lead">Every stage runs within the approved private environment. Ingestion is scheduled; answering happens at request time.</p><div class="flow"><div class="card"><h3>Connect sources</h3><p>Read documents, versions, and permissions.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Parse &amp; chunk</h3><p>Preserve structure, source references, and ACLs.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Embed</h3><p>Convert chunk text into vectors locally.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Index</h3><p>Store vectors, text, metadata, and permissions.</p></div></div><div class="flow"><div class="card"><h3>Authenticate</h3><p>Resolve the requesting user and effective access.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Retrieve</h3><p>Embed the query and search only authorized content.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Rank &amp; select</h3><p>Fuse results, optionally rerank, and fit the context budget.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Generate</h3><p>Return a cited answer or state that evidence is insufficient.</p></div></div><div class="takeaway">Shared components: a compatible embedding configuration and the searchable index. ACL means access control list.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Document ingestion</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Connectors must read content and access metadata</h2><div class="cards"><div class="card"><h3>SharePoint</h3><ul><li>Fetch files and source identifiers through an approved API path.</li><li>Resolve effective permissions separately; do not assume a file response includes them.</li><li>Capture document versions and modification times.</li></ul></div><div class="card"><h3>Email archive</h3><ul><li>Reconstruct message order and remove repeated reply chains.</li><li>Extract attachments and link them to their thread.</li><li>Map the archive’s actual permission model.</li></ul></div><div class="card"><h3>File server</h3><ul><li>Crawl new or changed files on a source-appropriate schedule.</li><li>Flag scanned PDFs for OCR.</li><li>Resolve effective folder and file permissions.</li></ul></div></div><div class="takeaway">Use a processing queue. Track updates, deletions, duplicate content, and permissions without merging away access boundaries.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Preprocessing</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Parsing prepares evidence, not just raw text</h2><div class="cards four"><div class="card"><h3>Word &amp; Excel</h3><p>Extract text, headings, and table structure. Retain useful relationships between labels and values.</p></div><div class="card"><h3>Text PDFs</h3><p>Extract the existing text layer and clean layout artifacts without discarding meaningful sections.</p></div><div class="card"><h3>Scanned PDFs</h3><p>Run local optical character recognition, or OCR. Check recognition quality before indexing.</p></div><div class="card"><h3>Email threads</h3><p>Clean quoted replies, preserve message context, and process attachments as linked documents.</p></div></div><div class="takeaway">Carry source, document ID, type, version, location, and effective permissions into every downstream chunk.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Chunking strategy</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Chunk around the document’s natural structure</h2><table class="compare"><thead><tr><th>Document type</th><th>Starting strategy</th><th>What it preserves</th></tr></thead><tbody><tr><td>Research reports</td><td>Paragraph or semantic boundaries</td><td>A coherent analytical unit</td></tr><tr><td>Compliance policies</td><td>Section parent + paragraph children</td><td>Numbered references and broader policy context</td></tr><tr><td>Deal memos</td><td>Semantic or paragraph boundaries</td><td>Structured deal context</td></tr><tr><td>Email threads</td><td>Message-level chunks</td><td>Speaker, sequence, and thread relationship</td></tr><tr><td>Transcripts &amp; PDFs</td><td>Fixed-size windows with overlap when structure is weak</td><td>Continuity across boundaries</td></tr></tbody></table><div class="takeaway">Treat these as starting strategies. Test sizes and overlap; keep text, provenance, and permissions together.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Private searchable storage</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Choose embedding and indexing components by evidence</h2><div class="cards two"><div class="card"><h3>Embedding configuration</h3><ul><li>Run locally with no external inference calls.</li><li>Check financial-text performance and input limits.</li><li>Use compatible query and document encoding; follow required model prefixes.</li><li>Track model versions and plan index migration.</li></ul></div><div class="card"><h3>Searchable index</h3><ul><li>Store vectors, chunk text, provenance, and permissions.</li><li>Require access filtering and dense plus keyword retrieval.</li><li>Benchmark latency and storage at expected scale.</li><li>Self-hosted Qdrant or Weaviate are candidates, not automatic guarantees.</li></ul></div></div><div class="takeaway">BGE/E5 families are candidate encoders. Select a tested checkpoint and chunk size; do not assume every model accepts long chunks.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Access enforcement</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Permission checks must precede model context</h2><div class="flow"><div class="card"><h3>Resolve identity</h3><p>Use the authenticated principal and current effective access.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Filter candidates</h3><p>Apply the authorization predicate to every retrieval route.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Verify freshness</h3><p>Handle permission changes and revoked access before selecting context.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Pass permitted evidence</h3><p>Only authorized chunks reach reranking and generation.</p></div></div><div class="cards two"><div class="card"><h3>Permissions follow the document</h3><p>Attach effective access metadata to each chunk. Account for direct and inherited access rules, not only a simple group list.</p></div><div class="card"><h3>Sync is necessary, but not sufficient</h3><p>Refresh ACLs separately from content embeddings. Define revocation handling and fail closed when access cannot be verified.</p></div></div><div class="takeaway">Do not retrieve everything and ask the language model to hide the restricted content.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Dense search, keywords, and reranking</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Hybrid retrieval serves different question patterns</h2><div class="cards"><div class="card"><h3>Dense retrieval</h3><p>Embedding similarity finds related meaning even when the question and document use different words.</p><p>Useful for conceptual research questions.</p></div><div class="card"><h3>Sparse retrieval</h3><p>BM25 ranks keyword matches using term statistics.</p><p>Useful for citation numbers, ticker symbols, and exact deal names.</p></div><div class="card"><h3>Fusion &amp; optional reranking</h3><p>Combine rankings or normalized scores, then optionally re-score question–chunk pairs with a local cross-encoder.</p><p>Select a tested top-K within the context budget.</p></div></div><div class="takeaway">Apply the same access predicate to both searches. Tune fusion and reranking against labeled questions and latency requirements.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Answer generation</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Generate an answer the user can verify</h2><div class="cards"><div class="card"><h3>Local model &amp; bounded context</h3><p>Select an approved instruction-tuned model that fits available compute. Reserve space for instructions, evidence, the query, and output.</p></div><div class="card"><h3>Evidence-based instructions</h3><p>Answer from the retrieved material. Cite important claims. State when evidence is missing, conflicting, or insufficient.</p></div><div class="card"><h3>Useful citations</h3><p>Include document name, version, and a source location such as a section or page. Preserve source links the user is authorized to open.</p></div></div><div class="takeaway">Retrieved text is evidence, not a new instruction authority. Citations must actually support the associated claims.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Illustrative example</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Walk one compliance question through the design</h2><p class="lead">Question: “What approvals are required before publishing a research note?”</p><div class="flow"><div class="card"><h3>Authenticate</h3><p>Resolve the employee’s current policy access.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Retrieve &amp; rank</h3><p>Find authorized policy sections using meaning and exact terms.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Generate &amp; cite</h3><p>Summarize the relevant approval steps with policy section and version.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Handle a gap</h3><p>If evidence is incomplete, say so and route to the established owner.</p></div></div><div class="cards two"><div class="card"><h3>Permission boundary</h3><p>A restricted deal memo never enters context, even if it contains similar terminology.</p></div><div class="card"><h3>Quality boundary</h3><p>The response reports what the permitted policy supports. It does not invent bank policy or fill missing steps from model memory.</p></div></div><div class="takeaway">This is a teaching example, not an assertion about the bank’s actual approval policy.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Three dimensions of quality</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Evaluate retrieval and answers separately</h2><div class="cards"><div class="card"><h3>Faithfulness</h3><p>Are the answer’s claims supported by the retrieved evidence?</p><p>A local model judge can help screen cases, but its judgments need validation.</p></div><div class="card"><h3>Retrieval relevance</h3><p>Did the system retrieve the passages needed for the question?</p><p>Build a golden set of questions and reference evidence across all three user groups.</p></div><div class="card"><h3>Completeness</h3><p>Does the answer cover what that user actually needs?</p><p>Use expert review by role; a faithful answer can still miss an important requirement.</p></div></div><div class="takeaway">Also test access isolation, revoked permissions, freshness, abstention, end-to-end latency, and cost.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Infrastructure planning</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Private deployment covers every component</h2><table class="compare"><thead><tr><th>Component</th><th>Private hosting</th><th>Sizing or operational concern</th></tr></thead><tbody><tr><td>Embedding, generation &amp; reranking</td><td>Approved local model endpoints</td><td>Input limits, model approval, memory, concurrency, and throughput</td></tr><tr><td>Dense &amp; keyword indexes</td><td>Persistent bank-managed storage</td><td>Metadata filters, index size, backups, and recovery</td></tr><tr><td>Ingestion, OCR &amp; ACL sync</td><td>Private workers and processing queue</td><td>Source access, refresh cadence, deletion handling, and failures</td></tr><tr><td>Identity, evaluation &amp; tracing</td><td>Approved internal services</td><td>Access enforcement and sensitive queries, outputs, logs, and caches</td></tr></tbody></table><div class="takeaway">Model candidates and hardware are prerequisites to benchmark—not proof that the system will meet the bank’s targets.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>FDE delivery plan</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Deliver a measurable slice, then expand</h2><div class="cards"><div class="card"><h3>Scope the initial slice</h3><ul><li>Choose a defined user workflow and document subset.</li><li>Confirm source access, identity mapping, and compute readiness.</li><li>Agree answer format and role-specific success criteria.</li></ul></div><div class="card"><h3>Pilot the complete path</h3><ul><li>Test parsing, chunking, retrieval, citations, and permissions.</li><li>Measure realistic data volumes and peak concurrency.</li><li>Include revoked access, stale documents, and insufficient evidence.</li></ul></div><div class="card"><h3>Hand off operation</h3><ul><li>Connector and index configuration; model versions.</li><li>Refresh and permission-sync ownership.</li><li>Evaluation set, trace examples, recovery procedures, and support owner.</li></ul></div></div><div class="takeaway">Each design decision should trace back to a workflow, source characteristic, or customer constraint.</div></div></section>
+<section class="slide layout-closing"><div class="closing-decoration"></div><div class="closing-decoration-2"></div><div class="accent-line"></div><h1>Design around evidence<br>and access</h1><p class="closing-sub" style="margin-top:2rem">Decompose the customer problem. Retrieve authorized information. Generate verifiable answers. Measure the complete system.</p></section>
+</main>
+  <div class="slide-counter"><span id="current">1</span> / <span id="total">19</span></div>
+  <div class="keyboard-hint">← → navigate · F fullscreen</div>
+  <div class="progress-bar" id="progress"></div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)" aria-label="Next slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const currentEl = document.getElementById('current');
+    const totalEl = document.getElementById('total');
+    const progressEl = document.getElementById('progress');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let current = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+    const total = slides.length;
+    totalEl.textContent = total;
+
+    function updateSlide() {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'prev');
+        if (i === current) {
+          slide.classList.add('active');
+        } else if (i < current) {
+          slide.classList.add('prev');
+        }
+      });
+      currentEl.textContent = current + 1;
+      slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',i !== current));
+      history.replaceState(null, '', '#' + (current + 1));
+      progressEl.style.width = ((current + 1) / total * 100) + '%';
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+    }
+
+    function changeSlide(dir) {
+      const next = current + dir;
+      if (next >= 0 && next < total) {
+        current = next;
+        updateSlide();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 'f') { if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+      else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); changeSlide(-1); }
+      else if (e.key === 'Home') { e.preventDefault(); current = 0; updateSlide(); }
+      else if (e.key === 'End') { e.preventDefault(); current = total - 1; updateSlide(); }
+    });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) { changeSlide(diff > 0 ? 1 : -1); }
+    }, { passive: true });
+
+    window.addEventListener('hashchange', () => { current = Math.max(0, Math.min(total - 1, (parseInt(location.hash.slice(1)) || 1) - 1)); updateSlide(); });
+    updateSlide();
+  </script>
+
+</body>
+</html>
