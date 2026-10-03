@@ -173,6 +173,20 @@
       align-items: center;
       gap: 0.4rem;
     }
+
+    .module-card.resource-webpage {
+      background-color: rgba(15, 118, 110, 0.055);
+      border-color: rgba(15, 118, 110, 0.3);
+    }
+    .module-card.resource-webpage:hover {
+      background-color: rgba(15, 118, 110, 0.1);
+      border-color: #0f766e;
+    }
+    .resource-webpage .card-eyebrow,
+    .resource-webpage .action-link,
+    .resource-webpage .duration { color: #0f766e; }
+    .resource-webpage .duration { font-weight: 500; }
+    .resource-webpage .card-footer { border-top-color: rgba(15, 118, 110, 0.25); }
   </style>
 </head>
 <body>
@@ -269,11 +283,11 @@
           <div class="card-footer"><span class="duration">Slide Deck</span><span class="action-link">View Module &rarr;</span></div>
         </a>
 
-        <a href="./week-3/w03-02_slides.html" class="module-card">
+        <a href="./week-3/w03-02_interview-questions.html" class="module-card resource-webpage">
           <div class="card-eyebrow">Module 03-02</div>
           <h3>FDE Interview Questions: RAG</h3>
-          <p>Practicing retrieval tradeoffs, failure diagnosis, enterprise constraints, changing requirements, and customer handoff.</p>
-          <div class="card-footer"><span class="duration">Slide Deck</span><span class="action-link">View Module &rarr;</span></div>
+          <p>Browse 15 questions and answers on retrieval design, evaluation, enterprise constraints, changing requirements, and FDE handoff.</p>
+          <div class="card-footer"><span class="duration">Webpage</span><span class="action-link">View Q&amp;A &rarr;</span></div>
         </a>
       </div>
     </div>
@@ -294,6 +308,13 @@
           <h3>Decomposing &amp; Designing Multi-Agent Systems</h3>
           <p>Designing a freight-disruption workflow with parallel analysis, approved carrier options, human review, and auditable execution.</p>
           <div class="card-footer"><span class="duration">Slide Deck</span><span class="action-link">View Module &rarr;</span></div>
+        </a>
+
+        <a href="./week-4/w04-03_interview-questions.html" class="module-card resource-webpage">
+          <div class="card-eyebrow">Module 04-03</div>
+          <h3>FDE Interview Questions: Multi-Agent</h3>
+          <p>Browse 25 questions and answers on coordination, tools, human review, evaluation, production, and FDE judgment.</p>
+          <div class="card-footer"><span class="duration">Webpage</span><span class="action-link">View Q&amp;A &rarr;</span></div>
         </a>
       </div>
     </div>
