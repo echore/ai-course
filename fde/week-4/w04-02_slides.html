@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Module 04-02: Decomposing &amp; Designing Multi-Agent Systems</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fdfae7;
+      --primary: #1e2bfa;
+      --text: #111111;
+      --text-muted: #6b6b6b;
+      --text-light: #9a9a9a;
+      --accent-light: rgba(30, 43, 250, 0.08);
+      --accent-medium: rgba(30, 43, 250, 0.15);
+      --border: rgba(30, 43, 250, 0.2);
+      --card-bg: rgba(30, 43, 250, 0.04);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+    }
+
+    .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; padding: 3.5vw 4vw 8.5vh 4vw;
+      opacity: 0; pointer-events: none; transform: translateX(40px);
+      transition: opacity 0.5s ease, transform 0.5s ease; overflow: hidden;
+    }
+
+    .slide.active { opacity: 1; pointer-events: all; transform: translateX(0); z-index: 10; }
+    .slide.prev { transform: translateX(-40px); }
+
+    h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
+    h1 { font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 700; }
+    h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 1.5rem; }
+    h3 { font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: 500; line-height: 1.3; }
+    h4 { font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); }
+    p, li { font-size: clamp(0.85rem, 1.1vw, 1.05rem); line-height: 1.6; color: var(--text-muted); }
+    .numeral { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--primary); }
+
+    .slide-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5vh; flex-shrink: 0; }
+    .slide-header .tag { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 500; color: var(--primary); background: var(--accent-light); padding: 0.35rem 0.9rem; border-radius: 100px; }
+    .slide-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+    .nav-controls { position: fixed; bottom: 2.5vh; right: 3vw; display: flex; align-items: center; gap: 0.8rem; z-index: 100; }
+    .nav-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg); color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; font-size: 1.1rem; }
+    .nav-btn:hover { background: var(--primary); color: var(--bg); border-color: var(--primary); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .slide-counter { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.05em; position: fixed; bottom: 2.5vh; left: 3vw; z-index: 100; }
+    .progress-bar { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--primary); transition: width 0.4s ease; z-index: 100; }
+    .accent-line { width: 60px; height: 4px; background: var(--primary); border-radius: 2px; margin-bottom: 1.5rem; }
+
+    /* Layouts */
+    .layout-cover { justify-content: center; align-items: flex-start; padding-left: 8vw; }
+    .layout-cover h1 { max-width: 75vw; margin-bottom: 1.5rem; line-height: 1.05; }
+    .layout-cover .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 3rem; }
+    .layout-cover .meta { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; color: var(--text-light); letter-spacing: 0.05em; }
+    .layout-cover .cover-decoration { position: absolute; top: 0; right: 0; width: 35vw; height: 100vh; background: var(--accent-light); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
+
+    .layout-detail .detail-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem 3rem; flex: 1; margin-top: 0.5rem; overflow: hidden; }
+    .detail-col { display: flex; flex-direction: column; gap: 1.2rem; }
+    .detail-block { padding: 1.4rem 1.6rem; border-radius: 12px; background: var(--card-bg); border: 1.5px solid var(--border); }
+    .detail-block h3 { font-size: clamp(1rem, 1.3vw, 1.1rem); margin-bottom: 0.8rem; color: var(--text); }
+    .detail-block ul { list-style: none; margin: 0; padding: 0; }
+    .detail-block ul li { position: relative; padding-left: 1.1rem; padding-bottom: 0.5rem; font-size: clamp(0.85rem, 1vw, 0.95rem); line-height: 1.5; }
+    .detail-block ul li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 5px; height: 5px; border-radius: 50%; background: var(--primary); }
+
+    .layout-dashboard .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 0.5rem; }
+    .stat-cell { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.4rem 1.5rem; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); }
+    .stat-cell .stat-name { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.1vw, 1.05rem); color: var(--primary); line-height: 1.35; font-weight: 600; }
+    .stat-cell .stat-context { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; padding-top: 0.4rem; border-top: 1px solid var(--border); flex: 1; }
+
+    .layout-split .split-body { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; margin-top: 0.5rem; }
+    .split-left, .split-right { display: flex; flex-direction: column; gap: 1.4rem; }
+    .split-right { padding-left: 2.5rem; border-left: 2px solid var(--border); }
+    .split-highlight { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.15rem, 1.55vw, 1.5rem); font-weight: 500; color: var(--text); line-height: 1.4; padding: 1.3rem 1.5rem; background: var(--accent-light); border-radius: 12px; border-left: 4px solid var(--primary); }
+    .split-highlight cite { display: block; margin-top: 0.7rem; font-style: normal; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; margin: 0; padding-top: 1rem; counter-reset: insight;}
+    .insight-list li { position: relative; padding-left: 1.8rem; font-size: clamp(0.9rem, 1.05vw, 1rem); color: var(--text); line-height: 1.55; counter-increment: insight;}
+    .insight-list li::before { content: counter(insight, decimal-leading-zero); position: absolute; left: 0; top: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+
+    .layout-timeline .timeline-track { display: flex; gap: 1.5rem; flex: 1; align-items: center; justify-content: center; margin-top: 0.5rem; }
+    .timeline-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+    .timeline-step:not(:last-child)::after { content: ''; position: absolute; top: 28px; right: -0.75rem; width: 1.5rem; height: 2px; background: var(--border); }
+    .step-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 1.2rem; flex-shrink: 0; }
+    .timeline-step:nth-child(2) .step-circle { opacity: 0.85; }
+    .timeline-step:nth-child(3) .step-circle { opacity: 0.7; }
+    .timeline-step:nth-child(4) .step-circle { opacity: 0.55; }
+    .step-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.4vw, 1.15rem); font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+    .step-desc { font-size: clamp(0.75rem, 1vw, 0.9rem); color: var(--text-muted); line-height: 1.5; max-width: 220px; }
+
+    .layout-closing { justify-content: center; align-items: center; text-align: center; }
+    .layout-closing .closing-sub { font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 2.5rem; }
+    .layout-closing .cta-btn { display: inline-block; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--bg); background: var(--primary); padding: 0.9rem 2.2rem; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .layout-closing .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30, 43, 250, 0.25); }
+    .layout-closing .closing-decoration { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.4; pointer-events: none; }
+    .layout-closing .closing-decoration-2 { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; height: 360px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.3; pointer-events: none; }
+
+    .keyboard-hint { position: fixed; bottom: 2.5vh; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--text-light); z-index: 100; opacity: 0.6; }
+  
+    /* Typography follows the existing course decks exactly. */
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:1.5rem; }
+    .cards.two { grid-template-columns:repeat(2,1fr); }
+    .card { padding:1.4rem 1.6rem; border:1.5px solid var(--border); background:var(--card-bg); border-radius:12px; }
+    .card h3 { font-size:clamp(1rem,1.3vw,1.1rem); line-height:1.3; color:var(--text); margin-bottom:.8rem; }
+    .card p,.lead,.takeaway,.compare { font-size:clamp(.85rem,1.1vw,1.05rem); line-height:1.6; }
+    .card p + p { margin-top:.7rem; }
+    .card ul { list-style:none; padding:0; }
+    .card li { position:relative; padding-left:1.1rem; padding-bottom:.5rem; font-size:clamp(.85rem,1vw,.95rem); line-height:1.5; }
+    .card li::before { content:''; position:absolute; left:0; top:.55rem; width:5px; height:5px; border-radius:50%; background:var(--primary); }
+    .lead { max-width:1100px; }
+    .takeaway { margin-top:1.5rem; padding:1.1rem 1.5rem; border-left:4px solid var(--primary); background:var(--accent-light); color:var(--text); border-radius:0 12px 12px 0; }
+    .flow { display:flex; align-items:stretch; gap:1rem; margin:1.5rem 0 .5rem; }
+    .flow .card { flex:1; text-align:center; padding:1.2rem; }
+    .flow .card h3 { font-size:clamp(.95rem,1.4vw,1.15rem); color:var(--primary); }
+    .flow .card p { font-size:clamp(.75rem,1vw,.9rem); line-height:1.5; }
+    .arrow { align-self:center; color:var(--primary); font-size:1.3rem; }
+    .compare { width:100%; border-collapse:collapse; margin-top:1rem; }
+    .compare th,.compare td { padding:.85rem 1.1rem; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; }
+    .compare th { color:var(--primary); font-family:'Space Grotesk',sans-serif; font-weight:600; }
+    .compare td:first-child { font-weight:600; width:22%; }
+    .compare td { width:39%; }
+    .hub { position:fixed; top:1rem; right:1.5rem; z-index:100; color:var(--primary); font-size:.75rem; text-decoration:none; }
+    @media(max-width:700px) { .slide { padding:4rem 6vw 6rem; overflow-y:auto; } .cards,.cards.two { grid-template-columns:1fr; } .flow { flex-wrap:wrap; } .flow .card { flex-basis:40%; } .arrow { display:none; } .card { padding:1rem; } .compare th,.compare td { padding:.6rem; } .layout-cover .subtitle,.layout-closing .closing-sub { max-width:85vw; } .keyboard-hint { display:none; } .layout-cover h1 { max-width:85vw; } }
+    @media(prefers-reduced-motion:reduce) { .slide,.progress-bar { transition:none; } }
+
+    /* Content-aware visual layouts: same course palette and typography. */
+    .visual-icon { display:flex; align-items:center; justify-content:center; width:44px; height:44px; color:var(--primary); border-radius:50%; background:var(--accent-light); margin-bottom:1rem; flex-shrink:0; }
+    .visual-icon svg { display:block; }
+
+    /* Open editorial columns for parallel responsibilities and choices. */
+    .cards.visual-columns { gap:2.5rem; }
+    .visual-columns > .card { background:none; border:0; border-radius:0; padding:0 1.5rem 0 0; }
+    .visual-columns > .card + .card { border-left:1px solid var(--border); padding-left:2rem; }
+    .visual-columns > .card h3 { border-top:2px solid var(--primary); padding-top:1rem; }
+    .visual-columns > .card .visual-icon + h3 { border-top:0; padding-top:0; }
+
+    /* A paired comparison keeps the text open, with distinct heading tabs. */
+    .cards.visual-pair { gap:4rem; padding:1.2rem 0; }
+    .visual-pair > .card { background:none; border:0; border-radius:0; padding:0 1.3rem; }
+    .visual-pair > .card + .card { border-left:1px solid var(--border); padding-left:2.5rem; }
+    .visual-pair > .card h3 { display:inline-block; color:var(--primary); border-bottom:2px solid var(--primary); padding-bottom:.6rem; margin-bottom:1.1rem; }
+    .visual-pair > .card .visual-icon { background:none; border:1px solid var(--border); }
+
+    /* Numbered paths for discovery, scoping, and customer delivery. */
+    .cards.visual-rail { display:flex; flex-direction:column; gap:0; counter-reset:visual-item; position:relative; }
+    .visual-rail > .card { display:grid; grid-template-columns:44px minmax(180px,23%) 1fr; gap:1.3rem; position:relative; padding:1.15rem 0; border:0; border-radius:0; border-bottom:1px solid var(--border); background:none; counter-increment:visual-item; }
+    .visual-rail > .card::before { content:counter(visual-item,decimal-leading-zero); display:flex; justify-content:center; align-items:center; width:38px; height:38px; border:1px solid var(--primary); border-radius:50%; color:var(--primary); background:var(--bg); font:500 .8rem 'Space Grotesk',sans-serif; position:relative; z-index:1; }
+    .visual-rail > .card:not(:last-child)::after { content:''; position:absolute; top:3.5rem; bottom:-1.2rem; width:1px; background:var(--border); left:19px; }
+    .visual-rail > .card h3 { padding-top:.45rem; margin-bottom:0; }
+    .visual-rail .rail-body p + p { margin-top:.3rem; }
+    .visual-rail .rail-body ul { columns:2; column-gap:2rem; }
+    .visual-rail .rail-body li { break-inside:avoid; }
+    .visual-rail > .card:last-child { border-bottom:0; }
+
+    /* Diagram nodes sit on a connected track rather than in boxes. */
+    .flow.visual-steps { position:relative; gap:1.8rem; counter-reset:visual-step; padding-top:.4rem; }
+    .visual-steps > .card { padding:.1rem .9rem .4rem; border:0; border-radius:0; background:none; position:relative; counter-increment:visual-step; }
+    .visual-steps > .card::before { content:counter(visual-step,decimal-leading-zero); font:500 .8rem 'Space Grotesk',sans-serif; display:flex; align-items:center; justify-content:center; width:42px; height:42px; margin:0 auto 1rem; border-radius:50%; color:var(--bg); background:var(--primary); position:relative; z-index:1; }
+    .visual-steps > .card:not(:last-of-type)::after { content:''; position:absolute; top:21px; left:calc(50% + 21px); width:calc(100% + 1.8rem - 42px); border-top:1px solid var(--border); }
+    .visual-steps > .arrow { display:none; }
+    .visual-steps .card h3 { color:var(--text); }
+    .visual-steps.return-track { padding-bottom:2rem; }
+    .visual-steps.return-track::after { content:''; position:absolute; left:12%; right:12%; height:1.3rem; bottom:0; border:1px solid var(--border); border-top:0; border-radius:0 0 18px 18px; }
+    .visual-steps.return-track::before { content:''; position:absolute; left:12%; bottom:1.25rem; width:6px; height:6px; border-left:1px solid var(--primary); border-top:1px solid var(--primary); transform:rotate(45deg); }
+
+    /* One full-size loop diagram, read clockwise in the original order. */
+    .flow.visual-loop { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:2.6rem 8rem; padding:1rem 5rem; width:min(100%,1000px); align-self:center; position:relative; margin:auto 0; }
+    .visual-loop::before { content:''; position:absolute; inset:3rem 2rem; border:1.5px solid var(--border); border-radius:80px; }
+    .visual-loop > .card { background:var(--bg); border:0; border-radius:0; padding:.5rem 1rem; position:relative; }
+    .visual-loop > .card:nth-of-type(3) { grid-column:2; grid-row:2; }
+    .visual-loop > .card:nth-of-type(4) { grid-column:1; grid-row:2; }
+    .visual-loop > .arrow { display:none; }
+    .visual-loop .visual-icon { margin:0 auto .7rem; border:1px solid var(--border); background:var(--bg); }
+    .visual-loop .card h3 { color:var(--text); }
+    .loop-directions { position:absolute; left:2rem; top:3rem; width:calc(100% - 4rem); height:calc(100% - 6rem); overflow:visible; color:var(--primary); pointer-events:none; }
+
+    /* Quiet supporting notes leave the process diagram as the main visual. */
+    .cards.visual-notes { gap:2rem; margin-top:1rem; }
+    .visual-notes > .card { background:none; border:0; border-left:2px solid var(--border); border-radius:0; padding:.5rem 1.2rem; }
+
+    /* A document silhouette is useful for sources, formats, and evidence. */
+    .cards.visual-documents { gap:2rem; }
+    .visual-documents > .card { background:rgba(255,255,255,.22); border-radius:2px; border:1px solid var(--border); position:relative; padding:1.5rem 1.6rem; box-shadow:5px 5px 0 var(--accent-light); }
+    .visual-documents > .card::after { content:''; position:absolute; right:-1px; top:-1px; width:24px; height:24px; background:linear-gradient(45deg,var(--accent-medium) 50%,var(--bg) 51%); border-left:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .visual-documents .visual-icon { border-radius:0; background:none; margin-bottom:.65rem; }
+
+    /* Four decisions become a numbered agenda with clear reading order. */
+    .cards.visual-agenda { gap:1.8rem 3rem; counter-reset:visual-agenda; }
+    .visual-agenda > .card { padding:.5rem 1rem 1rem 3.7rem; position:relative; border:0; border-radius:0; border-top:1px solid var(--border); background:none; counter-increment:visual-agenda; }
+    .visual-agenda > .card::before { content:counter(visual-agenda,decimal-leading-zero); font:500 .8rem 'Space Grotesk',sans-serif; display:flex; align-items:center; justify-content:center; width:35px; height:35px; position:absolute; left:0; top:.5rem; color:var(--primary); background:var(--accent-light); border-radius:50%; }
+    .visual-agenda > .card h3 { margin-top:.35rem; }
+
+    /* Two retrieval routes converge on a shared selection stage. */
+    .cards.visual-fusion { position:relative; display:grid; grid-template-columns:1fr .17fr 1fr; gap:1.6rem 0; }
+    .visual-fusion > .card { background:none; border:0; border-radius:0; padding:.8rem 1.3rem; }
+    .visual-fusion > .card:nth-child(1) { grid-column:1; grid-row:1; border-left:3px solid var(--primary); }
+    .visual-fusion > .card:nth-child(2) { grid-column:1; grid-row:2; border-left:3px solid var(--primary); }
+    .visual-fusion > .card:nth-child(3) { grid-column:3; grid-row:1 / span 2; align-self:center; border:1px solid var(--border); border-radius:36px; padding:2rem; background:var(--accent-light); }
+    .fusion-lines { position:absolute; width:7.8%; height:100%; left:46.1%; top:0; color:var(--primary); pointer-events:none; overflow:visible; }
+    .visual-fusion .visual-icon { width:36px; height:36px; margin-bottom:.5rem; }
+
+    /* State and trace lists feel like records instead of generic cards. */
+    .cards.visual-records { gap:3rem; }
+    .visual-records > .card { border:0; border-radius:0; background:none; padding:.5rem 1.5rem; border-left:2px solid var(--primary); }
+    .visual-records > .card ul { border-top:1px solid var(--border); margin-top:1rem; padding-top:1rem; }
+    .visual-records > .card li { padding-left:1.5rem; padding-bottom:.9rem; }
+    .visual-records > .card li::before { width:7px; height:7px; background:var(--bg); border:1px solid var(--primary); border-radius:50%; z-index:1; left:0; }
+    .visual-records > .card li:not(:last-child)::after { content:''; position:absolute; top:.95rem; bottom:-.55rem; left:3px; width:1px; background:var(--border); }
+
+    /* Gates visually mark a control boundary on an existing process. */
+    .flow.visual-gates { gap:1.2rem; padding:1rem 0; }
+    .visual-gates > .card { background:none; border:0; border-left:3px solid var(--primary); border-radius:0; text-align:left; padding:.4rem 1.1rem; }
+    .visual-gates .visual-icon { background:none; border:1px solid var(--border); margin-bottom:.8rem; }
+
+    /* Preserve real tables; use grouped rows and accent labels. */
+    .compare.visual-table { border-collapse:separate; border-spacing:0 .6rem; margin-top:.4rem; }
+    .visual-table th { padding:.55rem 1rem; border-bottom:1.5px solid var(--primary); }
+    .visual-table td { background:var(--card-bg); border-bottom:0; padding:.8rem 1rem; }
+    .visual-table td:first-child { border-left:3px solid var(--primary); border-radius:0; }
+    .visual-table td:last-child { border-radius:0 10px 10px 0; }
+    .compare.visual-matrix th { background:var(--primary); color:var(--bg); }
+    .visual-matrix td { border-right:1px solid var(--border); }
+    .visual-matrix td:first-child { color:var(--primary); background:var(--accent-light); }
+    .visual-matrix td:last-child { border-right:0; }
+
+    .visual-divider .cover-decoration { clip-path:none; width:32vw; height:32vw; max-width:530px; max-height:530px; border:1px solid var(--border); background:none; border-radius:50%; top:50%; right:-5vw; transform:translateY(-50%); }
+    .visual-divider .cover-decoration::after { content:''; position:absolute; inset:15%; border:1px solid var(--border); border-radius:50%; }
+
+    @media(max-width:700px) {
+      .cards.visual-columns,.cards.visual-pair,.cards.visual-documents,.cards.visual-agenda,.cards.visual-records { grid-template-columns:1fr; gap:1.5rem; }
+      .visual-columns > .card + .card,.visual-pair > .card + .card { border-left:0; padding-left:0; border-top:1px solid var(--border); padding-top:1.2rem; }
+      .visual-columns > .card,.visual-pair > .card { padding-left:0; padding-right:0; }
+      .visual-rail > .card { grid-template-columns:38px 1fr; gap:.6rem 1rem; }
+      .visual-rail .rail-body { grid-column:2; }
+      .visual-rail .rail-body ul { columns:1; }
+      .flow.visual-steps { display:flex; flex-direction:column; flex-wrap:nowrap; flex-shrink:0; padding:0; gap:1.4rem; width:100%; }
+      .visual-steps > .card { flex:none; flex-basis:auto; max-width:100%; text-align:left; padding-left:3.8rem; }
+      .visual-steps > .card::before { position:absolute; left:0; top:0; }
+      .visual-steps > .card:not(:last-of-type)::after { left:21px; top:42px; width:0; height:calc(100% + 1.4rem - 42px); border-top:0; border-left:1px solid var(--border); }
+      .visual-steps.return-track::before,.visual-steps.return-track::after { display:none; }
+      .flow.visual-loop { grid-template-columns:1fr; grid-template-rows:auto; padding:0; gap:1rem; margin:1rem 0; }
+      .visual-loop > .card:nth-of-type(3),.visual-loop > .card:nth-of-type(4) { grid-column:auto; grid-row:auto; }
+      .visual-loop::before,.loop-directions { display:none; }
+      .cards.visual-fusion { display:flex; flex-direction:column; gap:1rem; }
+      .fusion-lines { display:none; }
+      .visual-fusion > .card:nth-child(3) { align-self:stretch; padding:1.3rem; }
+      .flow.visual-gates { flex-direction:column; flex-wrap:nowrap; flex-shrink:0; }
+      .visual-gates > .card { flex:none; flex-basis:auto; }
+      .compare.visual-table { border-spacing:0 .4rem; }
+      .visual-table td,.visual-table th { padding:.5rem; }
+    }
+
+
+    .cards.four { grid-template-columns:repeat(2,1fr); }
+    .branch-diagram { margin:1rem 0 .2rem; display:flex; flex-direction:column; align-items:center; }
+    .branch-diagram > .card { background:var(--accent-light); border:1px solid var(--border); border-radius:28px; padding:.8rem 1.6rem; width:70%; text-align:center; }
+    .branch-diagram > .card h3 { margin-bottom:.4rem; }
+    .branch-diagram > .card p { margin:0; }
+    .branch-diagram .cards { width:100%; margin:0; }
+    .branch-diagram .cards .card { text-align:center; padding:.5rem 1rem; }
+    .branch-lines { width:100%; height:25px; color:var(--primary); flex-shrink:0; }
+    .branch-lines svg { display:block; width:100%; height:100%; }
+    .return-lines { transform:rotate(180deg); }
+    .diagram-note { margin-top:.8rem; }
+    .compact-track .card { padding-left:.25rem; padding-right:.25rem; }
+    .compact-track .card h3 { overflow-wrap:normal; }
+    .flow.visual-steps.continue-track { counter-reset:visual-step 3; }
+    .source-table td:first-child { width:23%; }
+    .source-table td:nth-child(2) { width:38%; }
+    .source-table td:nth-child(3) { width:39%; }
+    @media(max-width:700px) {
+      .closing-decoration,.closing-decoration-2 { max-width:85vw; max-height:85vw; }
+      .cards.four { grid-template-columns:1fr; }
+      .branch-diagram { flex-shrink:0; }
+      .branch-diagram > .card { width:100%; }
+      .branch-diagram .cards { grid-template-columns:1fr; }
+      .branch-lines { display:none; }
+      .branch-diagram .cards .card { text-align:left; border-left:1px solid var(--border); padding:1rem; }
+    }
+
+  </style>
+</head>
+<body>
+<a class="hub" href="../index.html">Course hub ↗</a><main class="deck">
+<section class="slide layout-cover active"><div class="cover-decoration"></div><div class="accent-line"></div><h1>Decomposing &amp; Designing<br>Multi-Agent Systems</h1><p class="subtitle">Turn a shipment-disruption workflow into bounded responsibilities, useful recommendations, and approved actions.</p><p class="meta">Module 04-02 · AI Forward Deployed Engineer</p></section>
+<section class="slide"><div class="slide-header"><h4>Illustrative logistics case</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>The customer needs faster disruption decisions</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/></svg></span><h3>45,000 active shipments</h3><p>Across North America, Europe, and Southeast Asia.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>200+ carriers</h3><p>Weather, port closures, and capacity failures change available routes.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><h3>30 regional hubs</h3><p>Multiple disruptions can overwhelm a coordinator working one event at a time.</p></div></div><div class="takeaway">Automate gathering, analysis, and packaging; give the coordinator a supported decision to review.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Clarifying questions</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Discovery turns the request into design inputs</h2><div class="cards four visual-agenda"><div class="card"><h3>Workflow and process</h3><p>Which signals trigger analysis? What threshold matters? Who approves, and when is manager approval required?</p></div><div class="card"><h3>Data and systems</h3><p>Which route legs, fields, and timestamps exist? How fresh are slots and quotes? Which signals describe the same event?</p></div><div class="card"><h3>Risk and authority</h3><p>What does a wrong reroute cost? Is a missed disruption worse than a false alarm? Which actions must be gated?</p></div><div class="card"><h3>Success and scope</h3><p>Which disruption and shipment types come first? What reduces review effort or missed rerouting windows?</p></div></div><div class="takeaway">Make thresholds, approval authority, input contracts, and pilot success criteria explicit.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Problem decomposition</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Decompose the work into six responsibilities</h2><div class="flow visual-steps compact-track"><div class="card"><h3>Detect</h3><p>Normalize signals and apply the agreed threshold.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Identify</h3><p>Map the event to affected shipments and delays.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Generate options</h3><p>Find feasible routes and approved carrier slots.</p></div></div><div class="flow visual-steps compact-track continue-track"><div class="card"><h3>Compare costs</h3><p>Rerouting cost versus the estimated cost of delay.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Package</h3><p>Present evidence, tradeoffs, and escalation items.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Execute</h3><p>Apply the approved change and record its outcome.</p></div></div><div class="takeaway">Read left to right across each row. The six responsibilities form one continuous workflow.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Non-negotiable case requirements</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Three constraints shape the architecture</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg></span><h3>Approval before SAP writes</h3><ul><li>The company requires an explicit authorized human decision.</li><li>An open recommendation is not permission to execute.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>Filter before ranking</h3><ul><li>Apply the shipment-type approved-carrier list first.</li><li>Hazardous, cold-chain, and oversized loads have separate constraints.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>Isolate concurrent events</h3><ul><li>Keep business context and results scoped to each disruption.</li><li>One slow or failed chain must not block unrelated work.</li></ul></div></div><div class="takeaway">These are system boundaries enforced by code, permissions, and state—not instructions in a prompt alone.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>System architecture</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Five agents implement the six responsibilities</h2><div class="flow visual-steps compact-track"><div class="card"><h3>Detect</h3><p>Confirmed disruption event.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Identify</h3><p>Affected loads and estimated delays.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Options</h3><p>Ranked, eligible alternatives per load.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Recommend</h3><p>Cost comparison and plain-language package.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Execute</h3><p>Wait for approval; then update and notify.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Combine related work</h3><p>The recommendation agent owns both cost comparison and packaging. Internal functions perform validated calculations.</p></div><div class="card"><h3>Enforce the final boundary</h3><p>Execution consumes a recorded decision. Analysis agents do not receive production write access.</p></div></div><div class="takeaway">Structured outputs connect the chain; the recommendation also uses the identification agent’s delay estimates.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Case data landscape</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Connect each responsibility to its evidence</h2><table class="compare visual-table"><thead><tr><th>Source</th><th>Provides in this case</th><th>Access and design check</th></tr></thead><tbody><tr><td>Tomorrow.io FleetIQ</td><td>Weather risk and severe-event signals</td><td>Scheduled read; confirm route coverage and thresholds.</td></tr><tr><td>Portcast</td><td>Port congestion and predicted waiting signals</td><td>Scheduled read; confirm fields and contracted ports.</td></tr><tr><td>project44</td><td>Carrier exceptions, slots, quotes, notifications</td><td>Polling and on demand; verify freshness and action interfaces.</td></tr><tr><td>SAP TM</td><td>Shipments, route legs, and rerouting records</td><td>Reads for analysis; writes only after approval.</td></tr><tr><td>Approved-carrier database</td><td>Eligibility by shipment type</td><td>Read-only lookup; check current certifications and contracts.</td></tr><tr><td>Internal contract rate table</td><td>Contract rates and SLA cost parameters</td><td>Read-only cost inputs; validate units and effective dates.</td></tr></tbody></table><div class="takeaway">Include financial parameters as well as operational feeds: cost comparison needs a verified contract-rate source.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Detection agent</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Detection produces one traceable event</h2><div class="flow visual-steps "><div class="card"><h3>Fetch scheduled signals</h3><p>Weather, port congestion, and carrier exceptions.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Normalize and deduplicate</h3><p>Align schemas; merge signals for the same event.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Apply the threshold</h3><p>Log low-level signals; dispatch confirmed disruptions.</p></div></div><div class="cards two visual-records"><div class="card"><h3>Event contract</h3><p>Event ID · source references · route/port/carrier · severity · observed time.</p></div><div class="card"><h3>Failure handling</h3><p>Mark unavailable or stale feeds; do not silently treat missing evidence as normal conditions.</p></div></div><div class="takeaway">Scheduled polling is recurring execution. It is distinct from retrying a failed analysis.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Identification agent</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Shipment impact includes every route leg</h2><p class="lead">A port disruption may affect a shipment even when its origin and final destination are elsewhere.</p><div class="flow visual-steps "><div class="card"><h3>Origin</h3><p>Shipment begins here.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Transit port</h3><p>The confirmed disruption affects this leg.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Destination</h3><p>Final delivery inherits the delay.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Input and lookup</h3><p>Use the confirmed route, port, or carrier to query active SAP TM loads across all relevant legs.</p></div><div class="card"><h3>Structured result</h3><p>Shipment IDs, matching legs, disruption type and severity, and estimated delay per shipment.</p></div></div><div class="takeaway">Retain the estimated delays: the recommendation stage needs them to compare rerouting with staying put.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Option generation router</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Options fan out once per affected shipment</h2><div class="branch-diagram"><div class="card"><h3>Parent option router</h3><p>Assign bounded work for the affected shipment list.</p></div><div class="branch-lines" aria-hidden="true"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M50 0V14M16.6 30V14H83.4V30M50 14V30" fill="none" stroke="currentColor" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg></div><div class="cards visual-columns"><div class="card"><h3>Load A worker</h3><p>Query slots; filter eligibility; rank feasible options.</p></div><div class="card"><h3>Load B worker</h3><p>Query slots; filter eligibility; rank feasible options.</p></div><div class="card"><h3>Load C worker</h3><p>Query slots; filter eligibility; rank feasible options.</p></div></div><div class="branch-lines return-lines" aria-hidden="true"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M50 0V14M16.6 30V14H83.4V30M50 14V30" fill="none" stroke="currentColor" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg></div><div class="card"><h3>Collect per-load results</h3><p>Preserve completed, unavailable, and failed statuses before continuing.</p></div></div><div class="takeaway">Use bounded concurrency and deadlines. A large event must not overwhelm providers or the runtime.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Options and contractual constraints</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Eligibility is a filter, not a scoring preference</h2><div class="flow visual-gates "><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></span><h3>Retrieve candidates</h3><p>Available carrier slots, routes, and current quotes.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>Enforce eligibility</h3><p>Shipment-type carrier list and mandatory requirements.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v18h17M8 16v-4M13 16V8M18 16V5"/></svg></span><h3>Rank feasible options</h3><p>Delivery impact, availability, and relevant tradeoffs.</p></div></div><div class="takeaway">No eligible option is a valid outcome: explain the constraint and route the shipment for review.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Recommendation agent</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>A recommendation compares two real scenarios</h2><div class="cards two visual-pair"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><h3>Keep the delayed route</h3><ul><li>Affected load and estimated delay from identification.</li><li>Contractual SLA and delay-cost parameters.</li><li>Remaining uncertainty and operational consequences.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>Take the alternative</h3><ul><li>Eligible route, carrier, slot, and quote validity.</li><li>Rerouting cost, delivery impact, and feasibility.</li><li>Evidence supporting the proposed choice.</li></ul></div></div><div class="takeaway">Package the comparison in plain language. Surface ambiguous or high-authority decisions first for escalation.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Human approval boundary</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Record the decision before taking action</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7"/></svg></span><h3>Approve</h3><p>An authorized decision allows the specified SAP update and carrier notification.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg></span><h3>Escalate</h3><p>Send the package to the manager queue when authority or uncertainty requires it.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><h3>Defer</h3><p>Keep the event open without executing or marking it resolved.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Approval record</h3><p>Approver identity · timestamp · decision · shipment and recommendation version.</p></div><div class="card"><h3>Durable queue</h3><p>The event and decision survive a service restart or coordinator session change.</p></div></div><div class="takeaway">Recheck record versions and quote validity before execution. Changed inputs require renewed review.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Execution agent</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Execution returns confirmations and an audit trail</h2><div class="flow visual-gates "><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>Check approval and freshness</h3><p>Validate authority, scope, and record version.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></svg></span><h3>Update SAP TM</h3><p>Apply the approved rerouting action.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H5v18h14V8zM14 3v5h5M8 12h8M8 16h6"/></svg></span><h3>Notify and record</h3><p>Send the carrier notice; save outcome status.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Safe recovery</h3><p>Use idempotency or equivalent duplicate protection. Reconcile an uncertain write before retrying.</p></div><div class="card"><h3>Partial failure</h3><p>If SAP succeeds but notification fails, preserve both statuses and retry only the outstanding action.</p></div></div><div class="takeaway">Every write must link to its approval identity, timestamp, plan, and execution result.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Orchestration layer</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Combine three execution patterns deliberately</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><h3>Scheduled detection</h3><p>Fresh polling cycles create confirmed events; polling is not a quality-improvement loop.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/></svg></span><h3>Sequential backbone</h3><p>Detect → identify → options → recommend → approved execution. Each stage needs a valid result.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>Parallel work</h3><p>Independent event chains, plus per-load option workers inside each event.</p></div></div><div class="takeaway">Isolate event business state, while sharing infrastructure. Overlapping shipments still need conflict checks before writes.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>MCP and A2A</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Protocols connect interfaces; the runtime manages work</h2><div class="cards two visual-pair"><div class="card"><h3>MCP: tools and resources</h3><p>Model Context Protocol standardizes access to external capabilities.</p><ul><li>Expose typed integration interfaces where useful.</li><li>Configure authentication, authorization, and tool-level traces.</li></ul></div><div class="card"><h3>A2A: agent interoperability</h3><p>Agent-to-Agent connects agents through task and message interfaces.</p><ul><li>Useful across separately implemented agent services.</li><li>The runtime still owns worker creation, state, and concurrency.</li></ul></div></div><div class="takeaway">Both are optional architecture choices. Direct SDK calls and framework-local delegation can serve a single-system pilot.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Evaluation plan</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Evaluate decisions, boundaries, and operating effort</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v18h17M8 16v-4M13 16V8M18 16V5"/></svg></span><h3>Detection precision and recall</h3><p>Use labeled historical events across the three feeds.</p><ul><li>Precision: how many triggered events were real?</li><li>Recall: how many relevant real events were caught?</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg></span><h3>Recommendation quality</h3><p>Compare options with coordinator criteria and feasible alternatives.</p><ul><li>Check eligibility, costs, explanations, and uncertainty.</li><li>Add rejected recommendations to the evaluation set.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>Audit completeness</h3><p>Every SAP write has a complete matching approval record.</p><ul><li>Missing identity, time, or approved-plan evidence is a failure.</li><li>Test denied and deferred decisions too.</li></ul></div></div><div class="takeaway">Also measure time to recommendation, model/tool cost, queue age, and coordinator review burden.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>AWS private-environment plan</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Deploy into the customer’s operating environment</h2><table class="compare visual-table"><thead><tr><th>Component</th><th>Deployment responsibility</th><th>Operational requirement</th></tr></thead><tbody><tr><td>Source polling</td><td>Scheduled jobs; secrets manager</td><td>Preserve existing integrations; monitor feed freshness.</td></tr><tr><td>Orchestration</td><td>Durable service and event state</td><td>Manage isolated chains, concurrency, deadlines, and recovery.</td></tr><tr><td>Agent workers</td><td>Container-based compute</td><td>Scale bounded per-load work; use approved model access.</td></tr><tr><td>Coordinator review</td><td>Persistent queue and web interface</td><td>Keep unresolved events and authorized decisions across sessions.</td></tr><tr><td>Audit storage</td><td>Append-only database</td><td>Retain approvals, writes, notifications, and correlated IDs.</td></tr></tbody></table><div class="takeaway">Confirm model endpoint, data handling, retention, and access policies during discovery; private compute alone does not settle them.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>FDE delivery and handoff</h4><span class="tag">04-02</span></div><div class="slide-content"><h2>Prove one complete slice before expanding</h2><div class="cards visual-rail"><div class="card"><h3>Scope a useful pilot</h3><div class="rail-body"><p>Choose one high-impact disruption type, agreed shipment categories, and a bounded load volume.</p></div></div><div class="card"><h3>Exercise the boundaries</h3><div class="rail-body"><p>Test duplicate signals, stale quotes, no eligible carrier, denied approval, overlapping events, and partial execution.</p></div></div><div class="card"><h3>Transfer ownership</h3><div class="rail-body"><p>Hand off contracts, thresholds, evaluation cases, approval configuration, dashboards, and recovery runbooks.</p></div></div></div><div class="takeaway">Success means a supported decision and an auditable action that the customer can operate.</div></div></section>
+<section class="slide layout-closing"><div class="closing-decoration"></div><div class="closing-decoration-2"></div><div class="accent-line"></div><h1>Design clear responsibilities.<br>Enforce the boundaries.</h1><p class="closing-sub" style="margin-top:2rem">Discovery → decomposition → coordination → approval → evidence of success.</p></section>
+</main>
+  <div class="slide-counter"><span id="current">1</span> / <span id="total">20</span></div>
+  <div class="keyboard-hint">← → navigate · F fullscreen</div>
+  <div class="progress-bar" id="progress"></div>
+  <div class="nav-controls">
+    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+    </button>
+    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)" aria-label="Next slide">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </button>
+  </div>
+
+  <script>
+    const slides = document.querySelectorAll('.slide');
+    const currentEl = document.getElementById('current');
+    const totalEl = document.getElementById('total');
+    const progressEl = document.getElementById('progress');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let current = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+    const total = slides.length;
+    totalEl.textContent = total;
+
+    function updateSlide() {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'prev');
+        if (i === current) {
+          slide.classList.add('active');
+        } else if (i < current) {
+          slide.classList.add('prev');
+        }
+      });
+      currentEl.textContent = current + 1;
+      slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',i !== current));
+      history.replaceState(null, '', '#' + (current + 1));
+      progressEl.style.width = ((current + 1) / total * 100) + '%';
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+    }
+
+    function changeSlide(dir) {
+      const next = current + dir;
+      if (next >= 0 && next < total) {
+        current = next;
+        updateSlide();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 'f') { if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+      else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); changeSlide(-1); }
+      else if (e.key === 'Home') { e.preventDefault(); current = 0; updateSlide(); }
+      else if (e.key === 'End') { e.preventDefault(); current = total - 1; updateSlide(); }
+    });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) { changeSlide(diff > 0 ? 1 : -1); }
+    }, { passive: true });
+
+    window.addEventListener('hashchange', () => { current = Math.max(0, Math.min(total - 1, (parseInt(location.hash.slice(1)) || 1) - 1)); updateSlide(); });
+    updateSlide();
+  </script>
+
+</body>
+</html>
