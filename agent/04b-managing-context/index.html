@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Managing Context — AI Agent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../shared/theme.css">
+<script src="../../shared/deck.js" defer></script>
+</head>
+<body>
+<div id="deck">
+<style>
+  /* Why: three cards joined into one cause-and-effect chain */
+  .chain { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 1rem; align-items: stretch; }
+  .chain .card-name { font-size: clamp(1.1rem, 1.5vw, 1.4rem); }
+  .chain .card-body { font-size: clamp(1rem, 1.35vw, 1.25rem); color: var(--text); }
+  .flow-arrow { align-self: center; color: var(--text-light); font: 400 1.6rem 'Space Grotesk', sans-serif; }
+  .bottom-highlight { margin-top: 1.4rem; }
+  .lede--wide { max-width: none; }
+  .fine-print { margin-top: 1rem; font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.85rem, 1vw, 0.95rem); color: var(--text-muted); }
+  .fine-print code { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+
+  /* How: four choices side by side */
+  .choice-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; }
+  .choice-grid .card { display: flex; flex-direction: column; }
+  .choice-grid .card-name { font-size: clamp(1.1rem, 1.55vw, 1.45rem); }
+  .choice-grid .card-body { font-size: clamp(0.98rem, 1.25vw, 1.15rem); color: var(--text); }
+  .col-label { font: 600 clamp(0.75rem, 0.9vw, 0.9rem) 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); }
+  .choice-grid .col-label { margin-top: 0.9rem; }
+  .choice-when { font-size: clamp(0.95rem, 1.2vw, 1.1rem); line-height: 1.45; color: var(--text); margin-top: 0.25rem; padding-bottom: 0.9rem; }
+  .choice-eg { margin-top: auto; font-size: clamp(0.92rem, 1.15vw, 1.05rem); line-height: 1.4; color: var(--text); padding: 0.65rem 0.85rem; border-radius: 10px; background: var(--accent-medium); }
+
+  /* How: two habits around a summary */
+  .habit-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1.4rem; }
+  .habit-grid .card { display: flex; flex-direction: column; gap: 0.8rem; }
+  .habit-grid .card-name { font-size: clamp(1.1rem, 1.55vw, 1.45rem); }
+  .habit-say { font: 500 clamp(1rem, 1.35vw, 1.25rem)/1.45 'Space Grotesk', sans-serif; color: var(--text); padding: 0.8rem 1rem; border-radius: 10px; background: var(--accent-medium); }
+  .habit-say code { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--primary); }
+  .habit-note { font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; color: var(--text); }
+
+  /* How: cards beside the handoff note */
+  .split-right { gap: 0.65rem; }
+  .split-right .card { padding: 0.7rem 1.2rem; }
+  .split-right .card-name { font-size: clamp(1.05rem, 1.4vw, 1.3rem); }
+  .split-right .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); border-top: none; margin-top: 0.15rem; padding-top: 0; }
+  .split-right .split-highlight { font-size: clamp(1rem, 1.35vw, 1.25rem); padding: 0.9rem 1.2rem; }
+
+  svg text { font-family: 'Space Grotesk', sans-serif; fill: var(--text); }
+  svg .body-text { font-family: 'Inter', sans-serif; fill: var(--text-muted); }
+  svg .on-primary { fill: var(--bg); }
+  svg .label { font-weight: 600; letter-spacing: 0.08em; fill: var(--primary); }
+
+  /* Narrow screens: stack the side-by-side layouts and let a slide scroll down */
+  @media (max-width: 760px) {
+    #deck .slide { overflow-x: hidden; overflow-y: auto; }
+    #deck .slide-content, #deck .body-center { flex: none; }
+    #deck .lede { max-width: none; }
+    #deck .split-body { grid-template-columns: 1fr; gap: 1.2rem; }
+    #deck .split-left { height: auto; }
+    #deck .split-left svg { height: auto; max-height: 40vh; }
+    #deck .split-right { padding-left: 0; border-left: none; }
+    .chain, .choice-grid, .habit-grid { grid-template-columns: 1fr; }
+    .chain .flow-arrow { display: none; }
+    #deck .layout-closing { justify-content: flex-start; }
+    #deck .closing-grid { grid-template-columns: 1fr; width: 100%; }
+    #deck .layout-cover h1 { max-width: none; }
+    #deck .source { margin-top: 0.6rem; }
+  }
+</style>
+
+<!-- 1 · Title -->
+<section class="slide layout-cover" data-label="Title">
+  <div class="cover-decoration"></div>
+  <div class="cover-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="accent-line enter" style="--i: 0;"></div>
+  <h1 class="enter" style="--i: 1;">Managing Context</h1>
+  <div class="cover-tags enter" style="--i: 2;">
+    <span class="tag">Why</span>
+    <span class="tag">How</span>
+  </div>
+</section>
+
+<!-- 2 · WHY -->
+<section class="slide" data-label="Why">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">Why</span>
+  </div>
+  <div class="slide-content">
+    <h2>A long conversation makes the agent less reliable.</h2>
+    <p class="lede">Context is everything the agent can see right now: its instructions, its tools, the files it has read, and your conversation.</p>
+    <div class="body-center">
+      <div class="chain">
+        <div class="card" data-step="1"><div class="card-name">01 &nbsp; It rereads everything</div><p class="card-body">At every step, the agent reads the whole context again.</p></div>
+        <span class="flow-arrow" data-step="2">&rarr;</span>
+        <div class="card" data-step="2"><div class="card-name">02 &nbsp; The context keeps growing</div><p class="card-body">Your messages, and whatever the agent opens or looks up, are added as you work.</p></div>
+        <span class="flow-arrow" data-step="3">&rarr;</span>
+        <div class="card" data-step="3"><div class="card-name">03 &nbsp; Details get lost</div><p class="card-body">The more there is to read, the easier it is to miss something you said earlier.</p></div>
+      </div>
+      <p class="split-highlight bottom-highlight" data-step="4">The context grows as you work. You choose when to reset it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · HOW: four choices -->
+<section class="slide" data-label="How four choices">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">How &middot; Four choices</span>
+  </div>
+  <div class="slide-content">
+    <h2>When a piece of work is done, you have four choices.</h2>
+    <p class="lede lede--wide">Say you are working with an agent on a weekly sales report. A piece of work is done when the numbers are checked, or when the draft is written.</p>
+    <div class="body-center">
+      <div class="choice-grid">
+        <div class="card" data-step="1">
+          <div class="card-name">Keep going</div>
+          <p class="card-body">Change nothing.</p>
+          <div class="col-label">Use it when</div>
+          <p class="choice-when">The next piece builds on this one, and the conversation is still short.</p>
+          <p class="choice-eg">The numbers are checked. Next: write the summary.</p>
+        </div>
+        <div class="card" data-step="2">
+          <div class="card-name">Start fresh</div>
+          <p class="card-body">Start a new, empty conversation.</p>
+          <div class="col-label">Use it when</div>
+          <p class="choice-when">The next job has nothing to do with this one.</p>
+          <p class="choice-eg">The report is sent. Next: plan a team offsite.</p>
+        </div>
+        <div class="card" data-step="3">
+          <div class="card-name">Compact</div>
+          <p class="card-body">The agent replaces the conversation with a short summary, then carries on.</p>
+          <div class="col-label">Use it when</div>
+          <p class="choice-when">You still need what happened, but the conversation is long.</p>
+          <p class="choice-eg">A long afternoon of fixes is done. Next: one last read-through.</p>
+        </div>
+        <div class="card" data-step="4">
+          <div class="card-name">Hand off</div>
+          <p class="card-body">The agent writes the important parts into a file. A new conversation reads that file first.</p>
+          <div class="col-label">Use it when</div>
+          <p class="choice-when">The work continues somewhere else: tomorrow, in another tool, or with a teammate.</p>
+          <p class="choice-eg">A teammate takes over to finish this week&rsquo;s report.</p>
+        </div>
+      </div>
+    </div>
+    <p class="fine-print">In Claude Code and Codex, <code>/clear</code> starts a new conversation and <code>/compact</code> compacts. Your instruction file, the standing rules the agent reads at every start, still loads.</p>
+    <p class="source">Adapted from Matt Pocock, AI Coding Crash Course.</p>
+  </div>
+</section>
+
+<!-- 4 · HOW: say what to keep -->
+<section class="slide" data-label="How say what to keep">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">How &middot; Say what to keep</span>
+  </div>
+  <div class="slide-content">
+    <h2>A summary is a retelling. Say what to keep, then check.</h2>
+    <p class="lede">A retelling always drops details. Two habits protect the important ones.</p>
+    <div class="body-center">
+      <div class="habit-grid">
+        <div class="card" data-step="1">
+          <div class="card-name">01 &nbsp; Before: say what must stay</div>
+          <div class="habit-say"><code>/compact</code> Keep the corrected numbers and my rule: leave out the Boston store.</div>
+        </div>
+        <div class="card" data-step="2">
+          <div class="card-name">02 &nbsp; After: ask it to repeat your rules</div>
+          <div class="habit-say">&ldquo;What are my rules for this report?&rdquo;</div>
+          <p class="habit-note">If one is missing, say it again.</p>
+        </div>
+      </div>
+      <p class="split-highlight bottom-highlight" data-step="3">Claude Code and Codex also compact on their own when the context is nearly full. They can&rsquo;t know what you plan to do next.</p>
+    </div>
+    <p class="fine-print">The command in step 1 is from Claude Code. Step 2 works in any tool.</p>
+  </div>
+</section>
+
+<!-- 5 · HOW: the handoff note -->
+<section class="slide" data-label="How handoff note">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">How &middot; The handoff note</span>
+  </div>
+  <div class="slide-content">
+    <h2>A good handoff note covers four things.</h2>
+    <p class="lede lede--wide">Ask for it in plain words: &ldquo;Write a handoff note so a new conversation can finish this report. Save it as handoff.md.&rdquo;</p>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 360 380" role="img" aria-label="A note called handoff.md with four parts: the goal, the rules, done and left, and where things are">
+          <!-- the note -->
+          <path d="M 45 15 L 275 15 L 315 55 L 315 365 L 45 365 Z" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+          <path d="M 275 15 L 275 55 L 315 55" fill="rgba(30,43,250,0.08)" stroke="#1e2bfa" stroke-width="2"/>
+          <text x="70" y="60" font-size="15" class="label">HANDOFF.MD</text>
+          <g data-step="1">
+            <circle cx="84" cy="112" r="14" fill="#1e2bfa"/>
+            <text x="84" y="117" text-anchor="middle" font-size="14" font-weight="600" class="on-primary">1</text>
+            <text x="110" y="110" font-size="17" font-weight="600">The goal</text>
+            <rect x="110" y="122" width="170" height="6" rx="3" fill="#9a9a9a" opacity="0.55"/>
+          </g>
+          <g data-step="2">
+            <circle cx="84" cy="180" r="14" fill="#1e2bfa"/>
+            <text x="84" y="185" text-anchor="middle" font-size="14" font-weight="600" class="on-primary">2</text>
+            <text x="110" y="178" font-size="17" font-weight="600">The rules</text>
+            <rect x="110" y="190" width="150" height="6" rx="3" fill="#1e2bfa"/>
+          </g>
+          <g data-step="3">
+            <circle cx="84" cy="248" r="14" fill="#1e2bfa"/>
+            <text x="84" y="253" text-anchor="middle" font-size="14" font-weight="600" class="on-primary">3</text>
+            <text x="110" y="246" font-size="17" font-weight="600">Done and left</text>
+            <rect x="110" y="258" width="170" height="6" rx="3" fill="#9a9a9a" opacity="0.55"/>
+            <rect x="110" y="272" width="120" height="6" rx="3" fill="#9a9a9a" opacity="0.55"/>
+          </g>
+          <g data-step="4">
+            <circle cx="84" cy="322" r="14" fill="#1e2bfa"/>
+            <text x="84" y="327" text-anchor="middle" font-size="14" font-weight="600" class="on-primary">4</text>
+            <text x="110" y="320" font-size="17" font-weight="600">Where things are</text>
+            <rect x="110" y="332" width="140" height="6" rx="3" fill="#9a9a9a" opacity="0.55"/>
+          </g>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="card" data-step="1"><div class="card-name">01 &nbsp; The goal</div><p class="card-body">What we are making, and who it is for.</p></div>
+        <div class="card" data-step="2"><div class="card-name">02 &nbsp; The rules</div><p class="card-body">What must stay true. &ldquo;Leave out the Boston store.&rdquo;</p></div>
+        <div class="card" data-step="3"><div class="card-name">03 &nbsp; Done and left</div><p class="card-body">What is finished, and the next steps in order.</p></div>
+        <div class="card" data-step="4"><div class="card-name">04 &nbsp; Where things are</div><p class="card-body">Which files, which sheet.</p></div>
+        <p class="split-highlight" data-step="5">Read the note before you leave, and ask the agent to add anything missing. In the new conversation, have it read the note first.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · Takeaway -->
+<section class="slide layout-closing" data-label="Takeaway">
+  <div class="closing-decoration"></div>
+  <div class="closing-decoration-2"></div>
+  <div class="accent-line enter" style="--i: 0; margin: 0 auto 1.5rem;"></div>
+  <h1 class="enter" style="--i: 1;">Takeaway</h1>
+  <div class="closing-grid">
+    <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Decide when a piece of work is done</div><p class="card-body">That is when you know what the next piece needs.</p></div>
+    <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">Four choices</div><p class="card-body">Keep going, start fresh, compact, or hand off.</p></div>
+    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Say what to keep, then check</div><p class="card-body">A summary is a retelling. Rules that matter go in writing.</p></div>
+  </div>
+</section>
+</div>
+</body>
+</html>
