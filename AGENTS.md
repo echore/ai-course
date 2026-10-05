@@ -23,6 +23,7 @@ basic/  agent/  fde/        one folder per module, one owner per module
 4. **Lesson-specific layout goes in the `<style>` block at the top of that lesson's `#deck`.** It must not change how shared classes look across the site.
 5. **Changes to `shared/` go through a pull request** on a branch, reviewed by the other two owners, because they change every lesson.
 6. **Don't add navigation markup to lessons.** `deck.js` builds the counter, progress bar and arrow buttons.
+7. **Each lesson stands alone.** Write for a student who opens this one file having forgotten every other lesson: explain each term where it first appears, and set up each example inside the lesson. Pointing forward to a later lesson is fine.
 
 ## Adding a lesson
 
