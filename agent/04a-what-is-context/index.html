@@ -19,7 +19,6 @@
   .ctx-frame .card { background: var(--bg); display: flex; flex-direction: column; gap: 0.2rem; }
   .ctx-frame .card-name { font-size: clamp(1.05rem, 1.45vw, 1.35rem); }
   .ctx-frame .card-body { font-size: clamp(0.98rem, 1.3vw, 1.2rem); color: var(--text); flex: 1; }
-  .where { align-self: flex-start; margin-top: 0.6rem; font: 600 0.78rem 'Space Grotesk', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.3rem 0.85rem; border-radius: 100px; color: var(--text-muted); border: 1.5px dashed var(--border); }
   .bottom-highlight { margin-top: 1.4rem; }
   .fine-print { margin-top: 1rem; font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.85rem, 1vw, 0.95rem); color: var(--text-muted); }
 
@@ -32,7 +31,7 @@
   .bracket { height: 10px; border: 2px dashed var(--text-light); border-bottom: none; border-radius: 8px 8px 0 0; }
   .bracket--on { border-style: solid; border-color: var(--primary); }
 
-  /* Why: one day of the Monday report */
+  /* Why: one day working on a report */
   .day { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 1rem; align-items: stretch; }
   .day-step { display: flex; flex-direction: column; gap: 0.6rem; }
   .day-step .card { flex: 1; display: flex; flex-direction: column; gap: 0.7rem; }
@@ -104,21 +103,19 @@
         <div class="ctx-grid">
           <div class="card" data-step="1">
             <div class="card-name">Instruction file</div>
-            <p class="card-body">The rules you wrote for it.</p>
-            <span class="where">Module 2</span>
+            <p class="card-body">A file of standing rules. It reads this every time you start.</p>
           </div>
           <div class="card" data-step="2">
             <div class="card-name">Connected tools</div>
-            <p class="card-body">The list of apps it can reach.</p>
-            <span class="where">Module 3</span>
+            <p class="card-body">The apps you have linked it to, such as Google Sheets.</p>
           </div>
           <div class="card" data-step="3">
             <div class="card-name">Files and results</div>
-            <p class="card-body">What it has opened or fetched. The spreadsheet. Last week&rsquo;s report.</p>
+            <p class="card-body">What it has opened or looked up, such as a spreadsheet or a web page.</p>
           </div>
           <div class="card" data-step="4">
             <div class="card-name">Your conversation</div>
-            <p class="card-body">Everything you and the agent have said in this session.</p>
+            <p class="card-body">Everything you and the agent have said so far.</p>
           </div>
         </div>
       </div>
@@ -136,14 +133,14 @@
   </div>
   <div class="slide-content">
     <h2>In a long conversation, the agent starts to forget what you told it.</h2>
-    <p class="lede">Back to the Monday report.</p>
+    <p class="lede">Say you spend a day working with an agent on a weekly sales report.</p>
     <div class="body-center">
       <div class="day">
         <div class="day-step" data-step="1">
           <div class="col-label col-label--on">Morning</div>
           <div class="card">
             <p class="day-text">You say:</p>
-            <div class="day-quote">&ldquo;This week, put the totals at the top and leave out the test store.&rdquo;</div>
+            <div class="day-quote">&ldquo;The Boston store closed last week. Leave it out of this report.&rdquo;</div>
           </div>
         </div>
         <span class="flow-arrow" data-step="2">&rarr;</span>
@@ -158,8 +155,8 @@
         <div class="day-step" data-step="3">
           <div class="col-label">End of day</div>
           <div class="card">
-            <p class="day-text">The new draft has the totals at the bottom.</p>
-            <p class="day-text">The test store is back.</p>
+            <p class="day-text">The new draft includes the Boston store.</p>
+            <p class="day-text">It forgot what you asked this morning.</p>
           </div>
         </div>
       </div>
@@ -176,7 +173,7 @@
   </div>
   <div class="slide-content">
     <h2>At every step, it rereads the whole context from the top.</h2>
-    <p class="lede">Remember the loop from Module 1. Each turn of the loop starts by reading everything again.</p>
+    <p class="lede">An agent works in steps: think, act, check. Every step starts by reading everything again.</p>
     <div class="split-body">
       <div class="split-left">
         <svg viewBox="0 0 440 372" role="img" aria-label="Three pages of context, each longer than the last. At every step the agent reads the whole page from the top. Your morning request is one line at the top of each.">
@@ -301,12 +298,12 @@
         <div class="ctx-head"><span class="ctx-label">Context</span><span class="ctx-sub">the same four things, in two groups</span></div>
         <div class="ctx-groups">
           <div class="ctx-group" data-step="1">
-            <div class="col-label">Loaded at the start of every session</div>
+            <div class="col-label">Loaded every time you start</div>
             <div class="bracket"></div>
             <div class="ctx-pair">
               <div class="card">
                 <div class="card-name">Instruction file</div>
-                <p class="card-body">Loaded at the start, every time. This is why Module 2 said to keep it short.</p>
+                <p class="card-body">Loaded at the start, every time. So keep it short.</p>
               </div>
               <div class="card">
                 <div class="card-name">Connected tools</div>
