@@ -176,7 +176,7 @@
     <p class="lede">An agent works in steps: think, act, check. Every step starts by reading everything again.</p>
     <div class="split-body">
       <div class="split-left">
-        <svg viewBox="0 0 440 372" role="img" aria-label="Three pages of context, each longer than the last. At every step the agent reads the whole page from the top. Your morning request is one line at the top of each.">
+        <svg viewBox="0 0 440 394" role="img" aria-label="Three pages of context, each longer than the last. At every step the agent reads the whole page from the top. Your morning request is one line at the top of each. A dashed line under the longest page marks the limit.">
           <defs>
             <marker id="arrowR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
               <path d="M0 0 L10 5 L0 10 z" fill="#6b6b6b"/>
@@ -222,19 +222,24 @@
             </g>
             <line x1="425" y1="48" x2="425" y2="308" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowR)"/>
           </g>
+          <!-- the limit -->
+          <g data-step="3">
+            <line x1="15" y1="326" x2="430" y2="326" stroke="#1e2bfa" stroke-width="2" stroke-dasharray="7 6"/>
+            <text x="15" y="344" font-size="13.5" class="label">THE LIMIT</text>
+          </g>
           <!-- legend -->
           <g data-step="1">
-            <rect x="15" y="333" width="26" height="6" rx="3" fill="#1e2bfa"/>
-            <text x="50" y="341" font-size="14" class="body-text">what you said this morning</text>
-            <line x1="15" y1="358" x2="37" y2="358" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowR)"/>
-            <text x="50" y="363" font-size="14" class="body-text">what it reads at that step</text>
+            <rect x="15" y="361" width="26" height="6" rx="3" fill="#1e2bfa"/>
+            <text x="50" y="369" font-size="14" class="body-text">what you said this morning</text>
+            <line x1="15" y1="384" x2="37" y2="384" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowR)"/>
+            <text x="50" y="389" font-size="14" class="body-text">what it reads at that step</text>
           </g>
         </svg>
       </div>
       <div class="split-right">
         <div class="card" data-step="1"><div class="card-name">01 &nbsp; Nothing stays in its head</div><p class="card-body">Between steps it keeps nothing. It reads the whole context again each time.</p></div>
         <div class="card" data-step="2"><div class="card-name">02 &nbsp; Everything is added</div><p class="card-body">Each message, each file it opens, each result that comes back goes onto the pile.</p></div>
-        <p class="split-highlight" data-step="3">So the context keeps growing as you work.</p>
+        <p class="split-highlight" data-step="3">So the context keeps growing as you work, and there is a limit to how much fits.</p>
       </div>
     </div>
     <p class="fine-print">When the context gets close to full, tools such as Claude Code and Codex shorten it for you. More on that in the next video.</p>
