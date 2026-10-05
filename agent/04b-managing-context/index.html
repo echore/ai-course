@@ -29,14 +29,20 @@
   .cmp-cell--much { border: 2px dashed var(--text-light); color: var(--text-muted); }
   .cmp-cell--enough { border: 2px solid var(--primary); background: var(--card-bg); color: var(--text); }
 
+  /* Reset on purpose: each situation beside what to do */
+  .guide { display: grid; grid-template-columns: 1fr auto 1.45fr; gap: 0.7rem 1.1rem; align-items: stretch; }
+  .guide-head.col-label { font-size: clamp(0.95rem, 1.2vw, 1.1rem); }
+  .guide-when { display: flex; align-items: center; padding: 0.7rem 1.2rem; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); font: 500 clamp(1rem, 1.35vw, 1.25rem)/1.4 'Space Grotesk', sans-serif; color: var(--text); }
+  .guide-do { display: grid; grid-template-columns: 8.5rem 1fr; gap: 1rem; align-items: center; padding: 0.7rem 1.2rem; border-radius: 12px; border: 2px solid var(--primary); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; color: var(--text); }
+  .guide-do--default { border: 2px dashed var(--text-light); }
+  .guide-act { font: 600 clamp(1.1rem, 1.5vw, 1.4rem)/1.3 'Space Grotesk', sans-serif; color: var(--primary); }
+
   /* Cards beside a diagram */
   .split-right { gap: 0.65rem; }
   .split-right .card { padding: 0.7rem 1.2rem; }
   .split-right .card-name { font-size: clamp(1.05rem, 1.4vw, 1.3rem); }
   .split-right .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); border-top: none; margin-top: 0.15rem; padding-top: 0; }
   .split-right .split-highlight { font-size: clamp(1rem, 1.35vw, 1.25rem); padding: 0.9rem 1.2rem; }
-  .split-right--tight { gap: 0.55rem; }
-  .split-right--tight .card { padding: 0.55rem 1.2rem; }
 
   /* Write it down: what to ask now, and what to say next time */
   .pair-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; align-items: stretch; margin-top: 0.9rem; }
@@ -47,7 +53,6 @@
   svg .body-text { font-family: 'Inter', sans-serif; fill: var(--text-muted); }
   svg .label { font-weight: 600; letter-spacing: 0.08em; fill: var(--primary); }
   svg .label--dim { fill: var(--text-muted); }
-  svg .mark { font-weight: 700; fill: var(--primary); }
   svg .frame { fill: var(--card-bg); stroke: color-mix(in srgb, var(--primary) 45%, transparent); stroke-width: 2; stroke-dasharray: 7 6; }
   svg .paper { fill: var(--bg); stroke: var(--border); stroke-width: 1.5; }
   svg .paper--on { stroke: var(--primary); stroke-width: 2; }
@@ -55,7 +60,6 @@
   svg .fold { fill: var(--accent-light); stroke: var(--primary); stroke-width: 2; }
   svg .ln rect { fill: var(--text-light); opacity: 0.55; }
   svg .ln-on { fill: var(--primary); }
-  svg .ln-maybe { fill: none; stroke: var(--primary); stroke-width: 1.5; stroke-dasharray: 4 3; }
   svg .flow { fill: none; stroke: var(--text-muted); stroke-width: 2.5; }
   svg .flow--on { stroke: var(--primary); }
   svg .flow--out { stroke-dasharray: 7 6; }
@@ -72,8 +76,10 @@
     #deck .split-left svg { height: auto; max-height: 40vh; }
     #deck .split-right { padding-left: 0; border-left: none; }
     .fine-print { padding-right: 0; }
-    .cmp, .pair-row { grid-template-columns: 1fr; }
-    .cmp .flow-arrow, .cmp-head { display: none; }
+    .cmp, .pair-row, .guide, .guide-do { grid-template-columns: 1fr; }
+    .cmp .flow-arrow, .cmp-head, .guide .flow-arrow, .guide-head { display: none; }
+    .guide-do { gap: 0.2rem; }
+    .guide-when { margin-top: 0.6rem; }
     .cmp-label { margin-top: 0.6rem; }
     .cmp-cell { flex-direction: column; align-items: flex-start; gap: 0.3rem; }
     .cmp-cell::before { font: 600 0.8rem 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; }
@@ -146,7 +152,7 @@
       </div>
       <div class="split-right">
         <div class="card" data-step="1"><div class="card-name">01 &nbsp; What goes in?</div><p class="card-body">Give it only what this task needs.</p></div>
-        <div class="card" data-step="2"><div class="card-name">02 &nbsp; What must stay?</div><p class="card-body">Put what matters in a file.</p></div>
+        <div class="card" data-step="2"><div class="card-name">02 &nbsp; What must stay?</div><p class="card-body">Put what matters in a file, outside the conversation.</p></div>
         <div class="card" data-step="3"><div class="card-name">03 &nbsp; When do you clear it?</div><p class="card-body">Reset on purpose.</p></div>
         <p class="split-highlight" data-step="4">Most of the time you just keep working. These three habits keep a long job on track.</p>
       </div>
@@ -158,7 +164,7 @@
 <section class="slide" data-label="How give it less">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">How &middot; Give it less</span>
+    <span class="tag">01 &middot; What goes in</span>
   </div>
   <div class="slide-content">
     <h2>Give the agent only what this task needs.</h2>
@@ -176,7 +182,7 @@
         <div class="cmp-cell cmp-cell--enough" data-step="1">&ldquo;Open last week&rsquo;s sales sheet and read the Totals tab.&rdquo;</div>
 
         <div class="cmp-label" data-step="2">How you split the work</div>
-        <div class="cmp-cell cmp-cell--much" data-step="2">One conversation for the report, the slides, and the budget.</div>
+        <div class="cmp-cell cmp-cell--much" data-step="2">One conversation for the sales report, a job ad, and a trip plan.</div>
         <span class="flow-arrow" data-step="2">&rarr;</span>
         <div class="cmp-cell cmp-cell--enough" data-step="2">One conversation for each job.</div>
       </div>
@@ -189,7 +195,7 @@
 <section class="slide" data-label="How write it down">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">How &middot; Write it down</span>
+    <span class="tag">02 &middot; What must stay</span>
   </div>
   <div class="slide-content">
     <h2>Put what matters in a file.</h2>
@@ -201,7 +207,7 @@
             <marker id="w-head-on" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="head head--on"/></marker>
           </defs>
           <!-- the conversation -->
-          <g data-step="1">
+          <g>
             <text x="20" y="20" font-size="13.5" class="label label--dim">TEMPORARY</text>
             <rect x="20" y="32" width="172" height="204" rx="12" class="paper paper--temp"/>
             <text x="36" y="58" font-size="15" font-weight="600">The conversation</text>
@@ -216,7 +222,7 @@
             <rect x="36" y="88" width="132" height="6" rx="3" class="ln-on"/>
           </g>
           <!-- instruction file -->
-          <g data-step="2">
+          <g data-step="1">
             <text x="268" y="20" font-size="13.5" class="label">STAYS</text>
             <path d="M 268 32 L 420 32 L 440 52 L 440 124 L 268 124 Z" class="paper paper--on"/>
             <path d="M 420 32 L 420 52 L 440 52" class="fold"/>
@@ -227,7 +233,7 @@
             </g>
           </g>
           <!-- handoff note -->
-          <g data-step="3">
+          <g data-step="2">
             <path d="M 268 144 L 420 144 L 440 164 L 440 236 L 268 236 Z" class="paper paper--on"/>
             <path d="M 420 144 L 420 164 L 440 164" class="fold"/>
             <text x="284" y="170" font-size="15" font-weight="600">Handoff note</text>
@@ -239,15 +245,14 @@
           </g>
         </svg>
       </div>
-      <div class="split-right split-right--tight">
-        <div class="card" data-step="1"><div class="card-name">The conversation</div><p class="card-body">It gets summarized or cleared, and details drop out.</p></div>
-        <div class="card" data-step="2"><div class="card-name">Instruction file</div><p class="card-body">Rules that hold every week, such as the report format. The agent reads it on its own at the start of every conversation.</p></div>
-        <div class="card" data-step="3"><div class="card-name">Handoff note</div><p class="card-body">This week&rsquo;s rules and progress, such as &ldquo;leave out the Boston store&rdquo;. The agent reads it only when you ask.</p></div>
+      <div class="split-right">
+        <div class="card" data-step="1"><div class="card-name">Instruction file</div><p class="card-body">Rules that hold every week, such as the report format. The agent reads it on its own at the start of every conversation.</p></div>
+        <div class="card" data-step="2"><div class="card-name">Handoff note</div><p class="card-body">This week&rsquo;s rules and progress, such as &ldquo;leave out the Boston store&rdquo;. The agent reads it only when you ask.</p></div>
       </div>
     </div>
     <div class="pair-row">
-      <div class="say" data-step="4"><span class="col-label col-label--on">You say</span><span>&ldquo;Write a handoff note for this report: the goal, my rules, what is done, what is left, and where the files are. Save it as handoff.md.&rdquo;</span></div>
-      <p class="split-highlight" data-step="5">A note the agent never reads does nothing. Next time, start with: &ldquo;Read handoff.md first.&rdquo;</p>
+      <div class="say" data-step="3"><span class="col-label col-label--on">You say</span><span>&ldquo;Write a handoff note for this report: the goal, my rules, what is done, what is left, and where the files are. Save it as handoff.md.&rdquo;</span></div>
+      <p class="split-highlight" data-step="4">A note the agent never reads does nothing. Next time, start with: &ldquo;Read handoff.md first.&rdquo;</p>
     </div>
     <p class="fine-print">The instruction file is usually called CLAUDE.md or AGENTS.md.</p>
   </div>
@@ -257,63 +262,35 @@
 <section class="slide" data-label="How reset on purpose">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">How &middot; Reset on purpose</span>
+    <span class="tag">03 &middot; When to clear</span>
   </div>
   <div class="slide-content">
-    <h2>Start fresh for a new job. Compact when one job runs long.</h2>
+    <h2>Reset only when the job changes or the conversation gets long.</h2>
     <p class="lede">Context has a limit. When it is nearly full, Claude Code and Codex replace the conversation with a short summary, without asking you what to keep.</p>
-    <div class="split-body">
-      <div class="split-left">
-        <svg viewBox="0 0 440 312" role="img" aria-label="A long conversation becomes a short summary. The long page has one blue line, your rule. In the short page that line is dashed with a question mark: it may still be there, it may not.">
-          <defs>
-            <marker id="r-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="head"/></marker>
-          </defs>
-          <!-- long conversation -->
-          <text x="95" y="24" text-anchor="middle" font-size="16" font-weight="600">Long conversation</text>
-          <rect x="25" y="38" width="140" height="262" rx="10" class="paper"/>
-          <rect x="41" y="54" width="108" height="6" rx="3" class="ln-on"/>
-          <g class="ln">
-            <rect x="41" y="68" width="84" height="6" rx="3"/><rect x="41" y="82" width="100" height="6" rx="3"/>
-            <rect x="41" y="96" width="70" height="6" rx="3"/><rect x="41" y="110" width="106" height="6" rx="3"/>
-            <rect x="41" y="124" width="90" height="6" rx="3"/><rect x="41" y="138" width="104" height="6" rx="3"/>
-            <rect x="41" y="152" width="76" height="6" rx="3"/><rect x="41" y="166" width="98" height="6" rx="3"/>
-            <rect x="41" y="180" width="108" height="6" rx="3"/><rect x="41" y="194" width="72" height="6" rx="3"/>
-            <rect x="41" y="208" width="102" height="6" rx="3"/><rect x="41" y="222" width="86" height="6" rx="3"/>
-            <rect x="41" y="236" width="106" height="6" rx="3"/><rect x="41" y="250" width="78" height="6" rx="3"/>
-            <rect x="41" y="264" width="100" height="6" rx="3"/><rect x="41" y="278" width="92" height="6" rx="3"/>
-          </g>
-          <!-- the summary -->
-          <g data-step="1">
-            <text x="220" y="68" text-anchor="middle" font-size="14" class="body-text">summary</text>
-            <line x1="178" y1="80" x2="262" y2="80" class="flow" marker-end="url(#r-head)"/>
-            <text x="345" y="24" text-anchor="middle" font-size="16" font-weight="600">Short summary</text>
-            <rect x="275" y="38" width="140" height="84" rx="10" class="paper paper--on"/>
-            <g class="ln">
-              <rect x="291" y="54" width="100" height="6" rx="3"/><rect x="291" y="86" width="108" height="6" rx="3"/>
-              <rect x="291" y="100" width="80" height="6" rx="3"/>
-            </g>
-            <rect x="291" y="69" width="88" height="8" rx="4" class="ln-maybe"/>
-            <text x="394" y="79" text-anchor="middle" font-size="17" class="mark">?</text>
-            <text x="345" y="152" text-anchor="middle" font-size="15.5" font-weight="500">It may still be there.</text>
-            <text x="345" y="174" text-anchor="middle" font-size="15.5" font-weight="500">It may not.</text>
-          </g>
-        </svg>
-      </div>
-      <div class="split-right">
-        <div class="card" data-step="2">
-          <div class="col-label">A new job</div>
-          <div class="card-name">Start fresh</div>
-          <p class="card-body">Open a new, empty conversation. Your instruction file still loads.</p>
-        </div>
-        <div class="card" data-step="3">
-          <div class="col-label">Same job, long conversation</div>
-          <div class="card-name">Compact</div>
-          <p class="card-body">Ask for the summary yourself, and say what to keep.</p>
-        </div>
-        <p class="split-highlight" data-step="4">After any summary, ask: &ldquo;What are my rules for this report?&rdquo; If one is missing, say it again.</p>
+    <div class="body-center">
+      <div class="guide">
+        <div class="col-label guide-head">When</div>
+        <span class="guide-head"></span>
+        <div class="col-label col-label--on guide-head">Do this</div>
+
+        <div class="guide-when" data-step="1">Same job, going well, conversation still short</div>
+        <span class="flow-arrow" data-step="1">&rarr;</span>
+        <div class="guide-do guide-do--default" data-step="1"><span class="guide-act">Keep going</span><span>Change nothing.</span></div>
+
+        <div class="guide-when" data-step="2">Starting an unrelated job</div>
+        <span class="flow-arrow" data-step="2">&rarr;</span>
+        <div class="guide-do" data-step="2"><span class="guide-act">Start fresh</span><span>Open a new, empty conversation. Your instruction file loads again.</span></div>
+
+        <div class="guide-when" data-step="3">Same job, long conversation</div>
+        <span class="flow-arrow" data-step="3">&rarr;</span>
+        <div class="guide-do" data-step="3"><span class="guide-act">Compact</span><span>The agent replaces the conversation with a short summary, and you keep going. Then ask it to repeat your rules.</span></div>
+
+        <div class="guide-when" data-step="4">Same job, but the conversation is a mess, or you will continue another day</div>
+        <span class="flow-arrow" data-step="4">&rarr;</span>
+        <div class="guide-do" data-step="4"><span class="guide-act">Hand off</span><span>Ask for a handoff note, start fresh, then say &ldquo;Read handoff.md first.&rdquo;</span></div>
       </div>
     </div>
-    <p class="fine-print">In Claude Code and Codex, <code>/clear</code> starts a new conversation and <code>/compact</code> makes the summary. Adding what to keep after <code>/compact</code> works in Claude Code.</p>
+    <p class="fine-print">In Claude Code and Codex, <code>/clear</code> starts a new conversation and <code>/compact</code> makes the summary.</p>
   </div>
 </section>
 
@@ -326,7 +303,7 @@
   <div class="closing-grid">
     <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Give it less</div><p class="card-body">Only what this task needs. One job per conversation.</p></div>
     <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">Write it down</div><p class="card-body">Rules and progress go in a file. Next time, ask the agent to read it.</p></div>
-    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Reset on purpose</div><p class="card-body">New job, new conversation. Long job, compact and check.</p></div>
+    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Reset on purpose</div><p class="card-body">New job: start fresh. Long job: compact, or hand off.</p></div>
   </div>
 </section>
 </div>
