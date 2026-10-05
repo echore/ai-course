@@ -1,0 +1,354 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>What Is Context — AI Agent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../shared/theme.css">
+<script src="../../shared/deck.js" defer></script>
+</head>
+<body>
+<div id="deck">
+<style>
+  /* Context frame: one box holding the four things (slides 2 and 6) */
+  .ctx-frame { border: 2px dashed color-mix(in srgb, var(--primary) 45%, transparent); border-radius: 20px; background: var(--card-bg); padding: 1.3rem 1.5rem 1.5rem; }
+  .ctx-head { display: flex; align-items: baseline; gap: 0.9rem; margin-bottom: 1rem; }
+  .ctx-label { font: 600 clamp(0.85rem, 1.05vw, 1rem) 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); }
+  .ctx-sub { font-size: clamp(0.95rem, 1.2vw, 1.1rem); color: var(--text-muted); }
+  .ctx-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.1rem; }
+  .ctx-frame .card { background: var(--bg); display: flex; flex-direction: column; gap: 0.2rem; }
+  .ctx-frame .card-name { font-size: clamp(1.05rem, 1.45vw, 1.35rem); }
+  .ctx-frame .card-body { font-size: clamp(0.98rem, 1.3vw, 1.2rem); color: var(--text); flex: 1; }
+  .where { align-self: flex-start; margin-top: 0.6rem; font: 600 0.78rem 'Space Grotesk', sans-serif; letter-spacing: 0.04em; text-transform: uppercase; padding: 0.3rem 0.85rem; border-radius: 100px; color: var(--text-muted); border: 1.5px dashed var(--border); }
+  .bottom-highlight { margin-top: 1.4rem; }
+  .fine-print { margin-top: 1rem; font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.85rem, 1vw, 0.95rem); color: var(--text-muted); }
+
+  /* Context frame, split into what loads at the start and what grows (slide 6) */
+  .ctx-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; }
+  .ctx-group { display: flex; flex-direction: column; gap: 0.5rem; }
+  .ctx-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; flex: 1; }
+  .col-label { font: 600 clamp(0.8rem, 0.95vw, 0.95rem) 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .col-label--on { color: var(--primary); }
+  .bracket { height: 10px; border: 2px dashed var(--text-light); border-bottom: none; border-radius: 8px 8px 0 0; }
+  .bracket--on { border-style: solid; border-color: var(--primary); }
+
+  /* Why: one day of the Monday report */
+  .day { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr; gap: 1rem; align-items: stretch; }
+  .day-step { display: flex; flex-direction: column; gap: 0.6rem; }
+  .day-step .card { flex: 1; display: flex; flex-direction: column; gap: 0.7rem; }
+  .day-text { font-size: clamp(1rem, 1.35vw, 1.25rem); line-height: 1.45; color: var(--text); }
+  .day-quote { font-size: clamp(1rem, 1.35vw, 1.25rem); line-height: 1.45; color: var(--text); padding: 0.75rem 1rem; border-radius: 10px; background: var(--accent-medium); }
+  .day .flow-arrow { align-self: center; color: var(--text-light); font: 400 1.6rem 'Space Grotesk', sans-serif; }
+  .pile { display: grid; gap: 5px; margin-top: auto; }
+  .pile i { display: block; height: 6px; border-radius: 3px; background: var(--text-light); opacity: 0.55; }
+  .pile i:first-child { background: var(--primary); opacity: 1; }
+  .pile i:nth-child(3n) { width: 72%; }
+  .pile i:nth-child(3n + 2) { width: 88%; }
+
+  /* Why: cards beside a diagram */
+  .split-right .card-name { font-size: clamp(1.05rem, 1.4vw, 1.3rem); }
+  .split-right .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
+
+  /* Why: signs to watch for */
+  .sign { font-size: clamp(1.05rem, 1.4vw, 1.3rem); color: var(--text); padding: 0.75rem 1.2rem; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); }
+
+  /* Takeaway: pointer to the next video */
+  .next-up { position: relative; margin-top: 1.8rem; font: 600 clamp(1.05rem, 1.4vw, 1.3rem) 'Space Grotesk', sans-serif; color: var(--primary); }
+
+  svg text { font-family: 'Space Grotesk', sans-serif; fill: var(--text); }
+  svg .body-text { font-family: 'Inter', sans-serif; fill: var(--text-muted); }
+  svg .on-primary { fill: var(--bg); }
+  svg .label { font-weight: 600; letter-spacing: 0.08em; fill: var(--primary); }
+
+  /* Narrow screens: stack the side-by-side layouts and let a slide scroll down */
+  @media (max-width: 760px) {
+    #deck .slide { overflow-x: hidden; overflow-y: auto; }
+    #deck .slide-content, #deck .body-center { flex: none; }
+    #deck .lede { max-width: none; }
+    #deck .split-body { grid-template-columns: 1fr; gap: 1.2rem; }
+    #deck .split-left { height: auto; }
+    #deck .split-left svg { height: auto; max-height: 40vh; }
+    #deck .split-right { padding-left: 0; border-left: none; }
+    .ctx-grid, .ctx-groups, .day { grid-template-columns: 1fr; }
+    .day .flow-arrow { display: none; }
+    #deck .layout-closing { justify-content: flex-start; }
+    #deck .closing-grid { grid-template-columns: 1fr; width: 100%; }
+    #deck .layout-cover h1 { max-width: none; }
+    #deck .source { margin-top: 0.6rem; }
+  }
+</style>
+
+<!-- 1 · Title -->
+<section class="slide layout-cover" data-label="Title">
+  <div class="cover-decoration"></div>
+  <div class="cover-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <div class="accent-line enter" style="--i: 0;"></div>
+  <h1 class="enter" style="--i: 1;">What Is Context</h1>
+  <div class="cover-tags enter" style="--i: 2;">
+    <span class="tag">What</span>
+    <span class="tag">Why</span>
+  </div>
+</section>
+
+<!-- 2 · WHAT: context -->
+<section class="slide" data-label="What context">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">What &middot; Context</span>
+  </div>
+  <div class="slide-content">
+    <h2>Context is everything the agent can see right now.</h2>
+    <p class="lede">In Module 1, the agent loop &ldquo;keeps context&rdquo;. This is what that word means.</p>
+    <div class="body-center">
+      <div class="ctx-frame enter" style="--i: 1;">
+        <div class="ctx-head"><span class="ctx-label">Context</span><span class="ctx-sub">what the agent can see right now</span></div>
+        <div class="ctx-grid">
+          <div class="card" data-step="1">
+            <div class="card-name">Instruction file</div>
+            <p class="card-body">The rules you wrote for it.</p>
+            <span class="where">Module 2</span>
+          </div>
+          <div class="card" data-step="2">
+            <div class="card-name">Connected tools</div>
+            <p class="card-body">The list of apps it can reach.</p>
+            <span class="where">Module 3</span>
+          </div>
+          <div class="card" data-step="3">
+            <div class="card-name">Files and results</div>
+            <p class="card-body">What it has opened or fetched. The spreadsheet. Last week&rsquo;s report.</p>
+          </div>
+          <div class="card" data-step="4">
+            <div class="card-name">Your conversation</div>
+            <p class="card-body">Everything you and the agent have said in this session.</p>
+          </div>
+        </div>
+      </div>
+      <p class="split-highlight bottom-highlight" data-step="5">If something is not in the context, the agent can&rsquo;t see it until it goes and gets it.</p>
+    </div>
+    <p class="fine-print">Your agent tool, such as Claude Code or Codex, also adds its own built-in instructions. You can&rsquo;t edit those.</p>
+  </div>
+</section>
+
+<!-- 3 · WHY: the trouble -->
+<section class="slide" data-label="Why trouble">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">Why &middot; The trouble</span>
+  </div>
+  <div class="slide-content">
+    <h2>In a long conversation, the agent starts to forget what you told it.</h2>
+    <p class="lede">Back to the Monday report.</p>
+    <div class="body-center">
+      <div class="day">
+        <div class="day-step" data-step="1">
+          <div class="col-label col-label--on">Morning</div>
+          <div class="card">
+            <p class="day-text">You say:</p>
+            <div class="day-quote">&ldquo;This week, put the totals at the top and leave out the test store.&rdquo;</div>
+          </div>
+        </div>
+        <span class="flow-arrow" data-step="2">&rarr;</span>
+        <div class="day-step" data-step="2">
+          <div class="col-label">All afternoon</div>
+          <div class="card">
+            <p class="day-text">You fix numbers and reword the summary. It opens file after file.</p>
+            <div class="pile" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+          </div>
+        </div>
+        <span class="flow-arrow" data-step="3">&rarr;</span>
+        <div class="day-step" data-step="3">
+          <div class="col-label">End of day</div>
+          <div class="card">
+            <p class="day-text">The new draft has the totals at the bottom.</p>
+            <p class="day-text">The test store is back.</p>
+          </div>
+        </div>
+      </div>
+      <p class="split-highlight bottom-highlight" data-step="4">Nothing broke. The conversation just got long.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · WHY: it rereads everything -->
+<section class="slide" data-label="Why rereads">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">Why &middot; It rereads everything</span>
+  </div>
+  <div class="slide-content">
+    <h2>At every step, it rereads the whole context from the top.</h2>
+    <p class="lede">Remember the loop from Module 1. Each turn of the loop starts by reading everything again.</p>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 440 372" role="img" aria-label="Three pages of context, each longer than the last. At every step the agent reads the whole page from the top. Your morning request is one line at the top of each.">
+          <defs>
+            <marker id="arrowR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#6b6b6b"/>
+            </marker>
+          </defs>
+          <!-- first step -->
+          <g data-step="1">
+            <text x="75" y="28" text-anchor="middle" font-size="16" font-weight="600">First step</text>
+            <rect x="15" y="44" width="120" height="64" rx="10" fill="#fdfae7" stroke="rgba(30,43,250,0.35)" stroke-width="1.5"/>
+            <rect x="29" y="58" width="92" height="6" rx="3" fill="#1e2bfa"/>
+            <g fill="#9a9a9a" opacity="0.55">
+              <rect x="29" y="72" width="70" height="6" rx="3"/><rect x="29" y="86" width="84" height="6" rx="3"/>
+            </g>
+            <line x1="145" y1="48" x2="145" y2="104" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowR)"/>
+          </g>
+          <!-- later -->
+          <g data-step="2">
+            <text x="215" y="28" text-anchor="middle" font-size="16" font-weight="600">Later</text>
+            <rect x="155" y="44" width="120" height="148" rx="10" fill="#fdfae7" stroke="rgba(30,43,250,0.35)" stroke-width="1.5"/>
+            <rect x="169" y="58" width="92" height="6" rx="3" fill="#1e2bfa"/>
+            <g fill="#9a9a9a" opacity="0.55">
+              <rect x="169" y="72" width="70" height="6" rx="3"/><rect x="169" y="86" width="84" height="6" rx="3"/>
+              <rect x="169" y="100" width="58" height="6" rx="3"/><rect x="169" y="114" width="90" height="6" rx="3"/>
+              <rect x="169" y="128" width="76" height="6" rx="3"/><rect x="169" y="142" width="88" height="6" rx="3"/>
+              <rect x="169" y="156" width="64" height="6" rx="3"/><rect x="169" y="170" width="82" height="6" rx="3"/>
+            </g>
+            <line x1="285" y1="48" x2="285" y2="188" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowR)"/>
+          </g>
+          <!-- much later -->
+          <g data-step="2" style="--d: 140ms;">
+            <text x="355" y="28" text-anchor="middle" font-size="16" font-weight="600">Much later</text>
+            <rect x="295" y="44" width="120" height="268" rx="10" fill="#fdfae7" stroke="rgba(30,43,250,0.35)" stroke-width="1.5"/>
+            <rect x="309" y="58" width="92" height="6" rx="3" fill="#1e2bfa"/>
+            <g fill="#9a9a9a" opacity="0.55">
+              <rect x="309" y="72" width="70" height="6" rx="3"/><rect x="309" y="86" width="84" height="6" rx="3"/>
+              <rect x="309" y="100" width="58" height="6" rx="3"/><rect x="309" y="114" width="90" height="6" rx="3"/>
+              <rect x="309" y="128" width="76" height="6" rx="3"/><rect x="309" y="142" width="88" height="6" rx="3"/>
+              <rect x="309" y="156" width="64" height="6" rx="3"/><rect x="309" y="170" width="82" height="6" rx="3"/>
+              <rect x="309" y="184" width="92" height="6" rx="3"/><rect x="309" y="198" width="60" height="6" rx="3"/>
+              <rect x="309" y="212" width="86" height="6" rx="3"/><rect x="309" y="226" width="72" height="6" rx="3"/>
+              <rect x="309" y="240" width="90" height="6" rx="3"/><rect x="309" y="254" width="66" height="6" rx="3"/>
+              <rect x="309" y="268" width="84" height="6" rx="3"/><rect x="309" y="282" width="78" height="6" rx="3"/>
+            </g>
+            <line x1="425" y1="48" x2="425" y2="308" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowR)"/>
+          </g>
+          <!-- legend -->
+          <g data-step="1">
+            <rect x="15" y="333" width="26" height="6" rx="3" fill="#1e2bfa"/>
+            <text x="50" y="341" font-size="14" class="body-text">what you said this morning</text>
+            <line x1="15" y1="358" x2="37" y2="358" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowR)"/>
+            <text x="50" y="363" font-size="14" class="body-text">what it reads at that step</text>
+          </g>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="card" data-step="1"><div class="card-name">01 &nbsp; Nothing stays in its head</div><p class="card-body">Between steps it keeps nothing. It reads the whole context again each time.</p></div>
+        <div class="card" data-step="2"><div class="card-name">02 &nbsp; Everything is added</div><p class="card-body">Each message, each file it opens, each result that comes back goes onto the pile.</p></div>
+        <p class="split-highlight" data-step="3">So the context keeps growing as you work.</p>
+      </div>
+    </div>
+    <p class="fine-print">When the context gets close to full, the tool shortens it for you. More on that in the next video.</p>
+  </div>
+</section>
+
+<!-- 5 · WHY: attention -->
+<section class="slide" data-label="Why attention">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">Why &middot; Attention</span>
+  </div>
+  <div class="slide-content">
+    <h2>The more it has to read, the less attention each part gets.</h2>
+    <p class="lede">Your morning request is still there. It is now one line in a very long page.</p>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 440 340" role="img" aria-label="A sketch: how well the agent works falls gradually as the context fills up. It is a slope, not a sudden drop.">
+          <!-- axes -->
+          <line x1="52" y1="28" x2="52" y2="270" stroke="#6b6b6b" stroke-width="2"/>
+          <line x1="52" y1="270" x2="424" y2="270" stroke="#6b6b6b" stroke-width="2"/>
+          <text x="238" y="298" text-anchor="middle" font-size="15" class="body-text">How much is in the context &rarr;</text>
+          <text x="26" y="150" text-anchor="middle" font-size="15" class="body-text" transform="rotate(-90 26 150)">How well it works</text>
+          <!-- the slope -->
+          <g data-step="1">
+            <path d="M 62 72 C 190 76, 300 122, 414 222" fill="none" stroke="#1e2bfa" stroke-width="4" stroke-linecap="round"/>
+            <text x="66" y="56" font-size="17" font-weight="600">Sharp</text>
+            <text x="416" y="252" text-anchor="end" font-size="17" font-weight="600">Fuzzy</text>
+          </g>
+          <!-- not a cliff -->
+          <g data-step="2">
+            <path d="M 62 72 L 250 72 L 250 264" fill="none" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="6 6"/>
+            <text x="150" y="196" text-anchor="middle" font-size="14.5" class="body-text">Not like this</text>
+          </g>
+          <text x="238" y="328" text-anchor="middle" font-size="13.5" class="body-text">A sketch, not a measurement.</text>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="col-label col-label--on" data-step="3">Common signs</div>
+        <div class="sign" data-step="3">It forgets a rule you gave it.</div>
+        <div class="sign" data-step="3" style="--d: 70ms;">It repeats work it already did.</div>
+        <div class="sign" data-step="3" style="--d: 140ms;">It answers a different question.</div>
+        <p class="split-highlight" data-step="4">There is no clear moment when it breaks. Treat these signs as a hint to check.</p>
+      </div>
+    </div>
+    <p class="fine-print">A longer context also uses up your plan or budget faster.</p>
+    <p class="source">Sources: Anthropic, <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank">&ldquo;Effective context engineering for AI agents&rdquo;</a> (2025); Chroma, <a href="https://research.trychroma.com/context-rot" target="_blank">&ldquo;Context Rot&rdquo;</a> (2025)</p>
+  </div>
+</section>
+
+<!-- 6 · WHAT: what fills it -->
+<section class="slide" data-label="What fills it">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">What &middot; What fills it</span>
+  </div>
+  <div class="slide-content">
+    <h2>Some of it is there before you type a word. Most of it piles up as you work.</h2>
+    <div class="body-center">
+      <div class="ctx-frame enter" style="--i: 1;">
+        <div class="ctx-head"><span class="ctx-label">Context</span><span class="ctx-sub">the same four things, in two groups</span></div>
+        <div class="ctx-groups">
+          <div class="ctx-group" data-step="1">
+            <div class="col-label">Loaded at the start of every session</div>
+            <div class="bracket"></div>
+            <div class="ctx-pair">
+              <div class="card">
+                <div class="card-name">Instruction file</div>
+                <p class="card-body">Loaded at the start, every time. This is why Module 2 said to keep it short.</p>
+              </div>
+              <div class="card">
+                <div class="card-name">Connected tools</div>
+                <p class="card-body">A note on what each one can do.</p>
+              </div>
+            </div>
+          </div>
+          <div class="ctx-group" data-step="2">
+            <div class="col-label col-label--on">Grows as you work</div>
+            <div class="bracket bracket--on"></div>
+            <div class="ctx-pair">
+              <div class="card">
+                <div class="card-name">Files and results</div>
+                <p class="card-body">Whatever it opens or fetches goes in. A big spreadsheet takes a lot of room.</p>
+              </div>
+              <div class="card">
+                <div class="card-name">Your conversation</div>
+                <p class="card-body">Every message and every step.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="split-highlight bottom-highlight" data-step="3">What a connected app brings back usually takes far more room than the connection itself.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Takeaway -->
+<section class="slide layout-closing" data-label="Takeaway">
+  <div class="closing-decoration"></div>
+  <div class="closing-decoration-2"></div>
+  <div class="accent-line enter" style="--i: 0; margin: 0 auto 1.5rem;"></div>
+  <h1 class="enter" style="--i: 1;">Takeaway</h1>
+  <div class="closing-grid">
+    <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Context is what it can see</div><p class="card-body">Instructions, tools, files and results, and your conversation.</p></div>
+    <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">It rereads all of it at every step</div><p class="card-body">And the pile keeps growing.</p></div>
+    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Long means fuzzy</div><p class="card-body">Quality slips gradually as the context grows. Watch for the signs.</p></div>
+  </div>
+  <p class="next-up" data-step="4">Next video: what to do about it.</p>
+</section>
+</div>
+</body>
+</html>
