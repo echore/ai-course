@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Module 02-01: Pilot Phase, Handoff & Feedback</title>
+  <title>Module 02-01: The POC Sprint</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -46,7 +46,6 @@
     h3 { font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: 500; line-height: 1.3; }
     h4 { font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); }
     p, li { font-size: clamp(0.85rem, 1.1vw, 1.05rem); line-height: 1.6; color: var(--text-muted); }
-    .numeral { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--primary); }
 
     .slide-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5vh; flex-shrink: 0; }
     .slide-header .tag { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 500; color: var(--primary); background: var(--accent-light); padding: 0.35rem 0.9rem; border-radius: 100px; }
@@ -62,8 +61,8 @@
 
     /* Layouts */
     .layout-cover { justify-content: center; align-items: flex-start; padding-left: 8vw; }
-    .layout-cover h1 { max-width: 75vw; margin-bottom: 1.5rem; line-height: 1.05; }
-    .layout-cover .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 3rem; }
+    .layout-cover h1 { max-width: 65vw; margin-bottom: 1.5rem; line-height: 1.05; }
+    .layout-cover .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-muted); max-width: 45vw; margin-bottom: 3rem; }
     .layout-cover .meta { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; color: var(--text-light); letter-spacing: 0.05em; }
     .layout-cover .cover-decoration { position: absolute; top: 0; right: 0; width: 35vw; height: 100vh; background: var(--accent-light); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
 
@@ -99,8 +98,14 @@
     .step-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.4vw, 1.15rem); font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
     .step-desc { font-size: clamp(0.75rem, 1vw, 0.9rem); color: var(--text-muted); line-height: 1.5; max-width: 220px; }
 
+    .layout-quote { justify-content: center; align-items: center; text-align: center; }
+    .layout-quote .quote-mark { font-family: 'Space Grotesk', sans-serif; font-size: 8rem; font-weight: 700; color: var(--primary); opacity: 0.15; line-height: 0.5; margin-bottom: 1rem; }
+    .layout-quote blockquote { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.6rem, 2.8vw, 2.4rem); font-weight: 500; line-height: 1.35; color: var(--text); max-width: 65vw; margin-bottom: 2rem; }
+    .layout-quote .quote-source { font-size: clamp(0.85rem, 1.1vw, 1rem); color: var(--text-muted); }
+    .layout-quote .quote-source strong { color: var(--text); font-weight: 600; }
+
     .layout-closing { justify-content: center; align-items: center; text-align: center; }
-    .layout-closing .closing-sub { font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 2.5rem; }
+    .layout-closing .closing-sub { font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-muted); max-width: 45vw; margin-bottom: 2.5rem; }
     .layout-closing .cta-btn { display: inline-block; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--bg); background: var(--primary); padding: 0.9rem 2.2rem; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: transform 0.2s ease, box-shadow 0.2s ease; }
     .layout-closing .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30, 43, 250, 0.25); }
     .layout-closing .closing-decoration { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.4; pointer-events: none; }
@@ -108,7 +113,20 @@
 
     .keyboard-hint { position: fixed; bottom: 2.5vh; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--text-light); z-index: 100; opacity: 0.6; }
       .hub { position:fixed; top:1rem; right:1.5rem; z-index:100; color:var(--primary); font-size:.75rem; text-decoration:none; }
-  </style>
+  
+/* Keep early reference lessons readable while scrolling on phones. */
+@media(max-width:700px){
+ .slide{padding:4rem 6vw 6rem;overflow-y:auto}
+ .slide-content{flex:none;min-height:auto}
+ .layout-detail .detail-body,.layout-split .split-body,.layout-dashboard .stats-grid{grid-template-columns:minmax(0,1fr)!important;flex:none;overflow:visible}
+ .split-body>div{min-width:0}
+ .timeline-track{flex-direction:column;align-items:flex-start!important;flex:none!important}
+ .timeline-step{align-items:flex-start;text-align:left;flex:none}
+ .timeline-step:not(:last-child)::after{display:none}
+ .keyboard-hint{display:none}
+}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+</style>
 </head>
 <body>
 <a class="hub" href="../index.html">Course hub ↗</a>
@@ -119,384 +137,293 @@
     <div class="slide layout-cover active">
       <div class="cover-decoration"></div>
       <div class="accent-line"></div>
-      <h1>Pilot Phase, Handoff, &amp; Feedback</h1>
-      <p class="subtitle">Testing the system in real user environments, ensuring deployment readiness, and converting field observations into product intelligence.</p>
+      <h1>The Proof of Concept (POC) Sprint</h1>
+      <p class="subtitle">Testing AI system approaches against real data and customer environments.</p>
       <p class="meta">Module 02-01 &nbsp;&middot;&nbsp; End-to-End Delivery</p>
     </div>
 
-    <!-- SLIDE 2: POC vs Pilot -->
+    <!-- SLIDE 2: What is a POC -->
     <div class="slide layout-split">
       <div class="slide-header">
-        <h4>The Transition</h4>
+        <h4>Definition</h4>
         <span class="tag">02-01</span>
       </div>
       <div class="slide-content">
-        <h2>POC vs. The Pilot Phase</h2>
+        <h2>What is a POC?</h2>
         <div class="split-body">
           <div class="split-left">
-            <p>The POC sprint answered one question: Does the approach work?</p>
-            <p>The pilot answers a completely different question: Does a more complete version of the system work for its end users, in their day-to-day workflows, under operational conditions?</p>
-            <p>A system that hits 91% accuracy on a test set can still fail if users do not trust it or if the workflow integration creates friction.</p>
+            <p>Customers often expect a proof of concept to be a smaller version of the final product. It is not.</p>
+            <ul class="insight-list">
+              <li>A POC is a time-boxed experiment designed to answer <strong>one question</strong> before committing to a full build.</li>
+              <li>Does this approach work, with this data, inside this customer environment?</li>
+              <li>Everything not required to answer that specific question stays out of scope.</li>
+            </ul>
           </div>
           <div class="split-right">
             <div class="split-highlight">
-              A test set reveals technical performance under controlled conditions. Real users reveal organizational fit and unexpected input patterns.
-              <cite>The Value of the Pilot</cite>
+              The output of a sprint is an answer, not a product.
+              <cite>The Core Objective</cite>
             </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 3: Pilot Additions -->
-    <div class="slide layout-detail">
-      <div class="slide-header">
-        <h4>Scope Boundaries</h4>
-        <span class="tag">02-01</span>
-      </div>
-      <div class="slide-content">
-        <h2>What the Pilot Adds (and Excludes)</h2>
-        <div class="detail-body">
-          <div class="detail-col">
-            <div class="detail-block">
-              <h3 style="color: #059669;">What is Included</h3>
-              <ul>
-                <li><strong>Broader input coverage:</strong> The messy cases absent from the curated POC test set.</li>
-                <li><strong>Live system integrations:</strong> Real auth, live feeds, and write-backs to user systems.</li>
-                <li><strong>Error handling:</strong> Edge case logic is now addressed with operational depth.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="detail-col">
-            <div class="detail-block">
-              <h3 style="color: #dc2626;">Explicitly Excluded</h3>
-              <ul>
-                <li>Production-grade monitoring infrastructure.</li>
-                <li>Complete compliance and audit documentation.</li>
-                <li>Organization-wide scaling work.</li>
-              </ul>
-              <p style="margin-top: 10px; font-size: 0.85rem; color: var(--text-light);">These are explicit exclusions to keep the pilot contained, not deferred tasks.</p>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 4: The Pilot Scope -->
-    <div class="slide layout-dashboard">
-      <div class="slide-header">
-        <h4>The Agreement</h4>
-        <span class="tag">02-01</span>
-      </div>
-      <div class="slide-content">
-        <h2>The Pilot Scope & Shadow Mode</h2>
-        <p style="margin-bottom: 2rem;">The scope creates a shared standard for "done" and helps the FDE manage scope expansion mid-flight.</p>
-        <div class="stats-grid">
-          <div class="stat-cell">
-            <div class="stat-name">Scope Elements</div>
-            <div class="stat-context">Must define: Capabilities, Integrations, specific Users, Timeline, and Success Criteria (performance, adoption, trust).</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-name">Feedback Cadence</div>
-            <div class="stat-context">Establish a weekly or bi-weekly rhythm of user check-ins. A pilot with no structured check-ins produces feedback too late to act on.</div>
-          </div>
-          <div class="stat-cell" style="background: var(--accent-light); border-color: var(--primary);">
-            <div class="stat-name" style="color: var(--text);">Shadow Mode (Optional)</div>
-            <div class="stat-context">The AI processes live requests, but outputs are hidden from users. FDEs compare accuracy against the manual process before going live.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 5: Real Users -->
+    <!-- SLIDE 3: The 4 Stages -->
     <div class="slide layout-timeline">
       <div class="slide-header">
-        <h4>Human Factors</h4>
+        <h4>Structure</h4>
         <span class="tag">02-01</span>
       </div>
       <div class="slide-content">
-        <h2>Working with Real Users</h2>
+        <h2>How a sprint is structured</h2>
+        <p style="text-align: center; margin-bottom: 2rem;">The length of each stage varies by project, but they should never be skipped.</p>
         <div class="timeline-track">
           <div class="timeline-step">
             <div class="step-circle">1</div>
-            <div class="step-title">Set Expectations</div>
-            <div class="step-desc">Tell them what the system does and doesn't do. Users without clear expectations will either over-rely on it or dismiss it after one error.</div>
+            <div class="step-title">Access & Setup</div>
+            <div class="step-desc">Confirming all technical dependencies, credentials, and data access are in place.</div>
           </div>
           <div class="timeline-step">
             <div class="step-circle">2</div>
-            <div class="step-title">Capture Feedback</div>
-            <div class="step-desc">Set up a simple channel (Slack/Form) to capture the input, the output, and what was wrong. Vague feedback is not actionable.</div>
+            <div class="step-title">Data Validation</div>
+            <div class="step-desc">Examining what the data actually looks like versus what was described in discovery.</div>
           </div>
           <div class="timeline-step">
             <div class="step-circle">3</div>
-            <div class="step-title">Iterate in Scope</div>
-            <div class="step-desc">Address legitimate bugs, but log and defer new feature requests. Expanding scope mid-pilot distorts the evaluation.</div>
+            <div class="step-title">Working Output</div>
+            <div class="step-desc">Getting the pipeline running end-to-end to produce a first result, then iterating for quality.</div>
+          </div>
+          <div class="timeline-step">
+            <div class="step-circle">4</div>
+            <div class="step-title">Eval & Demo</div>
+            <div class="step-desc">Formal evaluation against the test set, building the interface, and drafting the readout.</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 6: Evaluating Performance -->
-    <div class="slide layout-dashboard">
+    <!-- SLIDE 4: Stage 1 & 2 Deep Dive -->
+    <div class="slide layout-detail">
       <div class="slide-header">
-        <h4>Success Signals</h4>
+        <h4>Foundation</h4>
         <span class="tag">02-01</span>
       </div>
       <div class="slide-content">
-        <h2>Evaluating Pilot Performance</h2>
-        <p style="margin-bottom: 2rem;">Metric performance is only one part of the evaluation. Three signals determine readiness:</p>
-        <div class="stats-grid">
-          <div class="stat-cell">
-            <div class="stat-name">Reliability</div>
-            <div class="stat-context">Stable latency and predictable output. Average metrics can look strong while hiding concentrated failure patterns in specific input categories.</div>
+        <h2>Setup and Validation</h2>
+        <div class="detail-body">
+          <div class="detail-col">
+            <div class="detail-block">
+              <h3>Access & Environment Setup</h3>
+              <ul>
+                <li>Confirm model API credentials, read access, and representative test data.</li>
+                <li>This stage only ends when the FDE can run code against real data (or a reliable approximation).</li>
+                <li><strong>Risk:</strong> Starting the build before access is confirmed creates rework.</li>
+              </ul>
+            </div>
           </div>
-          <div class="stat-cell">
-            <div class="stat-name">Adoption</div>
-            <div class="stat-context">Do users organize their work around the system's output? Low adoption with strong metrics usually points to a usability issue.</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-name">Trust</div>
-            <div class="stat-context">Do users act on the output, or do they re-verify everything independently? High re-verification signals a lack of confidence.</div>
+          <div class="detail-col">
+            <div class="detail-block">
+              <h3>Data Exploration</h3>
+              <ul>
+                <li>Examine the actual format. How consistent is the structure?</li>
+                <li>Does this sample reflect the real production population?</li>
+                <li><strong>Warning:</strong> A pipeline designed without examining the actual data almost always requires significant rework.</li>
+              </ul>
+            </div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 7: Closing the Pilot -->
+    <!-- SLIDE 5: Stage 3 & 4 Deep Dive -->
+    <div class="slide layout-detail">
+      <div class="slide-header">
+        <h4>Execution</h4>
+        <span class="tag">02-01</span>
+      </div>
+      <div class="slide-content">
+        <h2>Build and Evaluate</h2>
+        <div class="detail-body">
+          <div class="detail-col">
+            <div class="detail-block">
+              <h3>Building Toward Output</h3>
+              <ul>
+                <li>Goal: Take a real input, process it, and produce a result, even if quality is low.</li>
+                <li><strong>Speed to first output</strong> matters more than getting to high quality quickly.</li>
+                <li>Once end-to-end, iterate against the agreed success metric on the test set, not personal judgment.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="detail-col">
+            <div class="detail-block">
+              <h3>Eval & Async Updates</h3>
+              <ul>
+                <li>Send a brief async update daily: What was done, what is blocked, what happens next.</li>
+                <li>Sharing rough intermediate results keeps customers engaged.</li>
+                <li>Silence is dangerous: A customer who hears nothing fills the silence with concern.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 6: Responding to the Environment -->
     <div class="slide layout-split">
+      <div class="slide-header">
+        <h4>Adaptability</h4>
+        <span class="tag">02-01</span>
+      </div>
+      <div class="slide-content">
+        <h2>When conditions don't match scoping</h2>
+        <div class="split-body">
+          <div class="split-left">
+            <ul class="insight-list">
+              <li><strong>When access is delayed:</strong> Build with synthetic inputs or mock responses. Document exactly what is mocked and what real version will replace it.</li>
+              <li><strong>When data differs:</strong> Build against what is actually available.</li>
+              <li>Report discrepancies precisely. "The data was harder than expected" is useless; state exactly how it differs and the build implications.</li>
+            </ul>
+          </div>
+          <div class="split-right">
+            <div class="split-highlight" style="border-color: #dc2626;">
+              The formal evaluation must always run against real data, never against simulated inputs.
+              <cite>The Integrity Rule</cite>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 7: Version Control -->
+    <div class="slide layout-quote">
+      <div class="quote-decoration"></div>
+      <div class="quote-decoration-2"></div>
+      <div class="quote-mark">&ldquo;</div>
+      <blockquote>
+        Every decision made because of missing data, delayed access, or an unexpected format should be documented at the moment it is made.
+      </blockquote>
+      <p class="quote-source"><strong>The Discipline of Sprinting</strong> &mdash; Reconstructing decisions after the sprint produces an incomplete record.</p>
+    </div>
+
+    <!-- SLIDE 8: Running the Demo -->
+    <div class="slide layout-dashboard">
+      <div class="slide-header">
+        <h4>The Presentation</h4>
+        <span class="tag">02-01</span>
+      </div>
+      <div class="slide-content">
+        <h2>Running the POC Demo</h2>
+        <p style="margin-bottom: 2rem;">The demo is a value narrative, not a technical feature tour. It has three distinct parts:</p>
+        <div class="stats-grid">
+          <div class="stat-cell">
+            <div class="stat-name">01 &nbsp; Before</div>
+            <div class="stat-context">Show the current state. How long does a typical case take today? This establishes the baseline for comparison.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">02 &nbsp; During</div>
+            <div class="stat-context">Run the system on a <strong>typical</strong> real input. A typical input that produces a strong result is more persuasive than a cherry-picked perfect one.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">03 &nbsp; After</div>
+            <div class="stat-context">Connect output to business impact. How much time was saved? What does that look like at weekly volume?</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 9: Evaluation & Metrics -->
+    <div class="slide layout-detail">
+      <div class="slide-header">
+        <h4>Measurement</h4>
+        <span class="tag">02-01</span>
+      </div>
+      <div class="slide-content">
+        <h2>Measuring and Deciding</h2>
+        <div class="detail-body">
+          <div class="detail-col" style="grid-column: span 2;">
+            <div class="detail-block">
+              <h3 style="color: #dc2626;">Crucial Step: Confirm the Target</h3>
+              <p style="margin-bottom: 15px;">Before running the demo, confirm with the customer that the success metric from the scope document is still the agreed standard to prevent moving goalposts.</p>
+              <ul style="border-top: 1px solid var(--border); padding-top: 15px;">
+                <li><strong>Primary Metric:</strong> "We agreed the target was X, and here is what we measured."</li>
+                <li><strong>Latency:</strong> Does it meet the operational requirements?</li>
+                <li><strong>Cost per Transaction:</strong> Is it within budget at projected production volume?</li>
+                <li><strong>Edge Cases:</strong> Where does the system underperform, and how often?</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SLIDE 10: The 3 Outcomes -->
+    <div class="slide layout-dashboard">
       <div class="slide-header">
         <h4>Decision Point</h4>
         <span class="tag">02-01</span>
       </div>
       <div class="slide-content">
-        <h2>Closing the Pilot</h2>
-        <div class="split-body">
-          <div class="split-left">
-            <p>The pilot closes with a structured readout covering operational behavior, adoption data, trust signals, and a recommendation.</p>
-            <ul class="insight-list">
-              <li><strong>Proceed:</strong> All three signals are positive. Define deployment prerequisites.</li>
-              <li><strong>Extend:</strong> One or more signals need intervention. Agree on a timeline.</li>
-            </ul>
-          </div>
-          <div class="split-right">
-            <div class="split-highlight">
-              Deployment Prerequisites:
-              <cite>Required before FDE exit</cite>
-            </div>
-            <p style="margin-top: 15px; font-size: 0.95rem;">Before handoff, the customer must commit to a named system owner, a support channel, and a monitoring plan.</p>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 8: Deployment Readiness -->
-    <div class="slide layout-dashboard">
-      <div class="slide-header">
-        <h4>Criteria</h4>
-        <span class="tag">02-01</span>
-      </div>
-      <div class="slide-content">
-        <h2>What "Deployment-Ready" Means</h2>
-        <p style="margin-bottom: 2rem;">AI systems cannot be validated via standard tests alone because outputs are probabilistic.</p>
+        <h2>The Three Possible Outcomes</h2>
+        <p style="margin-bottom: 2rem;">All three are valid. The sprint succeeds when it produces a clear one.</p>
         <div class="stats-grid">
           <div class="stat-cell">
-            <div class="stat-name">Reliability</div>
-            <div class="stat-context">Processes requests consistently without silent errors.</div>
+            <div class="stat-name" style="color: #059669;">Proceed</div>
+            <div class="stat-context">The metric was met, integration works, and customer is confident. Agree on next steps before leaving the room.</div>
           </div>
           <div class="stat-cell">
-            <div class="stat-name">Output Quality</div>
-            <div class="stat-context">Accuracy holds consistently at real deployment volume.</div>
+            <div class="stat-name" style="color: #fb923c;">Pivot</div>
+            <div class="stat-context">The metric was not met, but the sprint revealed a specific path. Define what needs to change before the next attempt.</div>
           </div>
           <div class="stat-cell">
-            <div class="stat-name">Safety</div>
-            <div class="stat-context">No output causes downstream harm without human review.</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-name">Cost</div>
-            <div class="stat-context">Token costs at volume are within committed budget.</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-name">Observability</div>
-            <div class="stat-context">The team can catch quality degradation early.</div>
+            <div class="stat-name" style="color: #dc2626;">Stop</div>
+            <div class="stat-context">The approach doesn't work, or the cost/latency makes it infeasible. A stop outcome is the correct answer produced at the lowest possible cost.</div>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 9: What is Handed Off -->
-    <div class="slide layout-detail">
-      <div class="slide-header">
-        <h4>Deliverables</h4>
-        <span class="tag">02-01</span>
-      </div>
-      <div class="slide-content">
-        <h2>What the FDE Hands Off</h2>
-        <div class="detail-body">
-          <div class="detail-col">
-            <div class="detail-block">
-              <h3>1. Maintainable Code</h3>
-              <ul>
-                <li>Separates config from logic and avoids local dependencies.</li>
-                <li>Committed to a repo the customer team can access from day one.</li>
-              </ul>
-            </div>
-            <div class="detail-block">
-              <h3>2. The Live Session</h3>
-              <ul>
-                <li>An end-to-end walkthrough of architecture and monitoring.</li>
-                <li>Recorded so the team can refer back to it.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="detail-col">
-            <div class="detail-block">
-              <h3>3. The Handoff Document</h3>
-              <ul>
-                <li><strong>System Overview:</strong> What it does and doesn't handle.</li>
-                <li><strong>Data Flow:</strong> Where data moves and what hits external APIs.</li>
-                <li><strong>Failure Modes:</strong> How it fails and what triggers it.</li>
-                <li><strong>Monitoring Setup:</strong> What each alert means operationally.</li>
-                <li><strong>Escalation Path:</strong> When a human should intervene.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 10: Monitoring -->
+    <!-- SLIDE 11: The Readout & Next Steps -->
     <div class="slide layout-split">
       <div class="slide-header">
-        <h4>Operations</h4>
+        <h4>Handoff</h4>
         <span class="tag">02-01</span>
       </div>
       <div class="slide-content">
-        <h2>Monitoring a Deployed AI System</h2>
+        <h2>The Readout Document</h2>
         <div class="split-body">
           <div class="split-left">
-            <p>Quality can degrade gradually without any technical errors appearing in logs.</p>
+            <p>The readout document officially closes the sprint. It is a single page covering:</p>
             <ul class="insight-list">
-              <li><strong>Latency & Error Rate:</strong> Is performance stable under load?</li>
-              <li><strong>Output Quality Sampling:</strong> Take a random sample weekly to catch drift before it becomes a user complaint.</li>
-              <li><strong>Cost per Query:</strong> Spikes can indicate agentic loops.</li>
-              <li><strong>User Engagement:</strong> A rising override rate signals quality drift.</li>
+              <li>What was built.</li>
+              <li>What was measured.</li>
+              <li>What the measurement showed.</li>
+              <li>The recommendation (Proceed, Pivot, Stop).</li>
             </ul>
           </div>
           <div class="split-right">
             <div class="split-highlight">
-              Human-in-the-Loop Fallback
-              <cite>Configured mechanisms</cite>
+              A Proceed decision does not mean the POC output moves directly to production.
+              <cite>Managing Expectations</cite>
             </div>
-            <p style="margin-top: 15px; font-size: 0.95rem;">Must define a <strong>Trigger</strong> (e.g., low confidence score), a <strong>Queue</strong> (who reviews it), and <strong>Logging</strong> (to capture overrides for future evals).</p>
+            <p style="margin-top: 15px; font-size: 0.9rem;">The POC answered one question: Does this approach work? The next phase builds a complete version to handle real inputs and real users.</p>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 11: Data Handling -->
-    <div class="slide layout-detail">
-      <div class="slide-header">
-        <h4>Infrastructure</h4>
-        <span class="tag">02-01</span>
-      </div>
-      <div class="slide-content">
-        <h2>Logging and The Clean Exit</h2>
-        <div class="detail-body">
-          <div class="detail-col">
-            <div class="detail-block">
-              <h3>Structured Data Handling</h3>
-              <ul>
-                <li>Use consistent JSON objects for logging to query at scale.</li>
-                <li><strong>Do not store full PII</strong> or customer-identifying data in general-purpose logs. Access it via primary storage when needed.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="detail-col">
-            <div class="detail-block">
-              <h3>The Post-Handoff Relationship</h3>
-              <ul>
-                <li><strong>Internal Champion:</strong> Must handle routine questions and onboarding.</li>
-                <li><strong>Support Window:</strong> Define how long the FDE is available and what is in-scope. An undefined window creates an indefinite dependency.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 12: Field Feedback -->
-    <div class="slide layout-dashboard">
-      <div class="slide-header">
-        <h4>Product Intelligence</h4>
-        <span class="tag">02-01</span>
-      </div>
-      <div class="slide-content">
-        <h2>The Field Feedback Loop</h2>
-        <p style="margin-bottom: 2rem;">FDEs are technically deep and organizationally close enough to see how the product performs in real use.</p>
-        <div class="stats-grid">
-          <div class="stat-cell">
-            <div class="stat-name">Building the Habit</div>
-            <div class="stat-context">Capture product gaps, integration friction, documentation gaps, and customer workarounds in real-time.</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-name">Signal vs. Noise</div>
-            <div class="stat-context">A customer's unusual data structure is noise. The absence of a standard connector across multiple clients is a signal.</div>
-          </div>
-          <div class="stat-cell">
-            <div class="stat-name">The Time Dimension</div>
-            <div class="stat-context">Some signals only become visible after the second or third time the FDE encounters them across different projects.</div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 13: Writing Feedback -->
-    <div class="slide layout-detail">
-      <div class="slide-header">
-        <h4>Communication</h4>
-        <span class="tag">02-01</span>
-      </div>
-      <div class="slide-content">
-        <h2>Writing Useful Product Feedback</h2>
-        <div class="detail-body">
-          <div class="detail-col">
-            <div class="detail-block">
-              <h3>The 6 Elements of Feedback</h3>
-              <ul>
-                <li><strong>Problem observed:</strong> What the customer encountered.</li>
-                <li><strong>Frequency:</strong> How often it occurred.</li>
-                <li><strong>Severity:</strong> Did they build a workaround?</li>
-                <li><strong>What they tried:</strong> Reveals their expectations.</li>
-                <li><strong>What solves it:</strong> A concrete fix from the user perspective.</li>
-                <li><strong>Estimated impact:</strong> Business value of the fix.</li>
-              </ul>
-            </div>
-          </div>
-          <div class="detail-col">
-            <div class="detail-block">
-              <h3>Working with Internal Teams</h3>
-              <ul>
-                <li>The FDE is a signal source, not the product team's customer. Feedback is an input, not an instruction.</li>
-                <li><strong>Escalations:</strong> Provide clear reproduction steps and business impact. Urgent requests with no context get deprioritized.</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- SLIDE 14: Closing -->
+    <!-- SLIDE 12: Closing -->
     <div class="slide layout-closing">
       <div class="closing-decoration"></div>
       <div class="closing-decoration-2"></div>
       <div class="accent-line" style="margin: 0 auto 1.5rem;"></div>
-      <h1>Compounding Value</h1>
-      <p class="closing-sub">The feedback loop is how fieldwork compounds. Each project delivers value to the customer and intelligence that makes the product stronger.</p>
+      <h1>The Sprint is Complete</h1>
+      <p class="closing-sub">Everything before the sprint was preparation. Everything after builds on what the sprint proved.</p>
     </div>
 
   </div>
 
-  <div class="slide-counter"><span id="current">1</span> / <span id="total">14</span></div>
+  <div class="slide-counter"><span id="current">1</span> / <span id="total">12</span></div>
   <div class="keyboard-hint">Use arrow keys to navigate</div>
   <div class="progress-bar" id="progress"></div>
   <div class="nav-controls">
@@ -516,7 +443,7 @@
     const prevBtn = document.getElementById('prevBtn');
     const nextBtn = document.getElementById('nextBtn');
 
-    let current = 0;
+    let current = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
     const total = slides.length;
     totalEl.textContent = total;
 
@@ -530,6 +457,8 @@
         }
       });
       currentEl.textContent = current + 1;
+      slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',i !== current));
+      history.replaceState(null, '', '#' + (current + 1));
       progressEl.style.width = ((current + 1) / total * 100) + '%';
       prevBtn.disabled = current === 0;
       nextBtn.disabled = current === total - 1;
@@ -544,7 +473,8 @@
     }
 
     document.addEventListener('keydown', (e) => {
-      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
+      if (e.key.toLowerCase() === 'f') { if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+      else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
       else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); changeSlide(-1); }
       else if (e.key === 'Home') { e.preventDefault(); current = 0; updateSlide(); }
       else if (e.key === 'End') { e.preventDefault(); current = total - 1; updateSlide(); }
@@ -559,6 +489,7 @@
       if (Math.abs(diff) > 50) { changeSlide(diff > 0 ? 1 : -1); }
     }, { passive: true });
 
+    window.addEventListener('hashchange', () => { current = Math.max(0, Math.min(total - 1, (parseInt(location.hash.slice(1)) || 1) - 1)); updateSlide(); });
     updateSlide();
   </script>
 

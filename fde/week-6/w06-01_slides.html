@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>06-01 · System Design: Fine-Tuning Models</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #fdfae7;
+      --primary: #1e2bfa;
+      --text: #111111;
+      --text-muted: #6b6b6b;
+      --text-light: #9a9a9a;
+      --accent-light: rgba(30, 43, 250, 0.08);
+      --accent-medium: rgba(30, 43, 250, 0.15);
+      --border: rgba(30, 43, 250, 0.2);
+      --card-bg: rgba(30, 43, 250, 0.04);
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%; height: 100%; overflow: hidden;
+      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
+    }
+
+    .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
+
+    .slide {
+      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
+      display: flex; flex-direction: column; padding: 3.5vw 4vw 8.5vh 4vw;
+      opacity: 0; pointer-events: none; transform: translateX(40px);
+      transition: opacity 0.5s ease, transform 0.5s ease; overflow: hidden;
+    }
+
+    .slide.active { opacity: 1; pointer-events: all; transform: translateX(0); z-index: 10; }
+    .slide.prev { transform: translateX(-40px); }
+
+    h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
+    h1 { font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 700; }
+    h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 1.5rem; }
+    h3 { font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: 500; line-height: 1.3; }
+    h4 { font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); }
+    p, li { font-size: clamp(0.85rem, 1.1vw, 1.05rem); line-height: 1.6; color: var(--text-muted); }
+    .numeral { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--primary); }
+
+    .slide-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5vh; flex-shrink: 0; }
+    .slide-header .tag { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 500; color: var(--primary); background: var(--accent-light); padding: 0.35rem 0.9rem; border-radius: 100px; }
+    .slide-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
+
+    .nav-controls { position: fixed; bottom: 2.5vh; right: 3vw; display: flex; align-items: center; gap: 0.8rem; z-index: 100; }
+    .nav-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg); color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; font-size: 1.1rem; }
+    .nav-btn:hover { background: var(--primary); color: var(--bg); border-color: var(--primary); }
+    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+    .slide-counter { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.05em; position: fixed; bottom: 2.5vh; left: 3vw; z-index: 100; }
+    .progress-bar { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--primary); transition: width 0.4s ease; z-index: 100; }
+    .accent-line { width: 60px; height: 4px; background: var(--primary); border-radius: 2px; margin-bottom: 1.5rem; }
+
+    /* Layouts */
+    .layout-cover { justify-content: center; align-items: flex-start; padding-left: 8vw; }
+    .layout-cover h1 { max-width: 75vw; margin-bottom: 1.5rem; line-height: 1.05; }
+    .layout-cover .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 3rem; }
+    .layout-cover .meta { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; color: var(--text-light); letter-spacing: 0.05em; }
+    .layout-cover .cover-decoration { position: absolute; top: 0; right: 0; width: 35vw; height: 100vh; background: var(--accent-light); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
+
+    .layout-detail .detail-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem 3rem; flex: 1; margin-top: 0.5rem; overflow: hidden; }
+    .detail-col { display: flex; flex-direction: column; gap: 1.2rem; }
+    .detail-block { padding: 1.4rem 1.6rem; border-radius: 12px; background: var(--card-bg); border: 1.5px solid var(--border); }
+    .detail-block h3 { font-size: clamp(1rem, 1.3vw, 1.1rem); margin-bottom: 0.8rem; color: var(--text); }
+    .detail-block ul { list-style: none; margin: 0; padding: 0; }
+    .detail-block ul li { position: relative; padding-left: 1.1rem; padding-bottom: 0.5rem; font-size: clamp(0.85rem, 1vw, 0.95rem); line-height: 1.5; }
+    .detail-block ul li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 5px; height: 5px; border-radius: 50%; background: var(--primary); }
+
+    .layout-dashboard .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 0.5rem; }
+    .stat-cell { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.4rem 1.5rem; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); }
+    .stat-cell .stat-name { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.1vw, 1.05rem); color: var(--primary); line-height: 1.35; font-weight: 600; }
+    .stat-cell .stat-context { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; padding-top: 0.4rem; border-top: 1px solid var(--border); flex: 1; }
+
+    .layout-split .split-body { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; margin-top: 0.5rem; }
+    .split-left, .split-right { display: flex; flex-direction: column; gap: 1.4rem; }
+    .split-right { padding-left: 2.5rem; border-left: 2px solid var(--border); }
+    .split-highlight { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.15rem, 1.55vw, 1.5rem); font-weight: 500; color: var(--text); line-height: 1.4; padding: 1.3rem 1.5rem; background: var(--accent-light); border-radius: 12px; border-left: 4px solid var(--primary); }
+    .split-highlight cite { display: block; margin-top: 0.7rem; font-style: normal; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; margin: 0; padding-top: 1rem; counter-reset: insight;}
+    .insight-list li { position: relative; padding-left: 1.8rem; font-size: clamp(0.9rem, 1.05vw, 1rem); color: var(--text); line-height: 1.55; counter-increment: insight;}
+    .insight-list li::before { content: counter(insight, decimal-leading-zero); position: absolute; left: 0; top: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+
+    .layout-timeline .timeline-track { display: flex; gap: 1.5rem; flex: 1; align-items: center; justify-content: center; margin-top: 0.5rem; }
+    .timeline-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
+    .timeline-step:not(:last-child)::after { content: ''; position: absolute; top: 28px; right: -0.75rem; width: 1.5rem; height: 2px; background: var(--border); }
+    .step-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 1.2rem; flex-shrink: 0; }
+    .timeline-step:nth-child(2) .step-circle { opacity: 0.85; }
+    .timeline-step:nth-child(3) .step-circle { opacity: 0.7; }
+    .timeline-step:nth-child(4) .step-circle { opacity: 0.55; }
+    .step-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.4vw, 1.15rem); font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
+    .step-desc { font-size: clamp(0.75rem, 1vw, 0.9rem); color: var(--text-muted); line-height: 1.5; max-width: 220px; }
+
+    .layout-closing { justify-content: center; align-items: center; text-align: center; }
+    .layout-closing .closing-sub { font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 2.5rem; }
+    .layout-closing .cta-btn { display: inline-block; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--bg); background: var(--primary); padding: 0.9rem 2.2rem; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: transform 0.2s ease, box-shadow 0.2s ease; }
+    .layout-closing .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30, 43, 250, 0.25); }
+    .layout-closing .closing-decoration { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.4; pointer-events: none; }
+    .layout-closing .closing-decoration-2 { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; height: 360px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.3; pointer-events: none; }
+
+    .keyboard-hint { position: fixed; bottom: 2.5vh; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--text-light); z-index: 100; opacity: 0.6; }
+  
+    /* Typography follows the existing course decks exactly. */
+    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:1.5rem; }
+    .cards.two { grid-template-columns:repeat(2,1fr); }
+    .card { padding:1.4rem 1.6rem; border:1.5px solid var(--border); background:var(--card-bg); border-radius:12px; }
+    .card h3 { font-size:clamp(1rem,1.3vw,1.1rem); line-height:1.3; color:var(--text); margin-bottom:.8rem; }
+    .card p,.lead,.takeaway,.compare { font-size:clamp(.85rem,1.1vw,1.05rem); line-height:1.6; }
+    .card p + p { margin-top:.7rem; }
+    .card ul { list-style:none; padding:0; }
+    .card li { position:relative; padding-left:1.1rem; padding-bottom:.5rem; font-size:clamp(.85rem,1vw,.95rem); line-height:1.5; }
+    .card li::before { content:''; position:absolute; left:0; top:.55rem; width:5px; height:5px; border-radius:50%; background:var(--primary); }
+    .lead { max-width:1100px; }
+    .takeaway { margin-top:1.5rem; padding:1.1rem 1.5rem; border-left:4px solid var(--primary); background:var(--accent-light); color:var(--text); border-radius:0 12px 12px 0; }
+    .flow { display:flex; align-items:stretch; gap:1rem; margin:1.5rem 0 .5rem; }
+    .flow .card { flex:1; text-align:center; padding:1.2rem; }
+    .flow .card h3 { font-size:clamp(.95rem,1.4vw,1.15rem); color:var(--primary); }
+    .flow .card p { font-size:clamp(.75rem,1vw,.9rem); line-height:1.5; }
+    .arrow { align-self:center; color:var(--primary); font-size:1.3rem; }
+    .compare { width:100%; border-collapse:collapse; margin-top:1rem; }
+    .compare th,.compare td { padding:.85rem 1.1rem; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; }
+    .compare th { color:var(--primary); font-family:'Space Grotesk',sans-serif; font-weight:600; }
+    .compare td:first-child { font-weight:600; width:22%; }
+    .compare td { width:39%; }
+    .hub { position:fixed; top:1rem; right:1.5rem; z-index:100; color:var(--primary); font-size:.75rem; text-decoration:none; }
+    @media(max-width:700px) { .slide { padding:4rem 6vw 6rem; overflow-y:auto; } .cards,.cards.two { grid-template-columns:1fr; } .flow { flex-wrap:wrap; } .flow .card { flex-basis:40%; } .arrow { display:none; } .card { padding:1rem; } .compare th,.compare td { padding:.6rem; } .layout-cover .subtitle,.layout-closing .closing-sub { max-width:85vw; } .keyboard-hint { display:none; } .layout-cover h1 { max-width:85vw; } }
+    @media(prefers-reduced-motion:reduce) { .slide,.progress-bar { transition:none; } }
+
+    /* Content-aware visual layouts: same course palette and typography. */
+    .visual-icon { display:flex; align-items:center; justify-content:center; width:44px; height:44px; color:var(--primary); border-radius:50%; background:var(--accent-light); margin-bottom:1rem; flex-shrink:0; }
+    .visual-icon svg { display:block; }
+
+    /* Open editorial columns for parallel responsibilities and choices. */
+    .cards.visual-columns { gap:2.5rem; }
+    .visual-columns > .card { background:none; border:0; border-radius:0; padding:0 1.5rem 0 0; }
+    .visual-columns > .card + .card { border-left:1px solid var(--border); padding-left:2rem; }
+    .visual-columns > .card h3 { border-top:2px solid var(--primary); padding-top:1rem; }
+    .visual-columns > .card .visual-icon + h3 { border-top:0; padding-top:0; }
+
+    /* A paired comparison keeps the text open, with distinct heading tabs. */
+    .cards.visual-pair { gap:4rem; padding:1.2rem 0; }
+    .visual-pair > .card { background:none; border:0; border-radius:0; padding:0 1.3rem; }
+    .visual-pair > .card + .card { border-left:1px solid var(--border); padding-left:2.5rem; }
+    .visual-pair > .card h3 { display:inline-block; color:var(--primary); border-bottom:2px solid var(--primary); padding-bottom:.6rem; margin-bottom:1.1rem; }
+    .visual-pair > .card .visual-icon { background:none; border:1px solid var(--border); }
+
+    /* Numbered paths for discovery, scoping, and customer delivery. */
+    .cards.visual-rail { display:flex; flex-direction:column; gap:0; counter-reset:visual-item; position:relative; }
+    .visual-rail > .card { display:grid; grid-template-columns:44px minmax(180px,23%) 1fr; gap:1.3rem; position:relative; padding:1.15rem 0; border:0; border-radius:0; border-bottom:1px solid var(--border); background:none; counter-increment:visual-item; }
+    .visual-rail > .card::before { content:counter(visual-item,decimal-leading-zero); display:flex; justify-content:center; align-items:center; width:38px; height:38px; border:1px solid var(--primary); border-radius:50%; color:var(--primary); background:var(--bg); font:500 .8rem 'Space Grotesk',sans-serif; position:relative; z-index:1; }
+    .visual-rail > .card:not(:last-child)::after { content:''; position:absolute; top:3.5rem; bottom:-1.2rem; width:1px; background:var(--border); left:19px; }
+    .visual-rail > .card h3 { padding-top:.45rem; margin-bottom:0; }
+    .visual-rail .rail-body p + p { margin-top:.3rem; }
+    .visual-rail .rail-body ul { columns:2; column-gap:2rem; }
+    .visual-rail .rail-body li { break-inside:avoid; }
+    .visual-rail > .card:last-child { border-bottom:0; }
+
+    /* Diagram nodes sit on a connected track rather than in boxes. */
+    .flow.visual-steps { position:relative; gap:1.8rem; counter-reset:visual-step; padding-top:.4rem; }
+    .visual-steps > .card { padding:.1rem .9rem .4rem; border:0; border-radius:0; background:none; position:relative; counter-increment:visual-step; }
+    .visual-steps > .card::before { content:counter(visual-step,decimal-leading-zero); font:500 .8rem 'Space Grotesk',sans-serif; display:flex; align-items:center; justify-content:center; width:42px; height:42px; margin:0 auto 1rem; border-radius:50%; color:var(--bg); background:var(--primary); position:relative; z-index:1; }
+    .visual-steps > .card:not(:last-of-type)::after { content:''; position:absolute; top:21px; left:calc(50% + 21px); width:calc(100% + 1.8rem - 42px); border-top:1px solid var(--border); }
+    .visual-steps > .arrow { display:none; }
+    .visual-steps .card h3 { color:var(--text); }
+    .visual-steps.return-track { padding-bottom:2rem; }
+    .visual-steps.return-track::after { content:''; position:absolute; left:12%; right:12%; height:1.3rem; bottom:0; border:1px solid var(--border); border-top:0; border-radius:0 0 18px 18px; }
+    .visual-steps.return-track::before { content:''; position:absolute; left:12%; bottom:1.25rem; width:6px; height:6px; border-left:1px solid var(--primary); border-top:1px solid var(--primary); transform:rotate(45deg); }
+
+    /* One full-size loop diagram, read clockwise in the original order. */
+    .flow.visual-loop { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:2.6rem 8rem; padding:1rem 5rem; width:min(100%,1000px); align-self:center; position:relative; margin:auto 0; }
+    .visual-loop::before { content:''; position:absolute; inset:3rem 2rem; border:1.5px solid var(--border); border-radius:80px; }
+    .visual-loop > .card { background:var(--bg); border:0; border-radius:0; padding:.5rem 1rem; position:relative; }
+    .visual-loop > .card:nth-of-type(3) { grid-column:2; grid-row:2; }
+    .visual-loop > .card:nth-of-type(4) { grid-column:1; grid-row:2; }
+    .visual-loop > .arrow { display:none; }
+    .visual-loop .visual-icon { margin:0 auto .7rem; border:1px solid var(--border); background:var(--bg); }
+    .visual-loop .card h3 { color:var(--text); }
+    .loop-directions { position:absolute; left:2rem; top:3rem; width:calc(100% - 4rem); height:calc(100% - 6rem); overflow:visible; color:var(--primary); pointer-events:none; }
+
+    /* Quiet supporting notes leave the process diagram as the main visual. */
+    .cards.visual-notes { gap:2rem; margin-top:1rem; }
+    .visual-notes > .card { background:none; border:0; border-left:2px solid var(--border); border-radius:0; padding:.5rem 1.2rem; }
+
+    /* A document silhouette is useful for sources, formats, and evidence. */
+    .cards.visual-documents { gap:2rem; }
+    .visual-documents > .card { background:rgba(255,255,255,.22); border-radius:2px; border:1px solid var(--border); position:relative; padding:1.5rem 1.6rem; box-shadow:5px 5px 0 var(--accent-light); }
+    .visual-documents > .card::after { content:''; position:absolute; right:-1px; top:-1px; width:24px; height:24px; background:linear-gradient(45deg,var(--accent-medium) 50%,var(--bg) 51%); border-left:1px solid var(--border); border-bottom:1px solid var(--border); }
+    .visual-documents .visual-icon { border-radius:0; background:none; margin-bottom:.65rem; }
+
+    /* Four decisions become a numbered agenda with clear reading order. */
+    .cards.visual-agenda { gap:1.8rem 3rem; counter-reset:visual-agenda; }
+    .visual-agenda > .card { padding:.5rem 1rem 1rem 3.7rem; position:relative; border:0; border-radius:0; border-top:1px solid var(--border); background:none; counter-increment:visual-agenda; }
+    .visual-agenda > .card::before { content:counter(visual-agenda,decimal-leading-zero); font:500 .8rem 'Space Grotesk',sans-serif; display:flex; align-items:center; justify-content:center; width:35px; height:35px; position:absolute; left:0; top:.5rem; color:var(--primary); background:var(--accent-light); border-radius:50%; }
+    .visual-agenda > .card h3 { margin-top:.35rem; }
+
+    /* Two retrieval routes converge on a shared selection stage. */
+    .cards.visual-fusion { position:relative; display:grid; grid-template-columns:1fr .17fr 1fr; gap:1.6rem 0; }
+    .visual-fusion > .card { background:none; border:0; border-radius:0; padding:.8rem 1.3rem; }
+    .visual-fusion > .card:nth-child(1) { grid-column:1; grid-row:1; border-left:3px solid var(--primary); }
+    .visual-fusion > .card:nth-child(2) { grid-column:1; grid-row:2; border-left:3px solid var(--primary); }
+    .visual-fusion > .card:nth-child(3) { grid-column:3; grid-row:1 / span 2; align-self:center; border:1px solid var(--border); border-radius:36px; padding:2rem; background:var(--accent-light); }
+    .fusion-lines { position:absolute; width:7.8%; height:100%; left:46.1%; top:0; color:var(--primary); pointer-events:none; overflow:visible; }
+    .visual-fusion .visual-icon { width:36px; height:36px; margin-bottom:.5rem; }
+
+    /* State and trace lists feel like records instead of generic cards. */
+    .cards.visual-records { gap:3rem; }
+    .visual-records > .card { border:0; border-radius:0; background:none; padding:.5rem 1.5rem; border-left:2px solid var(--primary); }
+    .visual-records > .card ul { border-top:1px solid var(--border); margin-top:1rem; padding-top:1rem; }
+    .visual-records > .card li { padding-left:1.5rem; padding-bottom:.9rem; }
+    .visual-records > .card li::before { width:7px; height:7px; background:var(--bg); border:1px solid var(--primary); border-radius:50%; z-index:1; left:0; }
+    .visual-records > .card li:not(:last-child)::after { content:''; position:absolute; top:.95rem; bottom:-.55rem; left:3px; width:1px; background:var(--border); }
+
+    /* Gates visually mark a control boundary on an existing process. */
+    .flow.visual-gates { gap:1.2rem; padding:1rem 0; }
+    .visual-gates > .card { background:none; border:0; border-left:3px solid var(--primary); border-radius:0; text-align:left; padding:.4rem 1.1rem; }
+    .visual-gates .visual-icon { background:none; border:1px solid var(--border); margin-bottom:.8rem; }
+
+    /* Preserve real tables; use grouped rows and accent labels. */
+    .compare.visual-table { border-collapse:separate; border-spacing:0 .6rem; margin-top:.4rem; }
+    .visual-table th { padding:.55rem 1rem; border-bottom:1.5px solid var(--primary); }
+    .visual-table td { background:var(--card-bg); border-bottom:0; padding:.8rem 1rem; }
+    .visual-table td:first-child { border-left:3px solid var(--primary); border-radius:0; }
+    .visual-table td:last-child { border-radius:0 10px 10px 0; }
+    .compare.visual-matrix th { background:var(--primary); color:var(--bg); }
+    .visual-matrix td { border-right:1px solid var(--border); }
+    .visual-matrix td:first-child { color:var(--primary); background:var(--accent-light); }
+    .visual-matrix td:last-child { border-right:0; }
+
+    .visual-divider .cover-decoration { clip-path:none; width:32vw; height:32vw; max-width:530px; max-height:530px; border:1px solid var(--border); background:none; border-radius:50%; top:50%; right:-5vw; transform:translateY(-50%); }
+    .visual-divider .cover-decoration::after { content:''; position:absolute; inset:15%; border:1px solid var(--border); border-radius:50%; }
+
+    @media(max-width:700px) {
+      .cards.visual-columns,.cards.visual-pair,.cards.visual-documents,.cards.visual-agenda,.cards.visual-records { grid-template-columns:1fr; gap:1.5rem; }
+      .visual-columns > .card + .card,.visual-pair > .card + .card { border-left:0; padding-left:0; border-top:1px solid var(--border); padding-top:1.2rem; }
+      .visual-columns > .card,.visual-pair > .card { padding-left:0; padding-right:0; }
+      .visual-rail > .card { grid-template-columns:38px 1fr; gap:.6rem 1rem; }
+      .visual-rail .rail-body { grid-column:2; }
+      .visual-rail .rail-body ul { columns:1; }
+      .flow.visual-steps { display:flex; flex-direction:column; flex-wrap:nowrap; flex-shrink:0; padding:0; gap:1.4rem; width:100%; }
+      .visual-steps > .card { flex:none; flex-basis:auto; max-width:100%; text-align:left; padding-left:3.8rem; }
+      .visual-steps > .card::before { position:absolute; left:0; top:0; }
+      .visual-steps > .card:not(:last-of-type)::after { left:21px; top:42px; width:0; height:calc(100% + 1.4rem - 42px); border-top:0; border-left:1px solid var(--border); }
+      .visual-steps.return-track::before,.visual-steps.return-track::after { display:none; }
+      .flow.visual-loop { grid-template-columns:1fr; grid-template-rows:auto; padding:0; gap:1rem; margin:1rem 0; }
+      .visual-loop > .card:nth-of-type(3),.visual-loop > .card:nth-of-type(4) { grid-column:auto; grid-row:auto; }
+      .visual-loop::before,.loop-directions { display:none; }
+      .cards.visual-fusion { display:flex; flex-direction:column; gap:1rem; }
+      .fusion-lines { display:none; }
+      .visual-fusion > .card:nth-child(3) { align-self:stretch; padding:1.3rem; }
+      .flow.visual-gates { flex-direction:column; flex-wrap:nowrap; flex-shrink:0; }
+      .visual-gates > .card { flex:none; flex-basis:auto; }
+      .compare.visual-table { border-spacing:0 .4rem; }
+      .visual-table td,.visual-table th { padding:.5rem; }
+    }
+
+  
+    /* Preserve module badges and leave room for fixed controls while scrolling. */
+    .slide-header .tag { white-space:nowrap; flex-shrink:0; }
+    @media(max-width:700px) { .slide-content { flex:none; } }
+</style>
+</head><body><a class="hub" href="../index.html">Course hub ↗</a><main class="deck">
+<section class="slide layout-cover active"><div class="cover-decoration" aria-hidden="true"></div><div class="accent-line"></div><h1>System Design:<br>Fine-Tuning Models</h1><p class="subtitle">From a hospital’s coding problem to a private, evaluated model with human review.</p><p class="meta">Module 06-01 · AI Forward Deployed Engineer</p></section>
+<section class="slide"><div class="slide-header"><h4>The customer problem</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>The hospital needs more reliable coding proposals</h2><p class="lead">A regional hospital and its outpatient clinics use Epic. Coders translate physician notes into diagnoses, procedures, and modifiers.</p><div class="cards visual-columns"><div class="card"><h3>81% · Current workflow</h3><p>Reported first-pass payer acceptance with human coding. Denials create rework.</p></div><div class="card"><h3>61% · Model baseline</h3><p>Reported unadapted-model result on 200 encounters. The accuracy definition needs confirmation.</p></div><div class="card"><h3>95% · Scenario target</h3><p>A desired outcome to define and test, rather than a verified industry benchmark.</p></div></div><div class="flow visual-steps"><div class="card"><h3>Physician note</h3><p>Documentation enters Epic.</p></div><div class="card"><h3>Coder review</h3><p>Assign ICD-10, CPT, and applicable modifiers.</p></div><div class="card"><h3>Claim submission</h3><p>Confirmed codes enter billing.</p></div><div class="card"><h3>Payer response</h3><p>Track acceptance and denial reasons.</p></div></div><div class="takeaway">Coding accuracy and payer acceptance are different measures; compare results only when their definitions match.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Questions before architecture</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Discovery establishes what success means</h2><p class="lead">Turn “improve coding” into an output contract, a usable dataset, and an operational acceptance test.</p><div class="cards two four visual-agenda"><div class="card"><h3>Task and target</h3><ul><li>One code set or ranked alternatives?</li><li>Per-code accuracy or a completely correct encounter?</li><li>Which corrections are captured?</li></ul></div><div class="card"><h3>Data and coverage</h3><ul><li>How many confirmed encounters exist?</li><li>Which specialties and note styles are represented?</li><li>Which guideline versions apply?</li></ul></div><div class="card"><h3>Errors and priorities</h3><ul><li>Missing diagnoses, wrong procedures, or modifiers?</li><li>Which departments drive denial rework?</li><li>Which mistakes carry the greatest cost?</li></ul></div><div class="card"><h3>Deployment and ownership</h3><ul><li>Available GPUs and required response time?</li><li>Where does review fit inside Epic?</li><li>Who approves releases and refreshes?</li></ul></div></div><div class="takeaway">The answers determine the first delivery scope, label requirements, evaluation slices, and deployment budget.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Problem decomposition</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Six responsibilities turn the request into a system</h2><p class="lead">Assign inputs, outputs, and owners before deciding which model or training method to use.</p><div class="cards visual-columns"><div class="card"><h3>01 · Prepare labels</h3><p>Pair notes with adjudicated code sets; retain provenance and guideline versions.</p></div><div class="card"><h3>02 · Choose the approach</h3><p>Test prompting, retrieval or rules, and adaptation against the observed errors.</p></div><div class="card"><h3>03 · Select a base model</h3><p>Check note length, license, structured output, and hardware fit.</p></div></div><div class="cards visual-columns"><div class="card"><h3>04 · Adapt the model</h3><p>Train and compare checkpoints using a controlled data split.</p></div><div class="card"><h3>05 · Evaluate the result</h3><p>Measure code quality and encounter correctness before promotion.</p></div><div class="card"><h3>06 · Integrate review</h3><p>Show proposals in Epic; capture confirmation, corrections, and audit records.</p></div></div><div class="takeaway">Fine-tuning is one responsibility within the delivery; data quality and workflow integration remain essential.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Prompting, retrieval, or adaptation</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>The approach follows the error pattern</h2><p class="lead">Fine-tuning updates model parameters from examples. It should earn its place against simpler baselines.</p><table class="compare visual-table"><thead><tr><th scope="col">Approach</th><th scope="col">What it can improve</th><th scope="col">What to test</th></tr></thead><tbody><tr><th scope="row">Prompting / few-shot examples</th><td>Task instructions, output format, and demonstrations without changing weights.</td><td>Can a better prompt reduce the recurring errors?</td></tr><tr><th scope="row">Retrieval + coding rules</th><td>Access to current guidelines, code catalogs, and rule-based checks.</td><td>Does missing or outdated information explain the failures?</td></tr><tr><th scope="row">Fine-tuning</th><td>Repeated mapping from local note styles to consistent structured code sets.</td><td>Do confirmed labels produce a held-out gain over the same base model?</td></tr></tbody></table><div class="takeaway">These approaches can be combined. A poor baseline does not prove that fine-tuning is required or will reach 95%.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Refined scope</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Three constraints define the pilot boundary</h2><p class="lead">Produce a structured coding proposal from an Epic note, then let a coder verify it before billing.</p><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6z"/><path d="m8 12 3 3 5-6"/></svg></span><h3>Private processing</h3><ul><li>This hospital requires on-premises training and inference.</li><li>Confirm approved data flows, storage, and access with its IT team.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></svg></span><h3>Verified training labels</h3><ul><li>Use confirmed code sets and traceable guideline versions.</li><li>Resolve disputed labels before they teach the model.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></svg></span><h3>Coder confirmation</h3><ul><li>Every AI proposal remains pending review.</li><li>Only the coder-confirmed set enters billing.</li></ul></div></div><div class="takeaway">Pilot a defined department and output contract; expand only after quality and workflow checks pass.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>System architecture</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Training and inference are separate operating paths</h2><p class="lead">Offline training produces an approved model version. Live inference uses that version to assist a coder.</p><h3 style="margin-top:1.3rem">Offline training</h3><div class="flow visual-steps"><div class="card"><h3>Extract</h3><p>Epic notes and confirmed code sets.</p></div><div class="card"><h3>Prepare</h3><p>Clean labels; separate data splits.</p></div><div class="card"><h3>Adapt</h3><p>Train and select a checkpoint.</p></div><div class="card"><h3>Promote</h3><p>Pass evaluation; register the version.</p></div></div><h3 style="margin-top:1.3rem">Live inference</h3><div class="flow visual-steps"><div class="card"><h3>Read note</h3><p>Authorized access to the encounter.</p></div><div class="card"><h3>Generate</h3><p>Propose a structured code set.</p></div><div class="card"><h3>Validate</h3><p>Check schema, codes, and evidence.</p></div><div class="card"><h3>Review</h3><p>Coder confirms or corrects.</p></div></div></div></section>
+<section class="slide"><div class="slide-header"><h4>Training record</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Each example connects a note to a confirmed code set</h2><p class="lead">Use a consistent input/output format. This field outline is illustrative, not a medical coding recommendation.</p><div class="cards two visual-documents"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span><h3>Input · Encounter note</h3><ul><li>Physician narrative and relevant clinical context.</li><li>Specialty and note format where needed.</li><li>Allowed context within the chosen model’s token limit.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span><h3>Target · Confirmed result</h3><ul><li>diagnosis_codes: confirmed ICD-10 set</li><li>procedure_codes: confirmed CPT set</li><li>modifiers: applicable code-linked modifiers</li><li>Provenance: reviewer, guideline version, and date.</li></ul></div></div><div class="takeaway">The target is the final adjudicated code set. An earlier AI suggestion or unresolved billing label is not ground truth.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Data preparation</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Label quality controls what the model learns</h2><p class="lead">Cleaning should remove unreliable supervision while preserving valid difficult encounters.</p><div class="cards visual-records"><div class="card"><h3>Confirm the final label</h3><ul><li>Use the approved diagnosis, procedure, and modifier set.</li><li>Preserve provenance and measure agreement between labelers.</li></ul></div><div class="card"><h3>Resolve uncertainty</h3><ul><li>Adjudicate revised or disputed encounters.</li><li>Exclude unresolved labels; keep difficult cases once confirmed.</li></ul></div><div class="card"><h3>Check coverage and currency</h3><ul><li>Represent specialties and typed / dictated note styles.</li><li>Track guideline dates and inconsistent labeling conventions.</li></ul></div></div><div class="takeaway">Apply consistent annotation guidance and review a sample of note–label pairs before training.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Dataset boundaries</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Separate learning, selection, and final testing</h2><p class="lead">Create the splits before training; prevent patients and near-duplicate notes from crossing boundaries.</p><div class="cards visual-documents"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span><h3>Training set</h3><p>Updates the selected trainable parameters. Covers the note styles and code patterns in scope.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10" cy="10" r="7"/><path d="m15 15 7 7"/></svg></span><h3>Validation set</h3><p>Selects settings and checkpoints. Guides early stopping without training on these examples.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6z"/><path d="m8 12 3 3 5-6"/></svg></span><h3>Locked test set</h3><p>Measures the final candidate once selection is complete. Includes relevant specialties and later encounters.</p></div></div><div class="takeaway">Group related encounters and duplicates appropriately; use temporal and department slices to expose leakage or weak coverage.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Model selection</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>The base model must fit the task and the GPUs</h2><p class="lead">Evaluate exact checkpoints locally rather than selecting a model family by reputation.</p><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span><h3>Long-note coverage</h3><ul><li>Measure actual input and output token lengths.</li><li>Define handling for notes beyond the supported context.</li><li>Avoid silent truncation of coding evidence.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></svg></span><h3>Training and serving capacity</h3><ul><li>Budget weights, activations, and optimizer state.</li><li>Measure inference cache and concurrency separately.</li><li>Benchmark the hospital’s available GPUs.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6z"/><path d="m8 12 3 3 5-6"/></svg></span><h3>Behavior and deployment rights</h3><ul><li>Test instruction following and valid structured outputs.</li><li>Check the exact checkpoint’s license and terms.</li><li>Compare quality with the same data and prompt.</li></ul></div></div><div class="takeaway">The source names Llama, Mistral, Phi, and Gemma candidates. Each exact version still needs task, license, and hardware checks.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Adaptation choices</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Fine-tuning methods update different parameter sets</h2><p class="lead">The amount of trainable state affects memory, storage, and the experiment budget.</p><table class="compare visual-table"><thead><tr><th scope="col">Method</th><th scope="col">What changes</th><th scope="col">Practical tradeoff</th></tr></thead><tbody><tr><th scope="row">Full fine-tuning</th><td>All base-model parameters are trainable.</td><td>Largest training-state cost; evaluate whether the added flexibility is needed.</td></tr><tr><th scope="row">Partial fine-tuning</th><td>Selected layers or parameters are trainable.</td><td>Reduces trainable state, but performance depends on which parts are selected.</td></tr><tr><th scope="row">LoRA</th><td>Base weights stay frozen; small low-rank update matrices are trained.</td><td>Smaller trainable adapters; target modules and rank are experiment choices.</td></tr></tbody></table><div class="takeaway">Low-rank adapters reduce trainable state. They still need representative labels, validation, and hardware measurements.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Memory-efficient adaptation</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>QLoRA combines a quantized base with an adapter</h2><p class="lead">QLoRA trains LoRA adapters through a frozen base model stored in 4-bit precision.</p><div class="cards visual-fusion"><div class="card"><h3>Frozen 4-bit base</h3><p>Lower-precision storage reduces base-weight memory. The pretrained weights are not updated.</p></div><div class="card"><h3>Trainable LoRA adapter</h3><p>Small update matrices learn from confirmed encounter examples. Save the adapter as a versioned artifact.</p></div><div class="card"><h3>Compatible adapted model</h3><ul><li>Load the matching base checkpoint and adapter.</li><li>Benchmark quality, latency, and memory in the intended serving setup.</li></ul></div><svg class="fusion-lines" aria-hidden="true" viewBox="0 0 100 100" preserveAspectRatio="none"><path d="M0 24H28Q48 24 48 40V50H96M0 76H28Q48 76 48 60V50" fill="none" stroke="currentColor" stroke-width="1.4" vector-effect="non-scaling-stroke"/><path d="m87 46 9 4-9 4" fill="none" stroke="currentColor" stroke-width="1.4" vector-effect="non-scaling-stroke"/></svg></div><div class="takeaway">4-bit storage reduces one part of memory use. Activations, training state, and inference caches still need capacity.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Training and promotion</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Validation selects the checkpoint; testing permits release</h2><p class="lead">Use a repeatable experiment configuration and task metrics rather than training loss alone.</p><div class="cards visual-rail"><div class="card"><h3>Train controlled experiments</h3><div class="rail-body"><p>Track data version, base checkpoint, adapter settings, batch size, learning rate, and token limits.</p></div></div><div class="card"><h3>Select on validation</h3><div class="rail-body"><p>Watch validation loss and coding metrics. Stop after meaningful improvement stalls; compare candidate checkpoints.</p></div></div><div class="card"><h3>Test and package</h3><div class="rail-body"><p>Evaluate the chosen candidate on the locked test set. Register base, adapter, data, and guideline versions with a rollback path.</p></div></div></div><div class="takeaway">Do not tune repeatedly on the final test set or treat the lowest training loss as production readiness.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Evidence for delivery</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Evaluation separates code quality from claim outcomes</h2><p class="lead">Compare the unadapted, prompted, and adapted systems on the same representative held-out encounters.</p><table class="compare visual-table"><thead><tr><th scope="col">Measure</th><th scope="col">What it tells you</th><th scope="col">How to interpret it</th></tr></thead><tbody><tr><th scope="row">Code-family quality</th><td>Diagnosis, procedure, and modifier precision / recall; missing and extra codes.</td><td>Precision: proposed codes that are correct. Recall: required codes that are found.</td></tr><tr><th scope="row">Exact code-set correctness</th><td>Every required code and modifier is present, with no incorrect extras.</td><td>A stricter encounter-level test; report department and note-style slices.</td></tr><tr><th scope="row">Payer first-pass acceptance</th><td>Claims accepted after coder review and billing submission.</td><td>A downstream business outcome with causes beyond model coding accuracy.</td></tr></tbody></table><div class="takeaway">Define the 95% target with the hospital. Report sample size and uncertainty; 200 baseline encounters are a pilot, not proof of broad coverage.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Live coding assistance</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Inference returns a proposal with checkable evidence</h2><p class="lead">Keep the read, generation, validation, and display stages explicit so failures have a defined outcome.</p><div class="flow visual-steps"><div class="card"><h3>Read</h3><p>Fetch the authorized encounter note from the approved Epic interface.</p></div><div class="card"><h3>Generate</h3><p>Return structured diagnoses, procedures, and modifiers.</p></div><div class="card"><h3>Validate</h3><p>Check schema, current code catalog, and supporting note spans.</p></div><div class="card"><h3>Display</h3><p>Show proposed codes, evidence, and review flags to the coder.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Evidence attribution</h3><p>A quote or span must match the actual note. It helps review but does not establish clinical coding correctness by itself.</p></div><div class="card"><h3>Explicit fallback</h3><p>Invalid output, missing support, or a timeout routes the encounter to manual review without automatic claim submission.</p></div></div></div></section>
+<section class="slide"><div class="slide-header"><h4>Human review and audit</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Coder confirmation is the billing boundary</h2><p class="lead">The review screen should support decisions, corrections, and traceability without hiding the original proposal.</p><div class="flow visual-gates"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6M8 13h8M8 17h6"/></svg></span><h3>Pending proposal</h3><p>AI codes, supporting spans, and review flags are visible.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 22v-3a8 8 0 0 1 16 0v3"/></svg></span><h3>Coder decision</h3><p>Confirm or correct the complete set; record the reviewer and time.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2 3 6v6c0 5 9 10 9 10s9-5 9-10V6z"/><path d="m8 12 3 3 5-6"/></svg></span><h3>Confirmed billing set</h3><p>Only the approved set moves into the billing workflow.</p></div></div><div class="cards two visual-records"><div class="card"><h3>Append-only audit log</h3><p>Keep the original suggestion, final codes, evidence, model version, and coder action.</p></div><div class="card"><h3>Future supervision</h3><p>Adjudicated corrections can become new training examples after quality review.</p></div></div></div></section>
+<section class="slide"><div class="slide-header"><h4>Private infrastructure and Epic integration</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Deployment connects four owned components</h2><p class="lead">All processing stays on the hospital’s approved infrastructure in this case. Training and serving have different schedules.</p><table class="compare visual-table"><thead><tr><th scope="col">Component</th><th scope="col">Operating pattern</th><th scope="col">Ownership and checks</th></tr></thead><tbody><tr><th scope="row">Training pipeline</th><td>Offline GPU batch jobs with controlled datasets.</td><td>ML owner: experiment records, artifact compatibility, and release criteria.</td></tr><tr><th scope="row">Inference service</th><td>Serving GPUs sized for concurrent coder requests.</td><td>Platform owner: response-time target, load tests, monitoring, and rollback.</td></tr><tr><th scope="row">Epic integration</th><td>Application service for authorized read, display, and confirmed-write paths.</td><td>Hospital IT: supported interfaces, workflow placement, scopes, and failure handling.</td></tr><tr><th scope="row">Audit and feedback store</th><td>Append-only records of proposals, reviews, versions, and outcomes.</td><td>Operations owner: access, retention, investigation, and correction review.</td></tr></tbody></table><div class="takeaway">Validate the exact Epic capabilities with IT. Agree a p95 response-time target and a manual fallback; “returns in seconds” needs measurement.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Evaluation and customer handoff</h4><span class="tag">06-01</span></div><div class="slide-content"><h2>Refresh the system when evidence or rules change</h2><p class="lead">A refresh is a controlled release, with a decision about which layer actually needs to change.</p><div class="cards visual-rail"><div class="card"><h3>Observe the workflow</h3><div class="rail-body"><p>Monitor coder corrections, specialty quality, payer denial reasons, latency, and guideline changes.</p></div></div><div class="card"><h3>Choose the intervention</h3><div class="rail-body"><p>Review new labels. Refresh catalogs or retrieval for current rules; retrain only when behavior needs adaptation.</p></div></div><div class="card"><h3>Re-evaluate and hand off</h3><div class="rail-body"><p>Repeat held-out checks, approve a version, and retain rollback. Give owners the data contract, thresholds, and recovery runbook.</p></div></div></div><div class="takeaway">Track base, adapter, data, and guideline versions so the customer can explain a proposal and recover a release.</div></div></section>
+<section class="slide layout-closing"><div class="closing-decoration" aria-hidden="true"></div><div class="closing-decoration-2" aria-hidden="true"></div><div class="accent-line"></div><h1>Reliable adaptation depends on data, proof, and review</h1><p class="closing-sub" style="margin-top:2rem">Define the target. Learn from confirmed examples. Demonstrate a held-out gain. Keep the coder in control.</p></section>
+</main><div class="slide-counter"><span id="current">1</span> / <span id="total">20</span></div>
+<div class="keyboard-hint">← → navigate · F fullscreen</div><div class="progress-bar" id="progress"></div>
+<div class="nav-controls"><button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><button class="nav-btn" id="nextBtn" onclick="changeSlide(1)" aria-label="Next slide"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button></div><script>
+    const slides = document.querySelectorAll('.slide');
+    const currentEl = document.getElementById('current');
+    const totalEl = document.getElementById('total');
+    const progressEl = document.getElementById('progress');
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    let current = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
+    const total = slides.length;
+    totalEl.textContent = total;
+
+    function updateSlide() {
+      slides.forEach((slide, i) => {
+        slide.classList.remove('active', 'prev');
+        if (i === current) {
+          slide.classList.add('active');
+        } else if (i < current) {
+          slide.classList.add('prev');
+        }
+      });
+      currentEl.textContent = current + 1;
+      slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',i !== current));
+      history.replaceState(null, '', '#' + (current + 1));
+      progressEl.style.width = ((current + 1) / total * 100) + '%';
+      prevBtn.disabled = current === 0;
+      nextBtn.disabled = current === total - 1;
+    }
+
+    function changeSlide(dir) {
+      const next = current + dir;
+      if (next >= 0 && next < total) {
+        current = next;
+        updateSlide();
+      }
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key.toLowerCase() === 'f') { if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
+      else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
+      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); changeSlide(-1); }
+      else if (e.key === 'Home') { e.preventDefault(); current = 0; updateSlide(); }
+      else if (e.key === 'End') { e.preventDefault(); current = total - 1; updateSlide(); }
+    });
+
+    let touchStartX = 0;
+    let touchEndX = 0;
+    document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
+    document.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].screenX;
+      const diff = touchStartX - touchEndX;
+      if (Math.abs(diff) > 50) { changeSlide(diff > 0 ? 1 : -1); }
+    }, { passive: true });
+
+    window.addEventListener('hashchange', () => { current = Math.max(0, Math.min(total - 1, (parseInt(location.hash.slice(1)) || 1) - 1)); updateSlide(); });
+    updateSlide();
+  </script></body></html>

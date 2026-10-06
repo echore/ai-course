@@ -1,9 +1,7 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
+<!doctype html><html lang="en"><head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Module 03-01: AI Landscape & LLM Systems</title>
+  <title>Week 1 Live Workshop · Discovery and Scoping</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -261,43 +259,216 @@
       .visual-table td,.visual-table th { padding:.5rem; }
     }
 
-  </style>
-</head>
-<body>
-<a class="hub" href="../index.html">Course hub ↗</a><main class="deck">
-<section class="slide layout-cover active"><div class="cover-decoration"></div><div class="accent-line"></div><h1>AI Landscape &amp; LLM Systems</h1><p class="subtitle">Understand how AI systems operate, then choose an architecture the customer can evaluate and own.</p><p class="meta">Module 03-01 · AI Forward Deployed Engineer</p></section>
-<section class="slide"><div class="slide-header"><h4>Why this matters</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Architecture changes the delivery work</h2><p class="lead">The system type you recommend during scoping shapes the build, evaluation, and customer handoff.</p><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 4a5 5 0 0 0-6 6L3 15l6 6 5-5a5 5 0 0 0 6-6l-4 4-5-5z"></path></svg></span><h3>Build &amp; scope</h3><ul><li>A fixed workflow has known stages and defined interfaces.</li><li>An agent adds decisions, tool coordination, and variable execution paths.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v18h17M8 16v-4M13 16V8M18 16V5"></path></svg></span><h3>Evaluation</h3><ul><li>A workflow needs output and stage-level checks.</li><li>An agent also needs checks on actions, recovery, and task completion.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"></circle><path d="M4 21v-3a8 8 0 0 1 16 0v3"></path></svg></span><h3>Customer ownership</h3><ul><li>The team must diagnose failures and maintain integrations.</li><li>Greater autonomy requires clearer operating limits and escalation.</li></ul></div></div><div class="takeaway">Choose the architecture around the customer’s workflow and constraints.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>The core distinction</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Two categories, one runtime question</h2><p class="lead">Runtime means what happens while the system processes a real request.</p><div class="cards two visual-pair"><div class="card"><h3>LLM-based non-agentic system</h3><p>Application code defines the sequence of operations. The model completes a task within that prescribed path.</p><ul><li>May include retrieval, validation, and multiple model calls.</li><li>Does not independently change its approach after observing results.</li></ul></div><div class="card"><h3>Agentic system</h3><p>The model selects a next action, receives the result, and uses it to decide what to do next.</p><ul><li>The path and number of steps can vary by request.</li><li>Operates within permissions and limits enforced by the application.</li></ul></div></div><div class="takeaway">Ask who chooses the next step—not how many tools or model calls exist.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Non-agentic systems</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>A fixed workflow turns input into a defined output</h2><p class="lead">Example: read a contract and return a structured clause summary.</p><div class="flow visual-steps"><div class="card"><h3>Prepare input</h3><p>Extract the text and supply the relevant instructions.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Run the LLM</h3><p>Identify clauses and populate a defined output structure.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Validate &amp; return</h3><p>Check required fields and route incomplete results for review.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>What stays fixed</h3><p>The application always follows prepare → extract → validate. Exceptions use predefined handling.</p></div><div class="card"><h3>What can vary</h3><p>Different contracts produce different summaries. Model errors are still possible even when the processing path is fixed.</p></div></div><div class="takeaway">A predictable processing path helps you locate where an error entered the system.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Where fixed workflows help</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Common enterprise tasks fit this pattern</h2><p class="lead">Many customer problems require a well-defined transformation rather than open-ended investigation.</p><div class="cards visual-documents"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H5v18h14V8zM14 3v5h5M8 12h8M8 16h6"></path></svg></span><h3>Classification &amp; extraction</h3><ul><li>Route customer emails to a queue.</li><li>Extract dates, entities, and clauses into a schema.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H5v18h14V8zM14 3v5h5M8 12h8M8 16h6"></path></svg></span><h3>Summarization &amp; generation</h3><ul><li>Condense a document into an agreed summary format.</li><li>Draft content from a defined set of inputs.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg></span><h3>Structured question answering</h3><ul><li>Retrieve relevant knowledge and generate an answer.</li><li>Return evidence or route unanswered questions to a person.</li></ul></div></div><div class="takeaway">For the FDE: define representative inputs, acceptable outputs, and the failure-handling path.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>A useful boundary case</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Retrieval can still follow a fixed path</h2><p class="lead">Retrieval-augmented generation, or RAG, supplies external information to the model before it answers.</p><div class="flow visual-steps"><div class="card"><h3>Retrieve</h3><p>Fetch relevant documents from the knowledge source.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Generate</h3><p>Use the retrieved context to produce an answer.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Check</h3><p>Validate the format and supporting evidence.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Predefined RAG workflow</h3><p>The application runs the same stages for each question. A retrieval step alone does not make it agentic.</p></div><div class="card"><h3>Adaptive retrieval</h3><p>The model may judge that evidence is incomplete, choose another search, and change its approach based on the result.</p></div></div><div class="takeaway">The architectural boundary is adaptive control over the process.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Agentic systems</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>An agent selects actions from new evidence</h2><p class="lead">An agent receives a goal and works through a repeated decision–action–observation loop.</p><div class="flow visual-steps return-track"><div class="card"><h3>Decide</h3><p>Select an action using the goal and current context.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Act</h3><p>The application executes an allowed tool request.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Observe</h3><p>Return the tool result and update the session context.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Continue or stop</h3><p>Choose another step, finish, or request help.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>A variable execution path</h3><p>A result can change the next useful action. Some requests finish quickly; others need additional investigation.</p></div><div class="card"><h3>A bounded loop</h3><p>Define completion, step or time limits, and when the system must hand control to a person.</p></div></div><div class="takeaway">The model proposes actions; the surrounding application controls execution.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Worked example</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>One support workflow makes the difference concrete</h2><div class="cards two visual-pair"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H5v18h14V8zM14 3v5h5M8 12h8M8 16h6"></path></svg></span><h3>Task A · Route an email</h3><p>Input: “My order has not arrived.”</p><ul><li>Classify the request as a delivery issue.</li><li>Return the delivery-support queue.</li><li>The output is a label; the processing sequence is predefined.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg></span><h3>Task B · Investigate the delivery</h3><p>Goal: establish what happened and recommend a next step.</p><ul><li>Look up the order and inspect carrier tracking.</li><li>An address error may trigger an address check; a carrier delay may trigger a different inquiry.</li><li>Return a supported recommendation or escalate unresolved cases.</li></ul></div></div><div class="takeaway">The investigation may benefit from an agent when the next useful step depends on what the system discovers.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Architecture recap</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>The distinction is about behavior at runtime</h2><div class="cards visual-columns"><div class="card"><h3>Recognize a fixed workflow</h3><p>Code prescribes the path. Retrieval, validation, and several LLM calls can all fit inside it.</p></div><div class="card"><h3>Recognize an agent</h3><p>The model uses observations to select subsequent actions. The path varies within application controls.</p></div><div class="card"><h3>Connect to FDE work</h3><p>Adaptive behavior changes the evaluation surface and the responsibilities passed to the customer.</p></div></div><div class="takeaway">With the architectures defined, we can now connect model capability to scoping and evaluation.</div></div></section>
-<section class="slide layout-cover visual-divider"><div class="cover-decoration"></div><div class="accent-line"></div><h1>From architecture to an FDE delivery plan</h1><p class="subtitle">Separate model capability from autonomy, then define what you will build, evaluate, and hand off.</p><p class="meta">Module 03-01 · AI Forward Deployed Engineer</p></section>
-<section class="slide"><div class="slide-header"><h4>Model capability</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Reasoning and autonomy are separate choices</h2><p class="lead">Reasoning is the ability to work through a problem. Autonomy is the system’s authority to choose and take actions.</p><div class="cards two visual-pair"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"></path></svg></span><h3>Reasoning inside a fixed workflow</h3><p>A model can analyze a difficult contract, compare clauses, and explain an inconsistency while the application still prescribes every processing stage.</p><ul><li>Evaluate task accuracy and the usefulness of the result.</li><li>Measure latency and cost on representative customer inputs.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"></circle><circle cx="6" cy="20" r="2"></circle><circle cx="18" cy="5" r="2"></circle><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"></path></svg></span><h3>Autonomy inside an agent</h3><p>The model may choose which tool to call next. The application determines which tools and actions are permitted.</p><ul><li>Evaluate action selection as well as the final output.</li><li>Define limits and escalation independently of model capability.</li></ul></div></div><div class="takeaway">A stronger reasoning model does not, by itself, make the system agentic.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>System architecture</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>The harness manages the execution loop</h2><p class="lead">The harness is the surrounding software that connects the model to context, tools, controls, and execution records.</p><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"></path></svg></span><h3>Context &amp; tool interfaces</h3><ul><li>Supply the goal, relevant records, and previous observations.</li><li>Define tool inputs, outputs, and errors clearly.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"></path></svg></span><h3>Execution controls</h3><ul><li>Enforce access permissions and approval boundaries.</li><li>Limit steps, elapsed time, and resource use.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewbox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"></circle><path d="m15.5 15.5 5 5"></path></svg></span><h3>Visibility &amp; recovery</h3><ul><li>Record tool requests, results, and status changes.</li><li>Handle failures, retries, and escalation.</li></ul></div></div><div class="takeaway">A tool request is a proposal to execute—not proof that the action succeeded.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Operational tradeoffs</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Adaptive execution adds failure modes</h2><p class="lead">The additional flexibility can be useful, but every tool interaction creates another place to fail.</p><div class="cards visual-rail"><div class="card"><h3>A wrong next action</h3><div class="rail-body"><p>The model chooses an irrelevant search or interprets a tool result incorrectly.</p><p>Check tool selection and whether the conclusion is supported by observations.</p></div></div><div class="card"><h3>A failed or repeated action</h3><div class="rail-body"><p>A service times out, or a retry risks repeating a write that already succeeded.</p><p>Define failure handling and ways to prevent duplicate changes.</p></div></div><div class="card"><h3>An unfinished investigation</h3><div class="rail-body"><p>The system keeps searching without a useful outcome, increasing latency and cost.</p><p>Set a budget and route unresolved work to an owner.</p></div></div></div><div class="takeaway">For customer-changing actions, specify what can run automatically and what needs approval.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>FDE scoping</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Scope the behavior before you build</h2><p class="lead">Turn the customer’s request into a concrete outcome, a runtime path, and defined boundaries.</p><div class="cards visual-rail"><div class="card"><h3>Outcome &amp; inputs</h3><div class="rail-body"><ul><li>What observable customer result counts as success?</li><li>Which records and representative cases are available?</li><li>What remains outside the scope?</li></ul></div></div><div class="card"><h3>Runtime &amp; actions</h3><div class="rail-body"><ul><li>Can a fixed workflow cover the required cases?</li><li>If adaptive steps help, which tools may it use?</li><li>Which changes require review, and when must it stop?</li></ul></div></div><div class="card"><h3>Operations &amp; owner</h3><div class="rail-body"><ul><li>What time and cost budgets apply?</li><li>Who receives failures and unresolved cases?</li><li>What evidence will justify expanding the pilot?</li></ul></div></div></div><div class="takeaway">Example outcome: produce a supported delivery explanation; escalate when the evidence is incomplete.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Evidence for delivery</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Evaluate both the answer and the execution</h2><p class="lead">Use representative customer cases, including missing data, ambiguous inputs, and tool failures.</p><table class="compare visual-matrix"><thead><tr><th>Check</th><th>Fixed workflow</th><th>Agentic system</th></tr></thead><tbody><tr><td>Result quality</td><td>Accuracy, required fields, supporting evidence</td><td>Goal completion and conclusions supported by observations</td></tr><tr><td>Process behavior</td><td>Correct stage handling and exception routing</td><td>Appropriate tool choices, allowed actions, stopping and recovery</td></tr><tr><td>Operating fit</td><td>Latency and cost per request</td><td>End-to-end latency, steps, tool costs, and escalation rate</td></tr></tbody></table><div class="takeaway">A correct answer should still fail evaluation if the system took an unacceptable action.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Customer ownership</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Hand off a system the customer can operate</h2><div class="cards two visual-records"><div class="card"><h3>Fixed workflow handoff</h3><ul><li>Input and output contracts; pipeline configuration.</li><li>Prompts, validation rules, and known failure cases.</li><li>Evaluation examples and an owner for updates.</li></ul></div><div class="card"><h3>Agentic system handoff</h3><ul><li>All workflow essentials, plus tool access and permission boundaries.</li><li>Execution records, limits, and approval configuration.</li><li>A runbook for failed actions, unfinished tasks, and escalation.</li></ul></div></div><div class="takeaway">The customer should be able to explain a failure, identify its owner, and decide the next action.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Scoping exercise</h4><span class="tag">03-01</span></div><div class="slide-content"><h2>Apply the decision to a new customer request</h2><p class="lead">Choose a starting architecture, then state how you would evaluate it.</p><div class="cards two visual-pair"><div class="card"><h3>A · Extract renewal dates</h3><p>Read a batch of contracts and return renewal dates with supporting text.</p><ul><li>Start with a fixed extraction and validation workflow.</li><li>Check dates, evidence, missing clauses, and ambiguous language.</li></ul></div><div class="card"><h3>B · Investigate invoice mismatches</h3><p>Compare customer records and choose further checks based on discrepancies.</p><ul><li>Consider an agent when the investigation path varies.</li><li>Check evidence, tool decisions, permitted actions, and escalation.</li></ul></div></div><div class="takeaway">If B can be covered by a reliable predefined procedure, test that simpler approach first.</div></div></section>
-<section class="slide layout-closing"><div class="closing-decoration"></div><div class="closing-decoration-2"></div><div class="accent-line"></div><h1>Choose the architecture the customer can own</h1><p class="closing-sub" style="margin-top:2rem">Match runtime behavior to the problem. Evaluate the full system. Make ownership explicit.</p></section>
-</main>
   
-  <div class="slide-counter"><span id="current">1</span> / <span id="total">18</span></div>
-  <div class="keyboard-hint">← → navigate · F fullscreen</div>
-  <div class="progress-bar" id="progress"></div>
-  <div class="nav-controls">
-    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-    </button>
-    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)" aria-label="Next slide">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-    </button>
-  </div>
+    /* Preserve module badges and leave room for fixed controls while scrolling. */
+    .slide-header .tag { white-space:nowrap; flex-shrink:0; }
+    @media(max-width:700px) { .slide-content { flex:none; } }
 
-  <script>
+@media(max-width:700px){.layout-detail .detail-body,.layout-split .split-body,.layout-dashboard .stats-grid{grid-template-columns:1fr!important;flex:none;overflow:visible}.timeline-track{flex-direction:column;align-items:flex-start!important;flex:none!important}.timeline-step{align-items:flex-start;text-align:left;flex:none}.timeline-step:not(:last-child)::after{display:none}}
+</style>
+</head><body><a class="hub" href="../index.html">Course hub ↗</a><main class="deck">
+<section class="slide layout-cover active"><div class="cover-decoration" aria-hidden="true"></div><div class="accent-line"></div><h1>Customer Discovery<br>& Project Scoping</h1><p class="subtitle">A customer conversation, a bounded proposal, and a scope the team can evaluate.</p><p class="meta">Week 01 · Interactive live workshop</p></section>
+<section class="slide"><div class="slide-header"><h4>Workshop case</h4><span class="tag">W01 Live</span></div><div class="slide-content"><h2>The customer’s request</h2><p class="lead">A legal team says: “We want AI to speed up vendor contract review.”</p><div class="cards two visual-pair"><div class="card"><h3>What we know</h3><ul><li>Contracts arrive as PDFs.</li><li>Lawyers compare terms with an approved reference.</li><li>Review delays vendor onboarding.</li></ul></div><div class="card"><h3>What we still need to learn</h3><ul><li>Which step creates the delay?</li><li>What data and permissions are available?</li><li>What result would the reviewer trust?</li></ul></div></div><div class="takeaway">Write three discovery questions before proposing a solution.</div></div></section>
+<div class="slide layout-dashboard">
+      <div class="slide-header">
+        <h4>Stakeholders</h4>
+        <span class="tag">01-02</span>
+      </div>
+      <div class="slide-content">
+        <h2>Who belongs in the room?</h2>
+        <p style="margin-bottom: 2rem;">If only two of these three are available, note what is missing and plan a targeted follow-up.</p>
+        <div class="stats-grid">
+          <div class="stat-cell">
+            <div class="stat-name">Executive Sponsor</div>
+            <div class="stat-context">Owns the problem and controls the budget. They anchor the conversation to real organizational priorities that will actually get funded.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">Ops / Domain Expert</div>
+            <div class="stat-context">Performs the actual work today. They know where the workflow breaks and describe the system as it <em>actually</em> runs, not how it was designed.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">Technical Contact</div>
+            <div class="stat-context">Knows which systems are involved, where data lives, and what access looks like. Essential for evaluating technical feasibility.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+<div class="slide layout-detail">
+      <div class="slide-header">
+        <h4>Execution</h4>
+        <span class="tag">01-02</span>
+      </div>
+      <div class="slide-content">
+        <h2>How to run the session</h2>
+        <div class="detail-body">
+          <div class="detail-col">
+            <div class="detail-block">
+              <h3>1. Ask about the Workaround</h3>
+              <ul>
+                <li>Ask what the team actually does when the official process breaks down.</li>
+                <li>The workaround is often the clearest signal of where the real operational pain lies.</li>
+              </ul>
+            </div>
+            <div class="detail-block">
+              <h3>2. The 5-Column Note Framework</h3>
+              <ul>
+                <li>Capture every observation into five specific columns: stated pain, current workflow steps, data available, candidate success metric, and blockers.</li>
+              </ul>
+            </div>
+          </div>
+          <div class="detail-col">
+            <div class="detail-block">
+              <h3>3. Listen for Signals</h3>
+              <ul>
+                <li><strong>Data signals:</strong> System names, file types, data sources.</li>
+                <li><strong>Volume/Frequency:</strong> Converts vague pain into a measurable baseline.</li>
+                <li><strong>Ownership gaps:</strong> When no one owns a step, it is a massive project risk.</li>
+              </ul>
+            </div>
+            <div class="detail-block">
+              <h3>4. The Readback</h3>
+              <ul>
+                <li>Before leaving, summarize the core problem, data, and success metric out loud. Misalignments surface immediately.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+<section class="slide"><div class="slide-header"><h4>Pair exercise</h4><span class="tag">W01 Live</span></div><div class="slide-content"><h2>A discovery role-play</h2><p class="lead">One person plays the domain expert; the other plays the FDE. Change roles halfway through.</p><div class="cards two visual-notes"><div class="card"><h3>Customer role</h3><p>Describe the workaround, a difficult contract, and who controls access. Respond to the questions rather than proposing a tool.</p></div><div class="card"><h3>FDE role</h3><p>Capture pain, workflow, available data, a candidate metric, and blockers. End with a readback.</p></div></div><div class="takeaway">Share one assumption your questions changed.</div></div></section>
+<div class="slide layout-dashboard">
+      <div class="slide-header">
+        <h4>Validation</h4>
+        <span class="tag">01-02</span>
+      </div>
+      <div class="slide-content">
+        <h2>Is it actually an AI problem?</h2>
+        <p style="margin-bottom: 2rem;">Not every workflow problem needs AI. Look for these four signals:</p>
+        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="stat-cell">
+            <div class="stat-name">Document-Heavy Synthesis</div>
+            <div class="stat-context">Tasks involving reading, summarizing, or extracting across large volumes of contracts or policy documents.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">Knowledge Retrieval at Scale</div>
+            <div class="stat-context">Answering questions from large internal knowledge bases or routing inputs based on content.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">Multi-Step Workflows</div>
+            <div class="stat-context">Dependent steps with conditional decisions where agentic systems can orchestrate the task end-to-end.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">Repetitive Judgment</div>
+            <div class="stat-context">Consistent decision patterns (classification, routing) where the value of automation scales with volume.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+<div class="slide layout-detail">
+      <div class="slide-header">
+        <h4>Translation</h4>
+        <span class="tag">01-02</span>
+      </div>
+      <div class="slide-content">
+        <h2>The 5-Level Translation Ladder</h2>
+        <p style="margin-bottom: 2rem;">This framework narrows a broad business problem into the <strong>Minimal AI Component</strong>.</p>
+        <div class="detail-body">
+          <div class="detail-col" style="grid-column: span 2;">
+            <div class="detail-block">
+              <ul style="margin: 0;">
+                <li><strong>1. Business Pain:</strong> Legal team review bottleneck delays vendor onboarding by days.</li>
+                <li><strong>2. User Workflow:</strong> Lawyer reads PDF, checks standard terms, routes for approval.</li>
+                <li><strong>3. Data Flow:</strong> Contracts arrive by email as PDFs. Standard terms live in a shared drive.</li>
+                <li><strong>4. System Integration:</strong> Solution needs to interact with email inbox, document storage, and approvals.</li>
+                <li style="border-top: 1px solid var(--border); padding-top: 10px; margin-top: 10px;"><strong>5. Minimal AI Component:</strong> A system that extracts clauses and produces a deviation report. <em>(Routing and email integration remain manual for version one to target the highest-effort step first.)</em></li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+<section class="slide"><div class="slide-header"><h4>Group decision</h4><span class="tag">W01 Live</span></div><div class="slide-content"><h2>The smallest useful proposal</h2><p class="lead">Choose one initial outcome you could demonstrate with available evidence.</p><div class="cards visual-columns"><div class="card"><h3>Clause extraction</h3><p>Return selected terms and supporting passages for a lawyer to check.</p></div><div class="card"><h3>Deviation report</h3><p>Compare selected clauses with the approved reference and flag differences.</p></div><div class="card"><h3>Complete onboarding</h3><p>Include routing and approval across multiple systems. Identify the additional dependencies.</p></div></div><div class="takeaway">Defend the first scope through user value, data readiness, and a testable result.</div></div></section>
+<div class="slide layout-dashboard">
+      <div class="slide-header">
+        <h4>The Artifact</h4>
+        <span class="tag">01-02</span>
+      </div>
+      <div class="slide-content">
+        <h2>What a scope document does</h2>
+        <p style="margin-bottom: 2rem;">It is a shared agreement for a 2-4 week Proof of Concept. It must contain these 6 elements:</p>
+        <div class="stats-grid">
+          <div class="stat-cell">
+            <div class="stat-name">01   Problem Statement</div>
+            <div class="stat-context">1-2 sentences describing the specific workflow problem written in the customer's own language.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">02   Success Metric</div>
+            <div class="stat-context">A specific, measurable criterion (precision rate, processing speed) tested before the demo.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">03   Data Sources</div>
+            <div class="stat-context">What data the system reads from, where it lives, and who controls access to it.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">04   Tech Dependencies</div>
+            <div class="stat-context">Internal APIs, data storage, auth services, and the specific external model APIs required.</div>
+          </div>
+          <div class="stat-cell" style="border-color: var(--primary); background: var(--accent-light);">
+            <div class="stat-name" style="color: var(--text);">05   Out of Scope</div>
+            <div class="stat-context"><strong>Load-bearing.</strong> An explicit list of what will <em>not</em> be built to defend against scope creep.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">06   Timeline</div>
+            <div class="stat-context">The specific date by which something demonstrable will be ready.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+<div class="slide layout-dashboard">
+      <div class="slide-header">
+        <h4>Risk Management</h4>
+        <span class="tag">01-02</span>
+      </div>
+      <div class="slide-content">
+        <h2>The Technical Risk Register</h2>
+        <p style="margin-bottom: 2rem;">Capture the risk, likelihood, impact, and mitigation plan. Presenting risks early builds trust.</p>
+        <div class="stats-grid" style="grid-template-columns: repeat(2, 1fr);">
+          <div class="stat-cell">
+            <div class="stat-name">Data Quality</div>
+            <div class="stat-context">Enterprise data is frequently inconsistent, incomplete, or structured differently than described.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">Access Delays</div>
+            <div class="stat-context">IT security reviews for internal API access or credentials routinely take longer than estimated.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">Model Performance Gaps</div>
+            <div class="stat-context">Base models underperform on narrow, specialized legal or medical language missing from training data.</div>
+          </div>
+          <div class="stat-cell">
+            <div class="stat-name">Latency &amp; Throughput</div>
+            <div class="stat-context">Acceptable speed on a small test set may fail against infrastructure constraints at daily volume.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    
+<section class="slide"><div class="slide-header"><h4>Peer exercise</h4><span class="tag">W01 Live</span></div><div class="slide-content"><h2>Scope review</h2><p class="lead">Exchange your scope with another pair. Check whether it is ready for a POC.</p><div class="cards two visual-records"><div class="card"><h3>Acceptance</h3><ul><li>Is the problem specific?</li><li>Can the metric be measured against a baseline?</li><li>Are the inputs representative and accessible?</li></ul></div><div class="card"><h3>Delivery boundary</h3><ul><li>Are dependencies and owners named?</li><li>Is the first outcome small enough?</li><li>Does each major risk have a next action?</li></ul></div></div><div class="takeaway">Recommend one revision and explain how it makes the project easier to evaluate.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Preparation for the build</h4><span class="tag">W01 Live</span></div><div class="slide-content"><h2>Week 1 project checkpoint</h2><p class="lead">Bring a one-page project brief and a list of setup dependencies to Week 2.</p><div class="cards visual-columns"><div class="card"><h3>Problem and user</h3><p>Name who benefits, the current workflow, and the first useful outcome.</p></div><div class="card"><h3>Evidence and scope</h3><p>Identify data, an initial success measure, and clear exclusions.</p></div><div class="card"><h3>Readiness</h3><p>List repository, environment, credentials, and data-access needs. Confirm the project stack when it is supplied.</p></div></div><div class="takeaway">Detailed project building begins in Week 3; these first two workshops establish the delivery plan.</div></div></section>
+</main><div class="slide-counter"><span id="current">1</span> / <span id="total">12</span></div>
+<div class="keyboard-hint">← → navigate · F fullscreen</div><div class="progress-bar" id="progress"></div>
+<div class="nav-controls"><button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></button><button class="nav-btn" id="nextBtn" onclick="changeSlide(1)" aria-label="Next slide"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"/></svg></button></div><script>
     const slides = document.querySelectorAll('.slide');
     const currentEl = document.getElementById('current');
     const totalEl = document.getElementById('total');
@@ -353,7 +524,4 @@
 
     window.addEventListener('hashchange', () => { current = Math.max(0, Math.min(total - 1, (parseInt(location.hash.slice(1)) || 1) - 1)); updateSlide(); });
     updateSlide();
-  </script>
-
-</body>
-</html>
+  </script></body></html>
