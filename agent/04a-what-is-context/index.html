@@ -10,7 +10,9 @@
 <body>
 <div id="deck">
 <style>
-  /* Context frame: one box holding the four things (slides 2 and 6) */
+  #roadmap .step-title { max-width: 19vw; }
+  #deck .layout-cover .cover-tags { flex-wrap: wrap; }
+  /* Context frame: one box holding the four things (slides 3 and 7) */
   .ctx-frame { border: 2px dashed color-mix(in srgb, var(--primary) 45%, transparent); border-radius: 20px; background: var(--card-bg); padding: 1.3rem 1.5rem 1.5rem; }
   .ctx-head { display: flex; align-items: baseline; gap: 0.9rem; margin-bottom: 1rem; }
   .ctx-label { font: 600 clamp(0.85rem, 1.05vw, 1rem) 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--primary); }
@@ -22,7 +24,7 @@
   .bottom-highlight { margin-top: 1.4rem; }
   .fine-print { margin-top: 1rem; font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.85rem, 1vw, 0.95rem); color: var(--text-muted); }
 
-  /* Context frame, split into what loads at the start and what grows (slide 6) */
+  /* Context frame, split into what loads at the start and what grows (slide 7) */
   .ctx-groups { display: grid; grid-template-columns: 1fr 1fr; gap: 1.8rem; }
   .ctx-group { display: flex; flex-direction: column; gap: 0.5rem; }
   .ctx-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.1rem; flex: 1; }
@@ -61,6 +63,12 @@
 
   /* Narrow screens: stack the side-by-side layouts and let a slide scroll down */
   @media (max-width: 760px) {
+    #roadmap .timeline-track { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; gap: 1.5rem; margin-top: 1.2rem; }
+    #roadmap .timeline-step { display: grid; grid-template-columns: 72px 1fr; column-gap: 1.2rem; text-align: left; align-items: center; }
+    #roadmap .step-circle { grid-row: 1 / span 2; margin-bottom: 0; }
+    #roadmap .step-label { margin-bottom: 0.2rem; }
+    #roadmap .step-title { max-width: none; font-size: 1.3rem; }
+    #roadmap .timeline-step:not(:last-child)::after { top: calc(100% + 0.25rem); left: 35px; right: auto; width: 2px; height: 1rem; }
     #deck .slide { overflow-x: hidden; overflow-y: auto; }
     #deck .slide-content, #deck .body-center { flex: none; }
     #deck .lede { max-width: none; }
@@ -84,16 +92,34 @@
   <div class="accent-line enter" style="--i: 0;"></div>
   <h1 class="enter" style="--i: 1;">What Is Context</h1>
   <div class="cover-tags enter" style="--i: 2;">
-    <span class="tag">What</span>
-    <span class="tag">Why</span>
+    <span class="tag">Context</span>
+    <span class="tag">Long conversations</span>
+    <span class="tag">Context sources</span>
   </div>
 </section>
 
-<!-- 2 · WHAT: context -->
+<!-- 2 · Roadmap -->
+<section class="slide" id="roadmap" data-label="Roadmap">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">Overview</span>
+  </div>
+  <div class="slide-content">
+    <h2>Roadmap</h2>
+    <div class="timeline-track timeline-track--even">
+      <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">CONTEXT</div><div class="step-title">What the agent can see</div></div>
+      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">LONG CONVERSATIONS</div><div class="step-title">Why mistakes become more likely</div></div>
+      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">CONTEXT SOURCES</div><div class="step-title">What loads and what grows</div></div>
+      <div class="timeline-step enter" style="--i: 4;"><div class="step-circle">4</div><div class="step-label">TAKEAWAY</div><div class="step-title">Recap</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · WHAT: context -->
 <section class="slide" data-label="What context">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">What &middot; Context</span>
+    <span class="tag">Part 1 &middot; Context</span>
   </div>
   <div class="slide-content">
     <h2>Context is everything the agent can see right now.</h2>
@@ -125,11 +151,11 @@
   </div>
 </section>
 
-<!-- 3 · WHY: the trouble -->
+<!-- 4 · WHY: the trouble -->
 <section class="slide" data-label="Why trouble">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">Why &middot; The trouble</span>
+    <span class="tag">Part 2 &middot; Long conversations</span>
   </div>
   <div class="slide-content">
     <h2>In a long conversation, the agent starts to forget what you told it.</h2>
@@ -165,11 +191,11 @@
   </div>
 </section>
 
-<!-- 4 · WHY: it rereads everything -->
+<!-- 5 · WHY: it rereads everything -->
 <section class="slide" data-label="Why rereads">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">Why &middot; It rereads everything</span>
+    <span class="tag">Part 2 &middot; Long conversations</span>
   </div>
   <div class="slide-content">
     <h2>At every step, it rereads the whole context from the top.</h2>
@@ -246,11 +272,11 @@
   </div>
 </section>
 
-<!-- 5 · WHY: attention -->
+<!-- 6 · WHY: attention -->
 <section class="slide" data-label="Why attention">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">Why &middot; Attention</span>
+    <span class="tag">Part 2 &middot; Long conversations</span>
   </div>
   <div class="slide-content">
     <h2>The more it has to read, the less attention each part gets.</h2>
@@ -290,11 +316,11 @@
   </div>
 </section>
 
-<!-- 6 · WHAT: what fills it -->
+<!-- 7 · WHAT: what fills it -->
 <section class="slide" data-label="What fills it">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">What &middot; What fills it</span>
+    <span class="tag">Part 3 &middot; Context sources</span>
   </div>
   <div class="slide-content">
     <h2>Some of it is there before you type a word. Most of it piles up as you work.</h2>
@@ -337,7 +363,7 @@
   </div>
 </section>
 
-<!-- 7 · Takeaway -->
+<!-- 8 · Takeaway -->
 <section class="slide layout-closing" data-label="Takeaway">
   <div class="closing-decoration"></div>
   <div class="closing-decoration-2"></div>

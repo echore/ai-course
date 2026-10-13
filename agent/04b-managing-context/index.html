@@ -10,6 +10,9 @@
 <body>
 <div id="deck">
 <style>
+  #deck .layout-cover .cover-tags { flex-wrap: wrap; }
+  /* Four-stage roadmap, using the same timeline as lessons 01 and 02. */
+  #roadmap .step-title { max-width: 19vw; }
   .bottom-highlight { margin-top: 1.4rem; }
   .lede--wide { max-width: none; }
   .fine-print { margin-top: 1rem; padding-right: 8rem; font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.85rem, 1vw, 0.95rem); color: var(--text-muted); }
@@ -68,6 +71,12 @@
 
   /* Narrow screens: stack the side-by-side layouts and let a slide scroll down */
   @media (max-width: 760px) {
+    #roadmap .timeline-track { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; gap: 1.5rem; margin-top: 1.2rem; }
+    #roadmap .timeline-step { display: grid; grid-template-columns: 72px 1fr; column-gap: 1.2rem; text-align: left; align-items: center; }
+    #roadmap .step-circle { grid-row: 1 / span 2; margin-bottom: 0; }
+    #roadmap .step-label { margin-bottom: 0.2rem; }
+    #roadmap .step-title { max-width: none; font-size: 1.3rem; }
+    #roadmap .timeline-step:not(:last-child)::after { top: calc(100% + 0.25rem); left: 35px; right: auto; width: 2px; height: 1rem; }
     #deck .slide { overflow-x: hidden; overflow-y: auto; }
     #deck .slide-content, #deck .body-center { flex: none; }
     #deck .lede { max-width: none; }
@@ -98,20 +107,37 @@
   <div class="accent-line enter" style="--i: 0;"></div>
   <h1 class="enter" style="--i: 1;">Managing Context</h1>
   <div class="cover-tags enter" style="--i: 2;">
-    <span class="tag">Give less</span>
+    <span class="tag">Give it less</span>
     <span class="tag">Write it down</span>
-    <span class="tag">Reset</span>
+    <span class="tag">Reset on purpose</span>
   </div>
 </section>
 
-<!-- 2 · WHAT: three questions -->
-<section class="slide" data-label="What three questions">
+<!-- 2 · Overview: three rules for managing context -->
+<section class="slide" id="roadmap" data-label="Roadmap">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">What &middot; Three questions</span>
+    <span class="tag">Overview</span>
   </div>
   <div class="slide-content">
-    <h2>Managing context comes down to three questions.</h2>
+    <h2>Roadmap</h2>
+    <div class="timeline-track timeline-track--even">
+      <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">Rule 1</div><div class="step-title">Give it less</div></div>
+      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">Rule 2</div><div class="step-title">Write it down</div></div>
+      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">Rule 3</div><div class="step-title">Reset on purpose</div></div>
+      <div class="timeline-step enter" style="--i: 4;"><div class="step-circle">4</div><div class="step-label">Takeaway</div><div class="step-title">Recap</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Three rules: what goes in, what stays, and when to reset -->
+<section class="slide" data-label="Three rules">
+  <div class="slide-header">
+    <h4>Module 4 &middot; Preview</h4>
+    <span class="tag">Three rules</span>
+  </div>
+  <div class="slide-content">
+    <h2>Three rules help you manage context.</h2>
     <p class="lede">Context is everything the agent can see right now. It rereads all of it at every step, so the more there is, the easier it is to miss something.</p>
     <div class="split-body">
       <div class="split-left">
@@ -151,23 +177,23 @@
         </svg>
       </div>
       <div class="split-right">
-        <div class="card" data-step="1"><div class="card-name">01 &nbsp; What goes in?</div><p class="card-body">Give it only what this task needs.</p></div>
-        <div class="card" data-step="2"><div class="card-name">02 &nbsp; What must stay?</div><p class="card-body">Put what matters in a file, outside the conversation.</p></div>
-        <div class="card" data-step="3"><div class="card-name">03 &nbsp; When do you clear it?</div><p class="card-body">Reset on purpose.</p></div>
+        <div class="card" data-step="1"><div class="card-name">Rule 1 &middot; Give it less</div><p class="card-body"><strong>What goes in?</strong> Give it only what this task needs.</p></div>
+        <div class="card" data-step="2"><div class="card-name">Rule 2 &middot; Write it down</div><p class="card-body"><strong>What must stay?</strong> Put what matters in a file, outside the conversation.</p></div>
+        <div class="card" data-step="3"><div class="card-name">Rule 3 &middot; Reset on purpose</div><p class="card-body"><strong>When do you clear it?</strong> Reset on purpose.</p></div>
         <p class="split-highlight" data-step="4">Most of the time you just keep working. These three habits keep a long job on track.</p>
       </div>
     </div>
   </div>
 </section>
 
-<!-- 3 · HOW: give it less -->
-<section class="slide" data-label="How give it less">
+<!-- 4 · HOW: give it less -->
+<section class="slide" id="context-rule-1" data-label="Rule 1: Give it less">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">01 &middot; What goes in</span>
+    <span class="tag">Rule 1 &middot; Give it less</span>
   </div>
   <div class="slide-content">
-    <h2>Give the agent only what this task needs.</h2>
+    <h2>Rule 1: Give the agent only what this task needs.</h2>
     <p class="lede">Say you are working with an agent on a weekly sales report. Whatever it opens goes into the context and is reread at every step.</p>
     <div class="body-center">
       <div class="cmp">
@@ -191,14 +217,14 @@
   </div>
 </section>
 
-<!-- 4 · HOW: write it down -->
-<section class="slide" data-label="How write it down">
+<!-- 5 · HOW: write it down -->
+<section class="slide" id="context-rule-2" data-label="Rule 2: Write it down">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">02 &middot; What must stay</span>
+    <span class="tag">Rule 2 &middot; Write it down</span>
   </div>
   <div class="slide-content">
-    <h2>Put what matters in a file.</h2>
+    <h2>Rule 2: Put what matters in a file.</h2>
     <p class="lede">The Boston store closed, so you tell the agent to leave it out of this report. If that rule lives only in the conversation, it can get lost.</p>
     <div class="split-body">
       <div class="split-left">
@@ -258,14 +284,14 @@
   </div>
 </section>
 
-<!-- 5 · HOW: reset on purpose -->
-<section class="slide" data-label="How reset on purpose">
+<!-- 6 · HOW: reset on purpose -->
+<section class="slide" id="context-rule-3" data-label="Rule 3: Reset on purpose">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
-    <span class="tag">03 &middot; When to clear</span>
+    <span class="tag">Rule 3 &middot; Reset on purpose</span>
   </div>
   <div class="slide-content">
-    <h2>Reset only when the job changes or the conversation gets long.</h2>
+    <h2>Rule 3: Reset only when the job changes or the conversation gets long.</h2>
     <p class="lede">Context has a limit. When it is nearly full, Claude Code and Codex replace the conversation with a short summary, without asking you what to keep.</p>
     <div class="body-center">
       <div class="guide">
@@ -294,16 +320,16 @@
   </div>
 </section>
 
-<!-- 6 · Takeaway -->
+<!-- 7 · Takeaway -->
 <section class="slide layout-closing" data-label="Takeaway">
   <div class="closing-decoration"></div>
   <div class="closing-decoration-2"></div>
   <div class="accent-line enter" style="--i: 0; margin: 0 auto 1.5rem;"></div>
   <h1 class="enter" style="--i: 1;">Takeaway</h1>
   <div class="closing-grid">
-    <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Give it less</div><p class="card-body">Only what this task needs. One job per conversation.</p></div>
-    <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">Write it down</div><p class="card-body">Rules and progress go in a file. Next time, ask the agent to read it.</p></div>
-    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Reset on purpose</div><p class="card-body">New job: start fresh. Long job: compact, or hand off.</p></div>
+    <div class="card" data-step="1"><span class="step-circle">1</span><div class="card-name">Give it less</div><p class="card-body">Only what this task needs. One job per conversation.</p></div>
+    <div class="card" data-step="2"><span class="step-circle">2</span><div class="card-name">Write it down</div><p class="card-body">Rules and progress go in a file. Next time, ask the agent to read it.</p></div>
+    <div class="card" data-step="3"><span class="step-circle">3</span><div class="card-name">Reset on purpose</div><p class="card-body">New job: start fresh. Long job: compact, or hand off.</p></div>
   </div>
 </section>
 </div>

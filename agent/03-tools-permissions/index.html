@@ -10,6 +10,20 @@
 <body>
 <div id="deck">
 <style>
+  #deck .layout-cover .cover-tags { flex-wrap: wrap; }
+  /* Roadmap: four stages in the shared timeline layout */
+  #roadmap .step-title { max-width: 19vw; }
+  @media (max-width: 760px) {
+    #roadmap { overflow-x: hidden; overflow-y: auto; padding-bottom: 6rem; }
+    #roadmap .slide-content { flex: none; }
+    #roadmap .timeline-track { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; gap: 1.5rem; margin-top: 1.2rem; }
+    #roadmap .timeline-step { display: grid; grid-template-columns: 72px 1fr; column-gap: 1.2rem; text-align: left; align-items: center; }
+    #roadmap .step-circle { grid-row: 1 / span 2; margin-bottom: 0; }
+    #roadmap .step-label { margin-bottom: 0.2rem; }
+    #roadmap .step-title { max-width: none; font-size: 1.3rem; }
+    #roadmap .timeline-step:not(:last-child)::after { top: calc(100% + 0.25rem); left: 35px; right: auto; width: 2px; height: 1rem; }
+  }
+
   /* Where we are: the configuration map from Module 2, with this module highlighted */
   .map-grid { display: grid; grid-template-columns: 11vw 1fr 1fr; gap: 1.1rem 1.2rem; align-items: stretch; }
   .map-group { font: 600 clamp(1.05rem, 1.5vw, 1.35rem)/1.2 'Space Grotesk', sans-serif; letter-spacing: -0.01em; color: var(--text); align-self: center; }
@@ -81,14 +95,32 @@
   <div class="cover-tags enter" style="--i: 2;">
     <span class="tag">Tools</span>
     <span class="tag">Permissions</span>
+    <span class="tag">Your routine</span>
   </div>
 </section>
 
-<!-- 2 · Where we are -->
-<section class="slide" data-label="Where we are">
+<!-- 2 · Roadmap -->
+<section class="slide" id="roadmap" data-label="Roadmap">
   <div class="slide-header">
     <h4>Module 3 &middot; Preview</h4>
     <span class="tag">Overview</span>
+  </div>
+  <div class="slide-content">
+    <h2>Roadmap</h2>
+    <div class="timeline-track timeline-track--even">
+      <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">TOOLS</div><div class="step-title">Connect your apps</div></div>
+      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">PERMISSIONS</div><div class="step-title">Set action limits</div></div>
+      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">YOUR ROUTINE</div><div class="step-title">Plan, save, then work</div></div>
+      <div class="timeline-step enter" style="--i: 4;"><div class="step-circle">4</div><div class="step-label">TAKEAWAY</div><div class="step-title">Recap</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · Where we are -->
+<section class="slide" data-label="Where we are">
+  <div class="slide-header">
+    <h4>Module 3 &middot; Preview</h4>
+    <span class="tag">Where this lesson fits</span>
   </div>
   <div class="slide-content">
     <h2>Last module: what the agent knows. This module: what it can do.</h2>
@@ -122,11 +154,11 @@
   </div>
 </section>
 
-<!-- 3 · Tools: what it can't reach -->
+<!-- 4 · Tools: what it can't reach -->
 <section class="slide" data-label="Tools reach">
   <div class="slide-header">
     <h4>Module 3 &middot; Preview</h4>
-    <span class="tag">Tools &middot; What it can&rsquo;t reach</span>
+    <span class="tag">Part 1 &middot; Tools</span>
   </div>
   <div class="slide-content">
     <h2>Out of the box, it can&rsquo;t open your other apps.</h2>
@@ -155,11 +187,11 @@
   </div>
 </section>
 
-<!-- 4 · Tools: from copying to connecting -->
+<!-- 5 · Tools: from copying to connecting -->
 <section class="slide" data-label="Tools connected">
   <div class="slide-header">
     <h4>Module 3 &middot; Preview</h4>
-    <span class="tag">Tools &middot; From copying to connecting</span>
+    <span class="tag">Part 1 &middot; Tools</span>
   </div>
   <div class="slide-content">
     <h2>Connect the apps your weekly report needs.</h2>
@@ -208,11 +240,11 @@
   </div>
 </section>
 
-<!-- 5 · Tools: MCP -->
+<!-- 6 · Tools: MCP -->
 <section class="slide" data-label="Tools MCP">
   <div class="slide-header">
     <h4>Module 3 &middot; Preview</h4>
-    <span class="tag">Tools &middot; MCP</span>
+    <span class="tag">Part 1 &middot; Tools</span>
   </div>
   <div class="slide-content">
     <h2>MCP is the standard way to make these connections.</h2>
@@ -266,11 +298,11 @@
   </div>
 </section>
 
-<!-- 6 · Permissions: modes -->
+<!-- 7 · Permissions: modes -->
 <section class="slide" data-label="Permissions modes">
   <div class="slide-header">
     <h4>Module 3 &middot; Preview</h4>
-    <span class="tag">Permissions &middot; Modes</span>
+    <span class="tag">Part 2 &middot; Permissions</span>
   </div>
   <div class="slide-content">
     <h2>A permission mode decides what the agent can do without&nbsp;asking&nbsp;you.</h2>
@@ -288,11 +320,11 @@
   </div>
 </section>
 
-<!-- 7 · Permissions: how to use them -->
+<!-- 8 · Permissions: how to use them -->
 <section class="slide" data-label="Permissions routine">
   <div class="slide-header">
     <h4>Module 3 &middot; Preview</h4>
-    <span class="tag">Permissions &middot; How to use them</span>
+    <span class="tag">Part 3 &middot; Your routine</span>
   </div>
   <div class="slide-content">
     <h2>A simple routine for any task.</h2>
@@ -307,7 +339,7 @@
   </div>
 </section>
 
-<!-- 8 · Takeaway -->
+<!-- 9 · Takeaway -->
 <section class="slide layout-closing" data-label="Takeaway">
   <div class="closing-decoration"></div>
   <div class="closing-decoration-2"></div>
