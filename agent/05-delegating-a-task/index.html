@@ -14,6 +14,10 @@
   #deck .lede { max-width: 76vw; }
   .lesson-label { margin-bottom: 1.2rem; }
   #roadmap .step-title { max-width: 19vw; }
+  #roadmap .roadmap-rules { width: 19vw; }
+  #roadmap .roadmap-rule-list { list-style: none; display: grid; gap: 0.55rem; text-align: left; }
+  #roadmap .roadmap-rule-list li { display: flex; gap: 0.55rem; align-items: baseline; font: 500 clamp(1rem, 1.3vw, 1.2rem)/1.4 'Space Grotesk', sans-serif; color: var(--text); }
+  #roadmap .roadmap-rule-list span { white-space: nowrap; font-size: 0.85em; font-weight: 600; color: var(--primary); }
   #deck .layout-cover h1 { max-width: 72vw; }
   #deck .layout-cover .cover-tags { flex-wrap: wrap; }
   .bottom-highlight { margin-top: 1.1rem; }
@@ -60,7 +64,7 @@
   .slice-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 1.4rem; }
   .slice-pair .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
   #deck .layout-closing h1 { max-width: 80vw; font-size: clamp(2rem, 3.6vw, 3.2rem); }
-  #deck .closing-grid { width: 84vw; }
+  #deck .closing-grid { width: 84vw; grid-template-columns: repeat(4, 1fr); }
   #deck .closing-grid .card-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
   #deck .closing-grid .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); }
   @media (max-width: 760px) {
@@ -69,6 +73,7 @@
     #roadmap .step-circle { grid-row: 1 / span 2; margin-bottom: 0; }
     #roadmap .step-label { margin-bottom: 0.2rem; }
     #roadmap .step-title { max-width: none; font-size: 1.3rem; }
+    #roadmap .roadmap-rules { width: auto; }
     #roadmap .timeline-step:not(:last-child)::after { top: calc(100% + 0.25rem); left: 35px; right: auto; width: 2px; height: 1rem; }
     #deck .slide { overflow-x: hidden; overflow-y: auto; padding-bottom: 6rem; }
     #deck .slide-content, #deck .body-center { flex: none; }
@@ -110,7 +115,7 @@
   <div class="accent-line enter" style="--i: 1;"></div>
   <h1 class="enter" style="--i: 2;">Delegating a Task</h1>
   <div class="cover-tags enter" style="--i: 3;">
-    <span class="tag">Choose the task</span><span class="tag">Write the brief</span><span class="tag">Review the plan</span><span class="tag">Start small</span>
+    <span class="tag">Choose the task</span><span class="tag">Write the brief</span><span class="tag">Clarify and plan</span><span class="tag">Start small</span>
   </div>
 </section>
 
@@ -124,8 +129,8 @@
     <h2>Roadmap</h2>
     <div class="timeline-track timeline-track--even">
       <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">WHY</div><div class="step-title">Why results miss</div></div>
-      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">WHAT</div><div class="step-title">Who does what</div></div>
-      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">HOW</div><div class="step-title">Four rules for delegation</div></div>
+      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">Your responsibility</div><div class="step-title">Define the task.<br>Approve the result.</div></div>
+      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">Four rules</div><div class="step-title roadmap-rules"><ol class="roadmap-rule-list"><li><span>Rule 1</span>Choose the task</li><li><span>Rule 2</span>Write the brief</li><li><span>Rule 3</span>Clarify and plan</li><li><span>Rule 4</span>Start small</li></ol></div></div>
       <div class="timeline-step enter" style="--i: 4;"><div class="step-circle">4</div><div class="step-label">Takeaway</div><div class="step-title">Recap</div></div>
     </div>
   </div>
@@ -172,16 +177,16 @@
   </div>
 </section>
 
-<!-- 5 · WHAT: responsibility, with an iterative return -->
-<section class="slide" data-label="What who does what">
-  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">What &middot; Who does what</span></div>
+<!-- 5 · Your responsibility, with an iterative return -->
+<section class="slide" data-label="Your responsibility">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Your responsibility</span></div>
   <div class="slide-content">
-    <h2>You set the direction, and the agent works within it.</h2>
+    <h2>You define the task and approve the result.</h2>
     <div class="body-center">
       <table class="role-table">
         <thead><tr><th scope="col">Stage</th><th scope="col">Your responsibility</th><th scope="col">The agent can help by</th></tr></thead>
         <tbody>
-          <tr data-step="1"><td>01 &nbsp; Define</td><td data-mobile-label="You">Set the goal, limits, and completion criteria.</td><td data-mobile-label="Agent">Ask questions and draft the brief.</td></tr>
+          <tr data-step="1"><td>01 &nbsp; Define</td><td data-mobile-label="You">Decide what you want, what the agent may do, and what counts as done.</td><td data-mobile-label="Agent">Ask questions and draft the brief.</td></tr>
           <tr data-step="2"><td>02 &nbsp; Do</td><td data-mobile-label="You">Approve the plan and actions that need your permission.</td><td data-mobile-label="Agent">Carry out the work, check it, and report problems.</td></tr>
           <tr data-step="3"><td>03 &nbsp; Check</td><td data-mobile-label="You">Decide whether the result meets your needs.</td><td data-mobile-label="Agent">Show evidence and fix the issues you identify.</td></tr>
         </tbody>
@@ -194,10 +199,10 @@
 </section>
 
 <!-- 6 · HOW: choose appropriate work -->
-<section class="slide" data-label="How choose the task">
-  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">01 &middot; Choose the task</span></div>
+<section class="slide" id="rule-1" data-label="Rule 1: Choose the task">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Rule 1 &middot; Choose the task</span></div>
   <div class="slide-content">
-    <h2>Start with work you can describe, check, and recover from.</h2>
+    <h2>Rule 1: Choose work you can describe, check, and recover from.</h2>
     <p class="lede">To delegate is to give an agent responsibility for carrying out a task.</p>
     <div class="body-center">
       <div class="principles">
@@ -215,11 +220,11 @@
 </section>
 
 <!-- 7 · HOW: the task contract -->
-<section class="slide" data-label="How write the brief">
-  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">02 &middot; Write the brief</span></div>
+<section class="slide" id="rule-2" data-label="Rule 2: Write the brief">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Rule 2 &middot; Write the brief</span></div>
   <div class="slide-content">
-    <h2>A useful brief defines the goal, materials, limits, and completion criteria.</h2>
-    <p class="lede">A brief is a written description of the task. For this report, a short page is enough.</p>
+    <h2>Rule 2: Write a brief with four parts.</h2>
+    <p class="lede">A brief is a written description of the task. It states what you want and what counts as done.</p>
     <div class="body-center">
       <table class="brief-table">
         <thead><tr><th scope="col">Part</th><th scope="col">What it defines</th><th scope="col">For the Monday report</th></tr></thead>
@@ -227,20 +232,20 @@
           <tr data-step="1"><td>Goal</td><td data-mobile-label="Meaning">Who needs the result and why.</td><td data-mobile-label="Example">Help the sales lead decide which regions need follow-up.</td></tr>
           <tr data-step="2"><td>Materials</td><td data-mobile-label="Meaning">The inputs and references.</td><td data-mobile-label="Example">Sales sheets for both weeks. Last Monday&rsquo;s report as the layout reference.</td></tr>
           <tr data-step="3"><td>Limits</td><td data-mobile-label="Meaning">What the agent may do and must leave alone.</td><td data-mobile-label="Example">Create a separate draft. No forecasts, source edits, or sending.</td></tr>
-          <tr data-step="4"><td>Completion criteria</td><td data-mobile-label="Meaning">The observable results required.</td><td data-mobile-label="Example">One page. One row per region. Correct dates and amounts. Show both weeks and the change in sales amount. Label missing data.</td></tr>
+          <tr data-step="4"><td>Done</td><td data-mobile-label="Meaning">What must be true when the task is finished.</td><td data-mobile-label="Example">One page. One row per region. Correct dates and amounts. Show both weeks and the change in sales amount. Label missing data.</td></tr>
         </tbody>
       </table>
-      <p class="split-highlight bottom-highlight" data-step="5">Write the completion criteria before work starts.</p>
-      <p class="fine-print" data-step="5">Set tool permissions to match the limits. A written instruction alone is not an enforced permission boundary.</p>
+      <p class="split-highlight bottom-highlight" data-step="5">Decide what counts as done before work starts.</p>
+      <p class="fine-print" data-step="5">Tool permissions can block actions. Set them to match the limits in your brief.</p>
     </div>
   </div>
 </section>
 
 <!-- 8 · HOW: important questions, then an observable plan -->
-<section class="slide" data-label="How clarify and plan">
-  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">03 &middot; Clarify and plan</span></div>
+<section class="slide" id="rule-3" data-label="Rule 3: Clarify and plan">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Rule 3 &middot; Clarify and plan</span></div>
   <div class="slide-content">
-    <h2>Settle important questions and review the plan before work starts.</h2>
+    <h2>Rule 3: Clarify important choices, then review the plan.</h2>
     <p class="lede">For an unclear task, ask the agent to read the materials and identify choices that could change the result.</p>
     <div class="body-center">
       <div class="clarify-layout">
@@ -260,10 +265,10 @@
 </section>
 
 <!-- 9 · HOW: one complete slice -->
-<section class="slide" data-label="How start small">
-  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">04 &middot; Start small</span></div>
+<section class="slide" id="rule-4" data-label="Rule 4: Start small">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Rule 4 &middot; Start small</span></div>
   <div class="slide-content">
-    <h2>Build one complete path, check it, then expand.</h2>
+    <h2>Rule 4: Build and check one complete path before expanding.</h2>
     <p class="lede">For the Monday report, start with one region.</p>
     <div class="body-center">
       <div class="path" data-step="1" aria-label="One complete path: source records for both weeks, sales totals, comparison, and a report row.">
@@ -284,11 +289,12 @@
   <div class="closing-decoration"></div><div class="closing-decoration-2"></div>
   <h4 class="lesson-label enter" style="--i: 0;">Takeaway</h4>
   <div class="accent-line enter" style="--i: 1; margin: 0 auto 1.5rem;"></div>
-  <h1 class="enter" style="--i: 2;">Clear outcomes, controlled actions, and early checks guide the work.</h1>
+  <h1 class="enter" style="--i: 2;">Use these four rules to delegate a task.</h1>
   <div class="closing-grid">
-    <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Choose a task you can check.</div><p class="card-body">Describe the result and limit the consequences of mistakes.</p></div>
-    <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">Agree on the brief and plan.</div><p class="card-body">Define the inputs, limits, and completion criteria. Resolve important questions.</p></div>
-    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Start with one complete path.</div><p class="card-body">Check the evidence, correct mistakes, and expand after it passes.</p></div>
+    <div class="card" data-step="1"><span class="step-circle">1</span><div class="card-name">Choose the task</div><p class="card-body">Describe the result, decide how to check it, and limit the damage.</p></div>
+    <div class="card" data-step="2"><span class="step-circle">2</span><div class="card-name">Write the brief</div><p class="card-body">State the goal, materials, limits, and what counts as done.</p></div>
+    <div class="card" data-step="3"><span class="step-circle">3</span><div class="card-name">Clarify and plan</div><p class="card-body">Resolve important choices and review the plan before work starts.</p></div>
+    <div class="card" data-step="4"><span class="step-circle">4</span><div class="card-name">Start small</div><p class="card-body">Check one complete path, then expand after it passes.</p></div>
   </div>
 </section>
 </div>
