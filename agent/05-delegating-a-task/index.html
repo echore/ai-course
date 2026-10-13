@@ -13,6 +13,7 @@
   /* Lesson layouts only. Colours, type and navigation come from shared/. */
   #deck .lede { max-width: 76vw; }
   .lesson-label { margin-bottom: 1.2rem; }
+  #roadmap .step-title { max-width: 19vw; }
   #deck .layout-cover h1 { max-width: 72vw; }
   #deck .layout-cover .cover-tags { flex-wrap: wrap; }
   .bottom-highlight { margin-top: 1.1rem; }
@@ -63,6 +64,12 @@
   #deck .closing-grid .card-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
   #deck .closing-grid .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); }
   @media (max-width: 760px) {
+    #roadmap .timeline-track { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; gap: 1.5rem; margin-top: 1.2rem; }
+    #roadmap .timeline-step { display: grid; grid-template-columns: 72px 1fr; column-gap: 1.2rem; text-align: left; align-items: center; }
+    #roadmap .step-circle { grid-row: 1 / span 2; margin-bottom: 0; }
+    #roadmap .step-label { margin-bottom: 0.2rem; }
+    #roadmap .step-title { max-width: none; font-size: 1.3rem; }
+    #roadmap .timeline-step:not(:last-child)::after { top: calc(100% + 0.25rem); left: 35px; right: auto; width: 2px; height: 1rem; }
     #deck .slide { overflow-x: hidden; overflow-y: auto; padding-bottom: 6rem; }
     #deck .slide-content, #deck .body-center { flex: none; }
     #deck .lede { max-width: none; }
@@ -107,7 +114,24 @@
   </div>
 </section>
 
-<!-- 2 · WHY: result and intent -->
+<!-- 2 · Overview: the same roadmap layout as lessons 01 and 02 -->
+<section class="slide" id="roadmap" data-label="Roadmap">
+  <div class="slide-header">
+    <h4>Module 5 &middot; Preview</h4>
+    <span class="tag">Overview</span>
+  </div>
+  <div class="slide-content">
+    <h2>Roadmap</h2>
+    <div class="timeline-track timeline-track--even">
+      <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">WHY</div><div class="step-title">Why results miss</div></div>
+      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">WHAT</div><div class="step-title">Who does what</div></div>
+      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">HOW</div><div class="step-title">Four rules for delegation</div></div>
+      <div class="timeline-step enter" style="--i: 4;"><div class="step-circle">4</div><div class="step-label">Takeaway</div><div class="step-title">Recap</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · WHY: result and intent -->
 <section class="slide" data-label="Why the result misses">
   <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Why &middot; The problem</span></div>
   <div class="slide-content">
@@ -126,7 +150,7 @@
   </div>
 </section>
 
-<!-- 3 · WHY: assumptions -->
+<!-- 4 · WHY: assumptions -->
 <section class="slide" data-label="Why missing context matters">
   <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Why &middot; The cause</span></div>
   <div class="slide-content">
@@ -148,7 +172,7 @@
   </div>
 </section>
 
-<!-- 4 · WHAT: responsibility, with an iterative return -->
+<!-- 5 · WHAT: responsibility, with an iterative return -->
 <section class="slide" data-label="What who does what">
   <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">What &middot; Who does what</span></div>
   <div class="slide-content">
@@ -169,7 +193,7 @@
   </div>
 </section>
 
-<!-- 5 · HOW: choose appropriate work -->
+<!-- 6 · HOW: choose appropriate work -->
 <section class="slide" data-label="How choose the task">
   <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">01 &middot; Choose the task</span></div>
   <div class="slide-content">
@@ -190,7 +214,7 @@
   </div>
 </section>
 
-<!-- 6 · HOW: the task contract -->
+<!-- 7 · HOW: the task contract -->
 <section class="slide" data-label="How write the brief">
   <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">02 &middot; Write the brief</span></div>
   <div class="slide-content">
@@ -212,7 +236,7 @@
   </div>
 </section>
 
-<!-- 7 · HOW: important questions, then an observable plan -->
+<!-- 8 · HOW: important questions, then an observable plan -->
 <section class="slide" data-label="How clarify and plan">
   <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">03 &middot; Clarify and plan</span></div>
   <div class="slide-content">
@@ -235,7 +259,7 @@
   </div>
 </section>
 
-<!-- 8 · HOW: one complete slice -->
+<!-- 9 · HOW: one complete slice -->
 <section class="slide" data-label="How start small">
   <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">04 &middot; Start small</span></div>
   <div class="slide-content">
@@ -255,7 +279,7 @@
   </div>
 </section>
 
-<!-- 9 · Takeaway -->
+<!-- 10 · Takeaway -->
 <section class="slide layout-closing" data-label="Takeaway">
   <div class="closing-decoration"></div><div class="closing-decoration-2"></div>
   <h4 class="lesson-label enter" style="--i: 0;">Takeaway</h4>
