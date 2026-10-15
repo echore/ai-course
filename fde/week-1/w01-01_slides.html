@@ -262,6 +262,86 @@
  .keyboard-hint{display:none}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important;animation:none!important}}
+
+/* Matched Week 1 typography and presenter-controlled block highlighting. */
+h2 { font-size: clamp(2.1rem, 3.2vw, 2.9rem); }
+h4 { font-size: clamp(0.95rem, 1.2vw, 1.05rem); }
+p, li { font-size: clamp(1.125rem, 1.5vw, 1.375rem); line-height: 1.55; }
+.detail-block h3, .stat-cell .stat-name {
+  font-size: clamp(1.2rem, 1.6vw, 1.4rem);
+}
+.detail-block ul li, .stat-cell .stat-context, .insight-list li {
+  font-size: clamp(1.125rem, 1.45vw, 1.375rem);
+}
+.layout-cover .subtitle, .layout-closing .closing-sub {
+  font-size: clamp(1.25rem, 1.8vw, 1.6rem);
+}
+.layout-cover .meta { font-size: 0.95rem; }
+.split-highlight { font-size: clamp(1.3rem, 1.8vw, 1.7rem); }
+.split-highlight cite { font-size: 0.85rem; }
+.slide-header .tag, .hub { font-size: 0.85rem; }
+.slide-counter { font-size: 0.85rem; }
+.keyboard-hint { font-size: 0.75rem; }
+.insight-list li { padding-left: 2.3rem; }
+
+.focus-block {
+  cursor: pointer;
+  transition: background-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+.focus-block:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.focus-block.is-highlighted {
+  background-color: var(--accent-medium);
+  box-shadow: inset 0 0 0 2px var(--primary), 0 6px 18px rgba(30, 43, 250, 0.1);
+  transform: translateY(-2px);
+}
+.insight-list > .focus-block, .split-left > p.focus-block,
+.detail-block li.focus-block { border-radius: 8px; }
+.focus-block.is-highlighted, .focus-block.is-highlighted .stat-context,
+.focus-block.is-highlighted p, .focus-block.is-highlighted li { color: var(--text); }
+.split-left > p.is-highlighted { box-shadow: 0 0 0 2px var(--primary), 0 6px 18px rgba(30, 43, 250, 0.1); }
+.highlight-btn {
+  display: inline-flex; align-items: center; gap: 0.45rem;
+  min-height: 44px; padding: 0.55rem 0.85rem;
+  border: 1.5px solid var(--border); border-radius: 100px;
+  background: var(--bg); color: var(--primary);
+  font: 500 0.85rem 'Space Grotesk', sans-serif; cursor: pointer;
+}
+.highlight-btn:hover, .highlight-btn:focus-visible { border-color: var(--primary); background: var(--accent-light); }
+.highlight-btn[hidden] { display: none; }
+.highlight-count { font-variant-numeric: tabular-nums; }
+.focus-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (max-width: 1000px) { .keyboard-hint { display: none; } }
+@media (max-width: 700px) {
+  .slide { padding: 4rem 6vw 7.5rem; scroll-padding: 4.5rem 0 7.5rem; }
+  .layout-cover, .layout-closing { justify-content: flex-start; padding-top: 6rem; }
+  .layout-cover h1, .layout-cover .subtitle, .layout-cover .meta,
+  .layout-closing h1, .layout-closing .closing-sub, .layout-quote blockquote { max-width: 100%; }
+  .layout-cover .cover-decoration { opacity: 0.5; pointer-events: none; }
+  .layout-cover .meta { line-height: 1.5; }
+  .split-right { padding-left: 0; border-left: 0; }
+  .detail-body > .detail-col { grid-column: 1 / -1 !important; min-width: 0; }
+  .detail-block { padding: 1.2rem; }
+  .nav-controls { gap: 0.5rem; bottom: 1rem; }
+  .slide-counter { bottom: 1.65rem; }
+  .deck::after {
+    content: ''; position: fixed; inset: auto 0 0; height: 5rem;
+    background: var(--bg); border-top: 1px solid var(--border);
+    z-index: 90; pointer-events: none;
+  }
+}
+@media (min-width: 701px) and (max-height: 600px) {
+  .slide { overflow-y: auto; padding-bottom: 6rem; }
+  .layout-cover, .layout-closing { justify-content: flex-start; }
+  .slide-content { flex: none; min-height: auto; }
+  .layout-detail .detail-body { flex: none; overflow: visible; }
+  .deck::after {
+    content: ''; position: fixed; inset: auto 0 0; height: 5rem;
+    background: var(--bg); border-top: 1px solid var(--border);
+    z-index: 90; pointer-events: none;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -549,7 +629,7 @@
 
   <!-- Navigation -->
   <div class="slide-counter"><span id="current">1</span> / <span id="total">10</span></div>
-  <div class="keyboard-hint">Use arrow keys to navigate</div>
+  <span class="focus-status" id="focusStatus" role="status" aria-live="polite"></span>
   <div class="progress-bar" id="progress"></div>
   <div class="nav-controls">
     <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide">
@@ -572,7 +652,78 @@
     const total = slides.length;
     totalEl.textContent = total;
 
+
+    // Highlight existing content in reading order; all content stays visible.
+    const focusStatus = document.getElementById('focusStatus');
+    const focusGroups = Array.from(slides, slide => {
+      let items = Array.from(slide.querySelectorAll('.stats-grid > .stat-cell'));
+      if (!items.length) {
+        const blocks = Array.from(slide.querySelectorAll('.detail-block'));
+        if (blocks.length > 1) items = blocks;
+        else if (blocks.length === 1) items = Array.from(blocks[0].querySelectorAll('li'));
+      }
+      if (!items.length && slide.classList.contains('layout-split')) {
+        items = Array.from(slide.querySelectorAll('.split-left > p, .insight-list > li, .split-right .split-highlight'));
+      }
+      if (items.length < 2) return [];
+      items.forEach((item, index) => {
+        item.classList.add('focus-block');
+        item.setAttribute('role', 'button');
+        item.setAttribute('tabindex', '0');
+        item.setAttribute('aria-pressed', 'false');
+        item.addEventListener('click', () => setHighlight(highlightIndex === index ? -1 : index));
+        item.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault(); event.stopPropagation();
+            setHighlight(highlightIndex === index ? -1 : index);
+          }
+        });
+      });
+      return items;
+    });
+    let highlightIndex = -1;
+
+    function setHighlight(index, scroll = true) {
+      const items = focusGroups[current];
+      highlightIndex = index;
+      items.forEach((item, i) => {
+        const selected = i === index;
+        item.classList.toggle('is-highlighted', selected);
+        item.setAttribute('aria-pressed', String(selected));
+      });
+      focusStatus.textContent = index < 0 ? 'Highlight cleared. All content is visible.' : 'Block ' + (index + 1) + ' of ' + items.length + ' highlighted.';
+      if (scroll && index >= 0 && matchMedia('(max-width: 700px), (max-height: 600px)').matches) {
+        const item = items[index];
+        const rect = item.getBoundingClientRect();
+        if (rect.top < 72 || rect.bottom > innerHeight - 96) {
+          slides[current].scrollTo({ top: slides[current].scrollTop + rect.top - 72,
+            behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+        }
+      }
+    }
+
+    function highlightNext() {
+      const items = focusGroups[current];
+      if (items.length) setHighlight(highlightIndex + 1 >= items.length ? -1 : highlightIndex + 1);
+    }
+
+    document.addEventListener('keydown', event => {
+      if (event.ctrlKey || event.metaKey || event.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable) return;
+      if (event.key.toLowerCase() === 'h') { event.preventDefault(); highlightNext(); }
+      else if (event.key === 'Escape' && highlightIndex >= 0) setHighlight(-1, false);
+    });
+
     function updateSlide() {
+      if (document.activeElement.classList.contains('focus-block') && !slides[current].contains(document.activeElement)) document.activeElement.blur();
+      highlightIndex = -1;
+      focusGroups.flat().forEach(item => {
+        item.classList.remove('is-highlighted');
+        item.setAttribute('aria-pressed', 'false');
+        item.setAttribute('tabindex', slides[current].contains(item) ? '0' : '-1');
+      });
+      focusStatus.textContent = '';
+      slides[current].scrollTop = 0;
+
       slides.forEach((slide, i) => {
         slide.classList.remove('active', 'prev');
         if (i === current) {
