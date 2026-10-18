@@ -289,7 +289,154 @@
       .branch-diagram .cards .card { text-align:left; border-left:1px solid var(--border); padding:1rem; }
     }
 
-  </style>
+  
+/* Weeks 5 and 6 readability and presenter highlights. */
+
+h2 { font-size: clamp(2.1rem, 3.2vw, 2.9rem); }
+h4 { font-size: clamp(0.95rem, 1.2vw, 1.05rem); }
+p, li { font-size: clamp(1.125rem, 1.5vw, 1.375rem); line-height: 1.55; }
+.detail-block h3, .stat-cell .stat-name {
+  font-size: clamp(1.2rem, 1.6vw, 1.4rem);
+}
+.detail-block ul li, .stat-cell .stat-context, .insight-list li {
+  font-size: clamp(1.125rem, 1.45vw, 1.375rem);
+}
+.layout-cover .subtitle, .layout-closing .closing-sub {
+  font-size: clamp(1.25rem, 1.8vw, 1.6rem);
+}
+.layout-cover .meta { font-size: 0.95rem; }
+.split-highlight { font-size: clamp(1.3rem, 1.8vw, 1.7rem); }
+.split-highlight cite { font-size: 0.85rem; }
+.slide-header .tag, .hub { font-size: 0.85rem; }
+.slide-counter { font-size: 0.85rem; }
+.insight-list li { padding-left: 2.3rem; }
+
+.focus-block {
+  cursor: pointer;
+  transition: background-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+.focus-block:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.focus-block.is-highlighted {
+  background-color: var(--accent-medium);
+  box-shadow: inset 0 0 0 2px var(--primary), 0 6px 18px rgba(30, 43, 250, 0.1);
+  transform: translateY(-2px);
+}
+.insight-list > .focus-block, .split-left > p.focus-block,
+.detail-block li.focus-block { border-radius: 8px; }
+.focus-block.is-highlighted, .focus-block.is-highlighted .stat-context,
+.focus-block.is-highlighted p, .focus-block.is-highlighted li { color: var(--text); }
+.split-left > p.is-highlighted { box-shadow: 0 0 0 2px var(--primary), 0 6px 18px rgba(30, 43, 250, 0.1); }
+.focus-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (max-width: 700px) {
+  .slide { padding: 4rem 6vw 7.5rem; scroll-padding: 4.5rem 0 7.5rem; }
+  .layout-cover, .layout-closing { justify-content: flex-start; padding-top: 6rem; }
+  .layout-cover h1, .layout-cover .subtitle, .layout-cover .meta,
+  .layout-closing h1, .layout-closing .closing-sub, .layout-quote blockquote { max-width: 100%; }
+  .layout-cover .cover-decoration { opacity: 0.5; pointer-events: none; }
+  .layout-cover .meta { line-height: 1.5; }
+  .split-right { padding-left: 0; border-left: 0; }
+  .detail-body > .detail-col { grid-column: 1 / -1 !important; min-width: 0; }
+  .detail-block { padding: 1.2rem; }
+  .nav-controls { gap: 0.5rem; bottom: 1rem; }
+  .slide-counter { bottom: 1.65rem; }
+  .deck::after {
+    content: ''; position: fixed; inset: auto 0 0; height: 5rem;
+    background: var(--bg); border-top: 1px solid var(--border);
+    z-index: 90; pointer-events: none;
+  }
+}
+@media (min-width: 701px) and (max-height: 600px) {
+  .slide { overflow-y: auto; padding-bottom: 6rem; }
+  .layout-cover, .layout-closing { justify-content: flex-start; }
+  .slide-content { flex: none; min-height: auto; }
+  .layout-detail .detail-body { flex: none; overflow: visible; }
+  .deck::after {
+    content: ''; position: fixed; inset: auto 0 0; height: 5rem;
+    background: var(--bg); border-top: 1px solid var(--border);
+    z-index: 90; pointer-events: none;
+  }
+}
+
+
+
+/* Map the established Week 1/2 scale onto the Weeks 5 and 6 visual components. */
+h2 { margin-bottom: 1rem; }
+.slide-header { gap: .75rem; }
+.slide-header .tag { flex-shrink: 0; white-space: nowrap; }
+.card h3, .flow .card h3 { font-size: clamp(1.2rem, 1.6vw, 1.4rem); }
+.card p, .card li, .flow .card p, .takeaway, .compare {
+  font-size: clamp(1.125rem, 1.45vw, 1.375rem); line-height: 1.5;
+}
+.lead { font-size: clamp(1.125rem, 1.5vw, 1.375rem); line-height: 1.55; max-width: 100%; }
+.cards { margin-top: 1.1rem; }
+.takeaway { margin-top: 1.1rem; padding: .85rem 1.2rem; }
+.cards.visual-pair { gap: 3rem; padding: .5rem 0; }
+.cards.visual-fusion { gap: 1rem 0; margin-top: .75rem; }
+.visual-pair > .card h3 { padding-bottom: .4rem; margin-bottom: .7rem; }
+.visual-rail > .card { padding: .8rem 0; gap: 1rem; grid-template-columns: 44px minmax(180px,23%) minmax(0,1fr); }
+.visual-records > .card li { padding-bottom: .6rem; }
+.flow.visual-loop { width: 100%; padding: .8rem 2rem; gap: 1.5rem 5rem; margin: .5rem 0; }
+.card, .rail-body, .slide-content { min-width: 0; }
+.focus-row-control { display: block; }
+.focus-trigger:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.focus-block.is-highlighted { border-radius: 8px; }
+.compare tr.is-highlighted { transform: none; box-shadow: none; }
+.compare tr.is-highlighted > td { background-color: var(--accent-medium); color: var(--text); box-shadow: inset 0 2px var(--primary), inset 0 -2px var(--primary); }
+.compare tr.is-highlighted > td:first-child { box-shadow: inset 2px 0 var(--primary), inset 0 2px var(--primary), inset 0 -2px var(--primary); }
+.compare tr.is-highlighted > td:last-child { box-shadow: inset -2px 0 var(--primary), inset 0 2px var(--primary), inset 0 -2px var(--primary); }
+@media (max-width:700px) {
+  .slide-content { flex: none; min-height: auto; }
+  .cards, .cards.two, .cards.four { grid-template-columns: minmax(0,1fr); }
+  .visual-rail > .card { grid-template-columns: 38px minmax(0,1fr); gap: .6rem 1rem; }
+  .flow { flex-direction: column; flex-wrap: nowrap; }
+  .flow > .card { flex: none; flex-basis: auto; min-width: 0; }
+  .flow.visual-loop { grid-template-columns: minmax(0,1fr); padding: 0; gap: 1rem; margin: 1rem 0; }
+  .flow.visual-loop > .card { min-width: 0; }
+  .compare { display: block; width: 100%; }
+  .compare thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .compare tbody { display: block; }
+  .compare tbody tr { display: block; margin: 1rem 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .compare tbody td { display: block; width: auto; border: 0; padding: .8rem 1rem; overflow-wrap: anywhere; }
+  .compare tbody td::before { content: attr(data-label); display: block; margin-bottom: .3rem; color: var(--primary); font: 600 .9rem 'Space Grotesk',sans-serif; }
+  .compare tr.is-highlighted > td { box-shadow: none; }
+  .compare tbody tr.is-highlighted { box-shadow: inset 0 0 0 2px var(--primary); }
+  .cards.visual-pair { gap: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+/* Fixed-size arrowheads keep their shape when the loop spans a wide screen. */
+.loop-arrow { position: absolute; width: 28px; height: 20px; color: var(--primary); pointer-events: none; }
+.loop-arrow-top { left: 50%; top: 3rem; transform: translate(-50%,-50%); }
+.loop-arrow-right { right: 2rem; top: 50%; transform: translate(50%,-50%) rotate(90deg); }
+.loop-arrow-bottom { left: 50%; bottom: 3rem; transform: translate(-50%,50%) rotate(180deg); }
+.loop-arrow-left { left: 2rem; top: 50%; transform: translate(-50%,-50%) rotate(-90deg); }
+@media (max-width:700px) { .loop-arrow { display: none; } }
+/* Keep the same visual text scale on a full-HD recording canvas. */
+@media (min-width:1600px) and (min-height:900px) {
+  h1 { font-size: clamp(2.8rem, 5vw, 5.9rem); }
+  h2 { font-size: clamp(2.1rem, 3.2vw, 3.9rem); }
+  .card h3, .flow .card h3 { font-size: clamp(1.2rem, 1.6vw, 2rem); }
+  p, li, .lead { font-size: clamp(1.125rem, 1.5vw, 1.9375rem); }
+  .card p, .card li, .flow .card p, .takeaway, .compare { font-size: clamp(1.125rem, 1.45vw, 1.875rem); }
+  .layout-cover .subtitle, .layout-closing .closing-sub { font-size: clamp(1.25rem, 1.8vw, 2.2rem); }
+}
+@media (max-width:700px) { .compare tbody td { width: auto !important; } }
+/* Tighter table spacing preserves the readable type size on recording screens. */
+@media (min-width:701px) and (min-height:601px) {
+  .compare.recording-table { table-layout:fixed; border-spacing:0 .3rem; margin-top:.25rem; }
+  .compare.recording-table th, .compare.recording-table td { padding:.4rem .85rem; }
+  .compare.recording-table th:nth-child(1), .compare.recording-table td:nth-child(1) { width:25%; }
+  .compare.recording-table th:nth-child(2), .compare.recording-table td:nth-child(2) { width:38%; }
+  .compare.recording-table th:nth-child(3), .compare.recording-table td:nth-child(3) { width:37%; }
+}
+@media (max-width:700px) {
+  .layout-closing h1 { max-width:100%; overflow-wrap:anywhere; }
+  .flow.visual-steps.compact-track > .card { padding-left:3.8rem; padding-right:0; text-align:left; }
+}
+@media (max-width:350px) {
+  .layout-closing h1 { hyphens:auto; hyphenate-limit-chars:8 4 4; }
+}
+</style>
 </head>
 <body>
 <a class="hub" href="../index.html">Course hub ↗</a><main class="deck">
@@ -301,7 +448,7 @@
 <section class="slide"><div class="slide-header"><h4>Pattern 3 · bounded iteration</h4><span class="tag">05-01</span></div><div class="slide-content"><h2>Loop: improve an output within a fixed budget</h2><div class="flow visual-steps return-track"><div class="card"><h3>Produce a candidate</h3><p>Generate the initial or revised output.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Check criteria</h3><p>Evaluate evidence, completeness, or format.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Revise if needed</h3><p>Use specific feedback for the next attempt.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Success exit</h3><p>Stop when validated criteria are met.</p></div><div class="card"><h3>Budget exit</h3><p>Stop at the iteration, token, or time ceiling and preserve unresolved work.</p></div></div><div class="takeaway">A quality target and a hard stopping rule are separate requirements.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>Pattern 4 · central planning</h4><span class="tag">05-01</span></div><div class="slide-content"><h2>Hierarchical: one coordinator manages workers</h2><div class="branch-diagram"><div class="card"><h3>Orchestrator</h3><p>Choose a worker, send the relevant context, and track the overall task.</p></div><div class="branch-lines" aria-hidden="true"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M50 0V14M16.6 30V14H83.4V30M50 14V30" fill="none" stroke="currentColor" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg></div><div class="cards visual-columns"><div class="card"><h3>Research specialist</h3><p>Gather evidence in its assigned scope.</p></div><div class="card"><h3>Analysis specialist</h3><p>Interpret the supplied evidence.</p></div><div class="card"><h3>Drafting specialist</h3><p>Produce the requested artifact.</p></div></div><div class="branch-lines return-lines" aria-hidden="true"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M50 0V14M16.6 30V14H83.4V30M50 14V30" fill="none" stroke="currentColor" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg></div><div class="card"><h3>Orchestrator receives results</h3><p>Validate output, update state, and decide the next useful step.</p></div></div><div class="takeaway">Workers report to the coordinator. Invocation can be sequential or parallel; this diagram shows available roles.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>Control transfer</h4><span class="tag">05-01</span></div><div class="slide-content"><h2>Handoff: transfer responsibility and task context</h2><div class="flow visual-steps "><div class="card"><h3>Intake agent</h3><p>Qualify the issue and record completed work.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Validate the handoff</h3><p>Check the receiving role and required payload.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Resolution agent</h3><p>Take over using the validated context.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>What transfers</h3><ul><li>Original goal, completed actions, evidence, and unresolved work.</li><li>Constraints, permissions, and the next responsibility.</li></ul></div><div class="card"><h3>What differs from delegation</h3><p>The receiving agent takes control. The first agent does not keep coordinating the same task.</p></div></div><div class="takeaway">A failure can surface in the receiver even when its cause is an incomplete handoff.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Pattern selection recap</h4><span class="tag">05-01</span></div><div class="slide-content"><h2>Map the task structure to the coordination pattern</h2><table class="compare visual-table"><thead><tr><th>Task structure</th><th>Starting pattern</th><th>Primary design question</th></tr></thead><tbody><tr><td>Dependent transformations</td><td>Sequential</td><td>What valid result lets the next stage begin?</td></tr><tr><td>Independent workstreams</td><td>Parallel</td><td>How are results and partial failures combined?</td></tr><tr><td>Repeated refinement</td><td>Loop</td><td>What proves completion, and what stops retries?</td></tr><tr><td>Adaptive planning and delegation</td><td>Hierarchical</td><td>What can the coordinator assign and recover?</td></tr><tr><td>A new specialist takes control</td><td>Handoff</td><td>What context and responsibility must transfer?</td></tr></tbody></table><div class="takeaway">Patterns can be combined. Choose each one to serve a specific dependency or responsibility.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Pattern selection recap</h4><span class="tag">05-01</span></div><div class="slide-content"><h2>Map the task structure to the coordination pattern</h2><table class="compare visual-table recording-table"><thead><tr><th>Task structure</th><th>Starting pattern</th><th>Primary design question</th></tr></thead><tbody><tr><td>Dependent transformations</td><td>Sequential</td><td>What valid result lets the next stage begin?</td></tr><tr><td>Independent workstreams</td><td>Parallel</td><td>How are results and partial failures combined?</td></tr><tr><td>Repeated refinement</td><td>Loop</td><td>What proves completion, and what stops retries?</td></tr><tr><td>Adaptive planning and delegation</td><td>Hierarchical</td><td>What can the coordinator assign and recover?</td></tr><tr><td>A new specialist takes control</td><td>Handoff</td><td>What context and responsibility must transfer?</td></tr></tbody></table><div class="takeaway">Patterns can be combined. Choose each one to serve a specific dependency or responsibility.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>State, recovery, and visibility</h4><span class="tag">05-01</span></div><div class="slide-content"><h2>Reliable coordination needs explicit contracts</h2><table class="compare visual-table"><thead><tr><th>Concern</th><th>Define before building</th><th>Verify in the pilot</th></tr></thead><tbody><tr><td>State and context</td><td>Task IDs, schemas, evidence references, and current status</td><td>Reject missing, stale, or unrelated results.</td></tr><tr><td>Failure isolation</td><td>Deadlines, safe retries, fallback, and partial-result policy</td><td>A failed branch does not become silent success.</td></tr><tr><td>Cross-agent observability</td><td>Correlated session, agent, task, and tool records</td><td>Trace a bad final result back to its first divergence.</td></tr></tbody></table><div class="takeaway">Passing context is an interface design problem, not merely copying conversation history.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>Cost and latency</h4><span class="tag">05-01</span></div><div class="slide-content"><h2>Parallelism changes time; total work drives cost</h2><div class="cards two visual-pair"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><h3>Sequential time</h3><p>Roughly the sum of dependent stage times, plus coordination overhead.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>Parallel time</h3><p>Roughly the slowest required branch, plus collection and downstream stages.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Per-task cost</h3><p>Add all model tokens, tools, retries, review calls, and infrastructure work.</p></div><div class="card"><h3>Projected volume</h3><p>Measure representative tasks, then estimate peak concurrency and operating cost.</p></div></div><div class="takeaway">Parallel execution is not automatically cheaper. Loops and duplicated context can increase work.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>From design to implementation</h4><span class="tag">05-01</span></div><div class="slide-content"><h2>A framework implements decisions you still own</h2><div class="cards two visual-pair"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/></svg></span><h3>Framework scaffolding</h3><ul><li>Execution flow, tool conventions, state and memory integration.</li><li>Persistence, tracing, and review hooks where supported.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>FDE design decisions</h3><ul><li>Role boundaries, context contracts, and approval rules.</li><li>Retry budgets, evaluation criteria, and customer ownership.</li></ul></div></div><div class="takeaway">Choose against the required behavior and the team’s ability to maintain it.</div></div></section>
@@ -313,7 +460,7 @@
 <section class="slide layout-closing"><div class="closing-decoration"></div><div class="closing-decoration-2"></div><div class="accent-line"></div><h1>Choose coordination<br>the customer can own</h1><p class="closing-sub" style="margin-top:2rem">Match task dependencies to patterns. Validate the boundaries. Select a maintainable implementation.</p></section>
 </main>
   <div class="slide-counter"><span id="current">1</span> / <span id="total">18</span></div>
-  <div class="keyboard-hint">← → navigate · F fullscreen</div>
+  <span class="focus-status" id="focusStatus" role="status" aria-live="polite"></span>
   <div class="progress-bar" id="progress"></div>
   <div class="nav-controls">
     <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide">
@@ -336,7 +483,83 @@
     const total = slides.length;
     totalEl.textContent = total;
 
+    // Presenter highlighting follows the visible content in reading order.
+    const focusStatus = document.getElementById('focusStatus');
+    document.querySelectorAll('.compare').forEach(table => {
+      const labels = Array.from(table.querySelectorAll('thead th'), cell => cell.textContent.trim());
+      table.querySelectorAll('tbody tr').forEach(row => Array.from(row.cells).forEach((cell, i) => {
+        cell.dataset.label = labels[i] || '';
+      }));
+    });
+    const focusGroups = Array.from(slides, slide => {
+      if (slide.matches('.layout-cover, .layout-closing')) return [];
+      const items = Array.from(slide.querySelectorAll('.slide-content > .lead, .cards > .card, .branch-diagram > .card, .flow > .card, .compare tbody > tr, .slide-content > .takeaway'));
+      if (items.length < 2) return [];
+      items.forEach((item, index) => {
+        // Keep native table-row semantics; expose its label as the keyboard control.
+        let control = item;
+        if (item.matches('tr')) {
+          const cell = item.cells[0];
+          control = document.createElement('span');
+          control.className = 'focus-row-control';
+          while (cell.firstChild) control.appendChild(cell.firstChild);
+          cell.appendChild(control);
+        }
+        item.classList.add('focus-block');
+        item.focusControl = control;
+        control.classList.add('focus-trigger');
+        control.setAttribute('role', 'button');
+        control.setAttribute('tabindex', '-1');
+        control.setAttribute('aria-pressed', 'false');
+        item.addEventListener('click', () => setHighlight(highlightIndex === index ? -1 : index));
+        control.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault(); event.stopPropagation();
+            setHighlight(highlightIndex === index ? -1 : index);
+          }
+        });
+      });
+      return items;
+    });
+    let highlightIndex = -1;
+
+    function setHighlight(index, scroll = true) {
+      const items = focusGroups[current];
+      highlightIndex = index;
+      items.forEach((item, i) => {
+        item.classList.toggle('is-highlighted', i === index);
+        item.focusControl.setAttribute('aria-pressed', String(i === index));
+      });
+      focusStatus.textContent = index < 0 ? 'Highlight cleared. All content is visible.' : 'Block ' + (index + 1) + ' of ' + items.length + ' highlighted.';
+      if (scroll && index >= 0 && matchMedia('(max-width: 700px), (max-height: 600px)').matches) {
+        const rect = items[index].getBoundingClientRect();
+        if (rect.top < 72 || rect.bottom > innerHeight - 96) {
+          slides[current].scrollTo({top: slides[current].scrollTop + rect.top - 72,
+            behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+        }
+      }
+    }
+    function highlightNext() {
+      const items = focusGroups[current];
+      if (items.length) setHighlight(highlightIndex + 1 >= items.length ? -1 : highlightIndex + 1);
+    }
+    document.addEventListener('keydown', event => {
+      if (event.ctrlKey || event.metaKey || event.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable) return;
+      if (event.key.toLowerCase() === 'h') { event.preventDefault(); highlightNext(); }
+      else if (event.key === 'Escape' && highlightIndex >= 0) setHighlight(-1, false);
+    });
+
     function updateSlide() {
+      if (document.activeElement.classList.contains('focus-trigger') && !slides[current].contains(document.activeElement)) document.activeElement.blur();
+      highlightIndex = -1;
+      focusGroups.flat().forEach(item => {
+        item.classList.remove('is-highlighted');
+        item.focusControl.setAttribute('aria-pressed', 'false');
+        item.focusControl.setAttribute('tabindex', slides[current].contains(item) ? '0' : '-1');
+      });
+      focusStatus.textContent = '';
+      slides[current].scrollTop = 0;
+
       slides.forEach((slide, i) => {
         slide.classList.remove('active', 'prev');
         if (i === current) {

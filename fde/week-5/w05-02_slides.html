@@ -289,7 +289,154 @@
       .branch-diagram .cards .card { text-align:left; border-left:1px solid var(--border); padding:1rem; }
     }
 
-  </style>
+  
+/* Weeks 5 and 6 readability and presenter highlights. */
+
+h2 { font-size: clamp(2.1rem, 3.2vw, 2.9rem); }
+h4 { font-size: clamp(0.95rem, 1.2vw, 1.05rem); }
+p, li { font-size: clamp(1.125rem, 1.5vw, 1.375rem); line-height: 1.55; }
+.detail-block h3, .stat-cell .stat-name {
+  font-size: clamp(1.2rem, 1.6vw, 1.4rem);
+}
+.detail-block ul li, .stat-cell .stat-context, .insight-list li {
+  font-size: clamp(1.125rem, 1.45vw, 1.375rem);
+}
+.layout-cover .subtitle, .layout-closing .closing-sub {
+  font-size: clamp(1.25rem, 1.8vw, 1.6rem);
+}
+.layout-cover .meta { font-size: 0.95rem; }
+.split-highlight { font-size: clamp(1.3rem, 1.8vw, 1.7rem); }
+.split-highlight cite { font-size: 0.85rem; }
+.slide-header .tag, .hub { font-size: 0.85rem; }
+.slide-counter { font-size: 0.85rem; }
+.insight-list li { padding-left: 2.3rem; }
+
+.focus-block {
+  cursor: pointer;
+  transition: background-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
+}
+.focus-block:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.focus-block.is-highlighted {
+  background-color: var(--accent-medium);
+  box-shadow: inset 0 0 0 2px var(--primary), 0 6px 18px rgba(30, 43, 250, 0.1);
+  transform: translateY(-2px);
+}
+.insight-list > .focus-block, .split-left > p.focus-block,
+.detail-block li.focus-block { border-radius: 8px; }
+.focus-block.is-highlighted, .focus-block.is-highlighted .stat-context,
+.focus-block.is-highlighted p, .focus-block.is-highlighted li { color: var(--text); }
+.split-left > p.is-highlighted { box-shadow: 0 0 0 2px var(--primary), 0 6px 18px rgba(30, 43, 250, 0.1); }
+.focus-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+
+@media (max-width: 700px) {
+  .slide { padding: 4rem 6vw 7.5rem; scroll-padding: 4.5rem 0 7.5rem; }
+  .layout-cover, .layout-closing { justify-content: flex-start; padding-top: 6rem; }
+  .layout-cover h1, .layout-cover .subtitle, .layout-cover .meta,
+  .layout-closing h1, .layout-closing .closing-sub, .layout-quote blockquote { max-width: 100%; }
+  .layout-cover .cover-decoration { opacity: 0.5; pointer-events: none; }
+  .layout-cover .meta { line-height: 1.5; }
+  .split-right { padding-left: 0; border-left: 0; }
+  .detail-body > .detail-col { grid-column: 1 / -1 !important; min-width: 0; }
+  .detail-block { padding: 1.2rem; }
+  .nav-controls { gap: 0.5rem; bottom: 1rem; }
+  .slide-counter { bottom: 1.65rem; }
+  .deck::after {
+    content: ''; position: fixed; inset: auto 0 0; height: 5rem;
+    background: var(--bg); border-top: 1px solid var(--border);
+    z-index: 90; pointer-events: none;
+  }
+}
+@media (min-width: 701px) and (max-height: 600px) {
+  .slide { overflow-y: auto; padding-bottom: 6rem; }
+  .layout-cover, .layout-closing { justify-content: flex-start; }
+  .slide-content { flex: none; min-height: auto; }
+  .layout-detail .detail-body { flex: none; overflow: visible; }
+  .deck::after {
+    content: ''; position: fixed; inset: auto 0 0; height: 5rem;
+    background: var(--bg); border-top: 1px solid var(--border);
+    z-index: 90; pointer-events: none;
+  }
+}
+
+
+
+/* Map the established Week 1/2 scale onto the Weeks 5 and 6 visual components. */
+h2 { margin-bottom: 1rem; }
+.slide-header { gap: .75rem; }
+.slide-header .tag { flex-shrink: 0; white-space: nowrap; }
+.card h3, .flow .card h3 { font-size: clamp(1.2rem, 1.6vw, 1.4rem); }
+.card p, .card li, .flow .card p, .takeaway, .compare {
+  font-size: clamp(1.125rem, 1.45vw, 1.375rem); line-height: 1.5;
+}
+.lead { font-size: clamp(1.125rem, 1.5vw, 1.375rem); line-height: 1.55; max-width: 100%; }
+.cards { margin-top: 1.1rem; }
+.takeaway { margin-top: 1.1rem; padding: .85rem 1.2rem; }
+.cards.visual-pair { gap: 3rem; padding: .5rem 0; }
+.cards.visual-fusion { gap: 1rem 0; margin-top: .75rem; }
+.visual-pair > .card h3 { padding-bottom: .4rem; margin-bottom: .7rem; }
+.visual-rail > .card { padding: .8rem 0; gap: 1rem; grid-template-columns: 44px minmax(180px,23%) minmax(0,1fr); }
+.visual-records > .card li { padding-bottom: .6rem; }
+.flow.visual-loop { width: 100%; padding: .8rem 2rem; gap: 1.5rem 5rem; margin: .5rem 0; }
+.card, .rail-body, .slide-content { min-width: 0; }
+.focus-row-control { display: block; }
+.focus-trigger:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
+.focus-block.is-highlighted { border-radius: 8px; }
+.compare tr.is-highlighted { transform: none; box-shadow: none; }
+.compare tr.is-highlighted > td { background-color: var(--accent-medium); color: var(--text); box-shadow: inset 0 2px var(--primary), inset 0 -2px var(--primary); }
+.compare tr.is-highlighted > td:first-child { box-shadow: inset 2px 0 var(--primary), inset 0 2px var(--primary), inset 0 -2px var(--primary); }
+.compare tr.is-highlighted > td:last-child { box-shadow: inset -2px 0 var(--primary), inset 0 2px var(--primary), inset 0 -2px var(--primary); }
+@media (max-width:700px) {
+  .slide-content { flex: none; min-height: auto; }
+  .cards, .cards.two, .cards.four { grid-template-columns: minmax(0,1fr); }
+  .visual-rail > .card { grid-template-columns: 38px minmax(0,1fr); gap: .6rem 1rem; }
+  .flow { flex-direction: column; flex-wrap: nowrap; }
+  .flow > .card { flex: none; flex-basis: auto; min-width: 0; }
+  .flow.visual-loop { grid-template-columns: minmax(0,1fr); padding: 0; gap: 1rem; margin: 1rem 0; }
+  .flow.visual-loop > .card { min-width: 0; }
+  .compare { display: block; width: 100%; }
+  .compare thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
+  .compare tbody { display: block; }
+  .compare tbody tr { display: block; margin: 1rem 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+  .compare tbody td { display: block; width: auto; border: 0; padding: .8rem 1rem; overflow-wrap: anywhere; }
+  .compare tbody td::before { content: attr(data-label); display: block; margin-bottom: .3rem; color: var(--primary); font: 600 .9rem 'Space Grotesk',sans-serif; }
+  .compare tr.is-highlighted > td { box-shadow: none; }
+  .compare tbody tr.is-highlighted { box-shadow: inset 0 0 0 2px var(--primary); }
+  .cards.visual-pair { gap: 1.5rem; }
+}
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+/* Fixed-size arrowheads keep their shape when the loop spans a wide screen. */
+.loop-arrow { position: absolute; width: 28px; height: 20px; color: var(--primary); pointer-events: none; }
+.loop-arrow-top { left: 50%; top: 3rem; transform: translate(-50%,-50%); }
+.loop-arrow-right { right: 2rem; top: 50%; transform: translate(50%,-50%) rotate(90deg); }
+.loop-arrow-bottom { left: 50%; bottom: 3rem; transform: translate(-50%,50%) rotate(180deg); }
+.loop-arrow-left { left: 2rem; top: 50%; transform: translate(-50%,-50%) rotate(-90deg); }
+@media (max-width:700px) { .loop-arrow { display: none; } }
+/* Keep the same visual text scale on a full-HD recording canvas. */
+@media (min-width:1600px) and (min-height:900px) {
+  h1 { font-size: clamp(2.8rem, 5vw, 5.9rem); }
+  h2 { font-size: clamp(2.1rem, 3.2vw, 3.9rem); }
+  .card h3, .flow .card h3 { font-size: clamp(1.2rem, 1.6vw, 2rem); }
+  p, li, .lead { font-size: clamp(1.125rem, 1.5vw, 1.9375rem); }
+  .card p, .card li, .flow .card p, .takeaway, .compare { font-size: clamp(1.125rem, 1.45vw, 1.875rem); }
+  .layout-cover .subtitle, .layout-closing .closing-sub { font-size: clamp(1.25rem, 1.8vw, 2.2rem); }
+}
+@media (max-width:700px) { .compare tbody td { width: auto !important; } }
+/* Tighter table spacing preserves the readable type size on recording screens. */
+@media (min-width:701px) and (min-height:601px) {
+  .compare.recording-table { table-layout:fixed; border-spacing:0 .3rem; margin-top:.25rem; }
+  .compare.recording-table th, .compare.recording-table td { padding:.4rem .85rem; }
+  .compare.recording-table th:nth-child(1), .compare.recording-table td:nth-child(1) { width:25%; }
+  .compare.recording-table th:nth-child(2), .compare.recording-table td:nth-child(2) { width:38%; }
+  .compare.recording-table th:nth-child(3), .compare.recording-table td:nth-child(3) { width:37%; }
+}
+@media (max-width:700px) {
+  .layout-closing h1 { max-width:100%; overflow-wrap:anywhere; }
+  .flow.visual-steps.compact-track > .card { padding-left:3.8rem; padding-right:0; text-align:left; }
+}
+@media (max-width:350px) {
+  .layout-closing h1 { hyphens:auto; hyphenate-limit-chars:8 4 4; }
+}
+</style>
 </head>
 <body>
 <a class="hub" href="../index.html">Course hub ↗</a><main class="deck">
@@ -299,7 +446,7 @@
 <section class="slide"><div class="slide-header"><h4>Problem decomposition</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Decompose the work into six responsibilities</h2><div class="flow visual-steps compact-track"><div class="card"><h3>Detect</h3><p>Normalize signals and apply the agreed threshold.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Identify</h3><p>Map the event to affected shipments and delays.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Generate options</h3><p>Find feasible routes and approved carrier slots.</p></div></div><div class="flow visual-steps compact-track continue-track"><div class="card"><h3>Compare costs</h3><p>Rerouting cost versus the estimated cost of delay.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Package</h3><p>Present evidence, tradeoffs, and escalation items.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Execute</h3><p>Apply the approved change and record its outcome.</p></div></div><div class="takeaway">Read left to right across each row. The six responsibilities form one continuous workflow.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>Non-negotiable case requirements</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Three constraints shape the architecture</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg></span><h3>Approval before SAP writes</h3><ul><li>The company requires an explicit authorized human decision.</li><li>An open recommendation is not permission to execute.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>Filter before ranking</h3><ul><li>Apply the shipment-type approved-carrier list first.</li><li>Hazardous, cold-chain, and oversized loads have separate constraints.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>Isolate concurrent events</h3><ul><li>Keep business context and results scoped to each disruption.</li><li>One slow or failed chain must not block unrelated work.</li></ul></div></div><div class="takeaway">These are system boundaries enforced by code, permissions, and state—not instructions in a prompt alone.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>System architecture</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Five agents implement the six responsibilities</h2><div class="flow visual-steps compact-track"><div class="card"><h3>Detect</h3><p>Confirmed disruption event.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Identify</h3><p>Affected loads and estimated delays.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Options</h3><p>Ranked, eligible alternatives per load.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Recommend</h3><p>Cost comparison and plain-language package.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Execute</h3><p>Wait for approval; then update and notify.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Combine related work</h3><p>The recommendation agent owns both cost comparison and packaging. Internal functions perform validated calculations.</p></div><div class="card"><h3>Enforce the final boundary</h3><p>Execution consumes a recorded decision. Analysis agents do not receive production write access.</p></div></div><div class="takeaway">Structured outputs connect the chain; the recommendation also uses the identification agent’s delay estimates.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Case data landscape</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Connect each responsibility to its evidence</h2><table class="compare visual-table"><thead><tr><th>Source</th><th>Provides in this case</th><th>Access and design check</th></tr></thead><tbody><tr><td>Tomorrow.io FleetIQ</td><td>Weather risk and severe-event signals</td><td>Scheduled read; confirm route coverage and thresholds.</td></tr><tr><td>Portcast</td><td>Port congestion and predicted waiting signals</td><td>Scheduled read; confirm fields and contracted ports.</td></tr><tr><td>project44</td><td>Carrier exceptions, slots, quotes, notifications</td><td>Polling and on demand; verify freshness and action interfaces.</td></tr><tr><td>SAP TM</td><td>Shipments, route legs, and rerouting records</td><td>Reads for analysis; writes only after approval.</td></tr><tr><td>Approved-carrier database</td><td>Eligibility by shipment type</td><td>Read-only lookup; check current certifications and contracts.</td></tr><tr><td>Internal contract rate table</td><td>Contract rates and SLA cost parameters</td><td>Read-only cost inputs; validate units and effective dates.</td></tr></tbody></table><div class="takeaway">Include financial parameters as well as operational feeds: cost comparison needs a verified contract-rate source.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>Case data landscape</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Connect each responsibility to its evidence</h2><table class="compare visual-table recording-table"><thead><tr><th>Source</th><th>Provides in this case</th><th>Access and design check</th></tr></thead><tbody><tr><td>Tomorrow.io FleetIQ</td><td>Weather risk and severe-event signals</td><td>Scheduled read; confirm route coverage and thresholds.</td></tr><tr><td>Portcast</td><td>Port congestion and predicted waiting signals</td><td>Scheduled read; confirm fields and contracted ports.</td></tr><tr><td>project44</td><td>Carrier exceptions, slots, quotes, notifications</td><td>Polling and on demand; verify freshness and action interfaces.</td></tr><tr><td>SAP TM</td><td>Shipments, route legs, and rerouting records</td><td>Reads for analysis; writes only after approval.</td></tr><tr><td>Approved-carrier database</td><td>Eligibility by shipment type</td><td>Read-only lookup; check current certifications and contracts.</td></tr><tr><td>Internal contract rate table</td><td>Contract rates and SLA cost parameters</td><td>Read-only cost inputs; validate units and effective dates.</td></tr></tbody></table><div class="takeaway">Include financial parameters as well as operational feeds: cost comparison needs a verified contract-rate source.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>Detection agent</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Detection produces one traceable event</h2><div class="flow visual-steps "><div class="card"><h3>Fetch scheduled signals</h3><p>Weather, port congestion, and carrier exceptions.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Normalize and deduplicate</h3><p>Align schemas; merge signals for the same event.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Apply the threshold</h3><p>Log low-level signals; dispatch confirmed disruptions.</p></div></div><div class="cards two visual-records"><div class="card"><h3>Event contract</h3><p>Event ID · source references · route/port/carrier · severity · observed time.</p></div><div class="card"><h3>Failure handling</h3><p>Mark unavailable or stale feeds; do not silently treat missing evidence as normal conditions.</p></div></div><div class="takeaway">Scheduled polling is recurring execution. It is distinct from retrying a failed analysis.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>Identification agent</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Shipment impact includes every route leg</h2><p class="lead">A port disruption may affect a shipment even when its origin and final destination are elsewhere.</p><div class="flow visual-steps "><div class="card"><h3>Origin</h3><p>Shipment begins here.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Transit port</h3><p>The confirmed disruption affects this leg.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Destination</h3><p>Final delivery inherits the delay.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Input and lookup</h3><p>Use the confirmed route, port, or carrier to query active SAP TM loads across all relevant legs.</p></div><div class="card"><h3>Structured result</h3><p>Shipment IDs, matching legs, disruption type and severity, and estimated delay per shipment.</p></div></div><div class="takeaway">Retain the estimated delays: the recommendation stage needs them to compare rerouting with staying put.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>Option generation router</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Options fan out once per affected shipment</h2><div class="branch-diagram"><div class="card"><h3>Parent option router</h3><p>Assign bounded work for the affected shipment list.</p></div><div class="branch-lines" aria-hidden="true"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M50 0V14M16.6 30V14H83.4V30M50 14V30" fill="none" stroke="currentColor" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg></div><div class="cards visual-columns"><div class="card"><h3>Load A worker</h3><p>Query slots; filter eligibility; rank feasible options.</p></div><div class="card"><h3>Load B worker</h3><p>Query slots; filter eligibility; rank feasible options.</p></div><div class="card"><h3>Load C worker</h3><p>Query slots; filter eligibility; rank feasible options.</p></div></div><div class="branch-lines return-lines" aria-hidden="true"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M50 0V14M16.6 30V14H83.4V30M50 14V30" fill="none" stroke="currentColor" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg></div><div class="card"><h3>Collect per-load results</h3><p>Preserve completed, unavailable, and failed statuses before continuing.</p></div></div><div class="takeaway">Use bounded concurrency and deadlines. A large event must not overwhelm providers or the runtime.</div></div></section>
@@ -310,12 +457,12 @@
 <section class="slide"><div class="slide-header"><h4>Orchestration layer</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Combine three execution patterns deliberately</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><h3>Scheduled detection</h3><p>Fresh polling cycles create confirmed events; polling is not a quality-improvement loop.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/></svg></span><h3>Sequential backbone</h3><p>Detect → identify → options → recommend → approved execution. Each stage needs a valid result.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>Parallel work</h3><p>Independent event chains, plus per-load option workers inside each event.</p></div></div><div class="takeaway">Isolate event business state, while sharing infrastructure. Overlapping shipments still need conflict checks before writes.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>MCP and A2A</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Protocols connect interfaces; the runtime manages work</h2><div class="cards two visual-pair"><div class="card"><h3>MCP: tools and resources</h3><p>Model Context Protocol standardizes access to external capabilities.</p><ul><li>Expose typed integration interfaces where useful.</li><li>Configure authentication, authorization, and tool-level traces.</li></ul></div><div class="card"><h3>A2A: agent interoperability</h3><p>Agent-to-Agent connects agents through task and message interfaces.</p><ul><li>Useful across separately implemented agent services.</li><li>The runtime still owns worker creation, state, and concurrency.</li></ul></div></div><div class="takeaway">Both are optional architecture choices. Direct SDK calls and framework-local delegation can serve a single-system pilot.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>Evaluation plan</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Evaluate decisions, boundaries, and operating effort</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v18h17M8 16v-4M13 16V8M18 16V5"/></svg></span><h3>Detection precision and recall</h3><p>Use labeled historical events across the three feeds.</p><ul><li>Precision: how many triggered events were real?</li><li>Recall: how many relevant real events were caught?</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg></span><h3>Recommendation quality</h3><p>Compare options with coordinator criteria and feasible alternatives.</p><ul><li>Check eligibility, costs, explanations, and uncertainty.</li><li>Add rejected recommendations to the evaluation set.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>Audit completeness</h3><p>Every SAP write has a complete matching approval record.</p><ul><li>Missing identity, time, or approved-plan evidence is a failure.</li><li>Test denied and deferred decisions too.</li></ul></div></div><div class="takeaway">Also measure time to recommendation, model/tool cost, queue age, and coordinator review burden.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>AWS private-environment plan</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Deploy into the customer’s operating environment</h2><table class="compare visual-table"><thead><tr><th>Component</th><th>Deployment responsibility</th><th>Operational requirement</th></tr></thead><tbody><tr><td>Source polling</td><td>Scheduled jobs; secrets manager</td><td>Preserve existing integrations; monitor feed freshness.</td></tr><tr><td>Orchestration</td><td>Durable service and event state</td><td>Manage isolated chains, concurrency, deadlines, and recovery.</td></tr><tr><td>Agent workers</td><td>Container-based compute</td><td>Scale bounded per-load work; use approved model access.</td></tr><tr><td>Coordinator review</td><td>Persistent queue and web interface</td><td>Keep unresolved events and authorized decisions across sessions.</td></tr><tr><td>Audit storage</td><td>Append-only database</td><td>Retain approvals, writes, notifications, and correlated IDs.</td></tr></tbody></table><div class="takeaway">Confirm model endpoint, data handling, retention, and access policies during discovery; private compute alone does not settle them.</div></div></section>
+<section class="slide"><div class="slide-header"><h4>AWS private-environment plan</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Deploy into the customer’s operating environment</h2><table class="compare visual-table recording-table"><thead><tr><th>Component</th><th>Deployment responsibility</th><th>Operational requirement</th></tr></thead><tbody><tr><td>Source polling</td><td>Scheduled jobs; secrets manager</td><td>Preserve existing integrations; monitor feed freshness.</td></tr><tr><td>Orchestration</td><td>Durable service and event state</td><td>Manage isolated chains, concurrency, deadlines, and recovery.</td></tr><tr><td>Agent workers</td><td>Container-based compute</td><td>Scale bounded per-load work; use approved model access.</td></tr><tr><td>Coordinator review</td><td>Persistent queue and web interface</td><td>Keep unresolved events and authorized decisions across sessions.</td></tr><tr><td>Audit storage</td><td>Append-only database</td><td>Retain approvals, writes, notifications, and correlated IDs.</td></tr></tbody></table><div class="takeaway">Confirm model endpoint, data handling, retention, and access policies during discovery; private compute alone does not settle them.</div></div></section>
 <section class="slide"><div class="slide-header"><h4>FDE delivery and handoff</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Prove one complete slice before expanding</h2><div class="cards visual-rail"><div class="card"><h3>Scope a useful pilot</h3><div class="rail-body"><p>Choose one high-impact disruption type, agreed shipment categories, and a bounded load volume.</p></div></div><div class="card"><h3>Exercise the boundaries</h3><div class="rail-body"><p>Test duplicate signals, stale quotes, no eligible carrier, denied approval, overlapping events, and partial execution.</p></div></div><div class="card"><h3>Transfer ownership</h3><div class="rail-body"><p>Hand off contracts, thresholds, evaluation cases, approval configuration, dashboards, and recovery runbooks.</p></div></div></div><div class="takeaway">Success means a supported decision and an auditable action that the customer can operate.</div></div></section>
 <section class="slide layout-closing"><div class="closing-decoration"></div><div class="closing-decoration-2"></div><div class="accent-line"></div><h1>Design clear responsibilities.<br>Enforce the boundaries.</h1><p class="closing-sub" style="margin-top:2rem">Discovery → decomposition → coordination → approval → evidence of success.</p></section>
 </main>
   <div class="slide-counter"><span id="current">1</span> / <span id="total">20</span></div>
-  <div class="keyboard-hint">← → navigate · F fullscreen</div>
+  <span class="focus-status" id="focusStatus" role="status" aria-live="polite"></span>
   <div class="progress-bar" id="progress"></div>
   <div class="nav-controls">
     <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide">
@@ -338,7 +485,83 @@
     const total = slides.length;
     totalEl.textContent = total;
 
+    // Presenter highlighting follows the visible content in reading order.
+    const focusStatus = document.getElementById('focusStatus');
+    document.querySelectorAll('.compare').forEach(table => {
+      const labels = Array.from(table.querySelectorAll('thead th'), cell => cell.textContent.trim());
+      table.querySelectorAll('tbody tr').forEach(row => Array.from(row.cells).forEach((cell, i) => {
+        cell.dataset.label = labels[i] || '';
+      }));
+    });
+    const focusGroups = Array.from(slides, slide => {
+      if (slide.matches('.layout-cover, .layout-closing')) return [];
+      const items = Array.from(slide.querySelectorAll('.slide-content > .lead, .cards > .card, .branch-diagram > .card, .flow > .card, .compare tbody > tr, .slide-content > .takeaway'));
+      if (items.length < 2) return [];
+      items.forEach((item, index) => {
+        // Keep native table-row semantics; expose its label as the keyboard control.
+        let control = item;
+        if (item.matches('tr')) {
+          const cell = item.cells[0];
+          control = document.createElement('span');
+          control.className = 'focus-row-control';
+          while (cell.firstChild) control.appendChild(cell.firstChild);
+          cell.appendChild(control);
+        }
+        item.classList.add('focus-block');
+        item.focusControl = control;
+        control.classList.add('focus-trigger');
+        control.setAttribute('role', 'button');
+        control.setAttribute('tabindex', '-1');
+        control.setAttribute('aria-pressed', 'false');
+        item.addEventListener('click', () => setHighlight(highlightIndex === index ? -1 : index));
+        control.addEventListener('keydown', event => {
+          if (event.key === 'Enter' || event.key === ' ') {
+            event.preventDefault(); event.stopPropagation();
+            setHighlight(highlightIndex === index ? -1 : index);
+          }
+        });
+      });
+      return items;
+    });
+    let highlightIndex = -1;
+
+    function setHighlight(index, scroll = true) {
+      const items = focusGroups[current];
+      highlightIndex = index;
+      items.forEach((item, i) => {
+        item.classList.toggle('is-highlighted', i === index);
+        item.focusControl.setAttribute('aria-pressed', String(i === index));
+      });
+      focusStatus.textContent = index < 0 ? 'Highlight cleared. All content is visible.' : 'Block ' + (index + 1) + ' of ' + items.length + ' highlighted.';
+      if (scroll && index >= 0 && matchMedia('(max-width: 700px), (max-height: 600px)').matches) {
+        const rect = items[index].getBoundingClientRect();
+        if (rect.top < 72 || rect.bottom > innerHeight - 96) {
+          slides[current].scrollTo({top: slides[current].scrollTop + rect.top - 72,
+            behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
+        }
+      }
+    }
+    function highlightNext() {
+      const items = focusGroups[current];
+      if (items.length) setHighlight(highlightIndex + 1 >= items.length ? -1 : highlightIndex + 1);
+    }
+    document.addEventListener('keydown', event => {
+      if (event.ctrlKey || event.metaKey || event.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable) return;
+      if (event.key.toLowerCase() === 'h') { event.preventDefault(); highlightNext(); }
+      else if (event.key === 'Escape' && highlightIndex >= 0) setHighlight(-1, false);
+    });
+
     function updateSlide() {
+      if (document.activeElement.classList.contains('focus-trigger') && !slides[current].contains(document.activeElement)) document.activeElement.blur();
+      highlightIndex = -1;
+      focusGroups.flat().forEach(item => {
+        item.classList.remove('is-highlighted');
+        item.focusControl.setAttribute('aria-pressed', 'false');
+        item.focusControl.setAttribute('tabindex', slides[current].contains(item) ? '0' : '-1');
+      });
+      focusStatus.textContent = '';
+      slides[current].scrollTop = 0;
+
       slides.forEach((slide, i) => {
         slide.classList.remove('active', 'prev');
         if (i === current) {
