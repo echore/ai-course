@@ -10,6 +10,12 @@
 <body>
 <div id="deck">
 <style>
+#deck,
+#deck * {
+  animation: none !important;
+  transition: none !important;
+}
+
   /* Lesson layouts only. Colours, type and navigation come from shared/. */
   #deck .lede { max-width: 76vw; }
   .lesson-label { margin-bottom: 1.2rem; }
@@ -140,12 +146,12 @@
     <div class="body-center">
       <div class="cmp">
         <div class="col-label col-label--on cmp-head">What you needed</div><span class="cmp-head"></span><div class="col-label cmp-head">What the agent produced</div>
-        <div class="cmp-cell cmp-cell--needed" data-step="1">One page</div><span class="flow-arrow" data-step="1">&rarr;</span><div class="cmp-cell cmp-cell--got" data-step="1">Five pages</div>
-        <div class="cmp-cell cmp-cell--needed" data-step="2">Sales by region</div><span class="flow-arrow" data-step="2">&rarr;</span><div class="cmp-cell cmp-cell--got" data-step="2">Sales by product</div>
-        <div class="cmp-cell cmp-cell--needed" data-step="3">Compared with the previous week</div><span class="flow-arrow" data-step="3">&rarr;</span><div class="cmp-cell cmp-cell--got" data-step="3">A forecast for next month</div>
-        <div class="cmp-cell cmp-cell--needed" data-step="4">Last Monday&rsquo;s layout</div><span class="flow-arrow" data-step="4">&rarr;</span><div class="cmp-cell cmp-cell--got" data-step="4">A new layout</div>
+        <div class="cmp-cell cmp-cell--needed">One page</div><span class="flow-arrow">&rarr;</span><div class="cmp-cell cmp-cell--got">Five pages</div>
+        <div class="cmp-cell cmp-cell--needed">Sales by region</div><span class="flow-arrow">&rarr;</span><div class="cmp-cell cmp-cell--got">Sales by product</div>
+        <div class="cmp-cell cmp-cell--needed">Compared with the previous week</div><span class="flow-arrow">&rarr;</span><div class="cmp-cell cmp-cell--got">A forecast for next month</div>
+        <div class="cmp-cell cmp-cell--needed">Last Monday&rsquo;s layout</div><span class="flow-arrow">&rarr;</span><div class="cmp-cell cmp-cell--got">A new layout</div>
       </div>
-      <p class="split-highlight bottom-highlight" data-step="5">Even if the numbers are correct, this report does not meet your needs.</p>
+      <p class="split-highlight bottom-highlight">Even if the numbers are correct, this report does not meet your needs.</p>
     </div>
   </div>
 </section>
@@ -160,14 +166,14 @@
       <div class="request-layout">
         <div class="request-focus"><div class="col-label">Your request</div><blockquote>&ldquo;Make the weekly sales report.&rdquo;</blockquote></div>
         <div class="questions">
-          <p class="question" data-step="1">Which regions should it include?</p>
-          <p class="question" data-step="1">Which weeks should it compare?</p>
-          <p class="question" data-step="2">Should sales include or exclude returns?</p>
-          <p class="question" data-step="2">Which layout should it follow?</p>
+          <p class="question">Which regions should it include?</p>
+          <p class="question">Which weeks should it compare?</p>
+          <p class="question">Should sales include or exclude returns?</p>
+          <p class="question">Which layout should it follow?</p>
         </div>
       </div>
-      <p class="split-highlight bottom-highlight" data-step="3">The agent may ask, or it may choose an answer and continue. Make important requirements explicit, and ask it to state assumptions that could change the result.</p>
-      <p class="fine-print" data-step="3">Clear instructions help, but the agent can still make mistakes.</p>
+      <p class="split-highlight bottom-highlight">The agent may ask, or it may choose an answer and continue. Make important requirements explicit, and ask it to state assumptions that could change the result.</p>
+      <p class="fine-print">Clear instructions help, but the agent can still make mistakes.</p>
     </div>
   </div>
 </section>
@@ -181,14 +187,14 @@
       <table class="role-table">
         <thead><tr><th scope="col">Stage</th><th scope="col">Your responsibility</th><th scope="col">The agent can help by</th></tr></thead>
         <tbody>
-          <tr data-step="1"><td>01 &nbsp; Define</td><td data-mobile-label="You">Decide what you want, what the agent may do, and what counts as done.</td><td data-mobile-label="Agent">Ask questions and draft the brief.</td></tr>
-          <tr data-step="2"><td>02 &nbsp; Do</td><td data-mobile-label="You">Approve the plan and actions that need your permission.</td><td data-mobile-label="Agent">Carry out the work, check it, and report problems.</td></tr>
-          <tr data-step="3"><td>03 &nbsp; Check</td><td data-mobile-label="You">Decide whether the result meets your needs.</td><td data-mobile-label="Agent">Show evidence and fix the issues you identify.</td></tr>
+          <tr><td>01 &nbsp; Define</td><td data-mobile-label="You">Decide what you want, what the agent may do, and what counts as done.</td><td data-mobile-label="Agent">Ask questions and draft the brief.</td></tr>
+          <tr><td>02 &nbsp; Do</td><td data-mobile-label="You">Approve the plan and actions that need your permission.</td><td data-mobile-label="Agent">Carry out the work, check it, and report problems.</td></tr>
+          <tr><td>03 &nbsp; Check</td><td data-mobile-label="You">Decide whether the result meets your needs.</td><td data-mobile-label="Agent">Show evidence and fix the issues you identify.</td></tr>
         </tbody>
       </table>
-      <p class="return-line" data-step="4">Check &rarr; revise the definition or the work &rarr; check again.</p>
-      <p class="split-highlight bottom-highlight" data-step="4">You keep responsibility for what you accept and approve.</p>
-      <p class="fine-print" data-step="4">This module takes you from an idea to a first version. The next module develops checking and iteration.</p>
+      <p class="return-line">Check &rarr; revise the definition or the work &rarr; check again.</p>
+      <p class="split-highlight bottom-highlight">You keep responsibility for what you accept and approve.</p>
+      <p class="fine-print">This module takes you from an idea to a first version. The next module develops checking and iteration.</p>
     </div>
   </div>
 </section>
@@ -201,15 +207,15 @@
     <p class="lede">To delegate is to give an agent responsibility for carrying out a task.</p>
     <div class="body-center">
       <div class="principles">
-        <div class="card" data-step="1"><div class="card-name">Describe it.</div><p class="card-body">State the result you want.<span class="example">&ldquo;A one-page sales report by region.&rdquo;</span></p></div>
-        <div class="card" data-step="2"><div class="card-name">Check it.</div><p class="card-body">Know how you will judge the result.<span class="example">&ldquo;Each region&rsquo;s sales must match the source records.&rdquo;</span></p></div>
-        <div class="card" data-step="3"><div class="card-name">Recover from it.</div><p class="card-body">Limit the damage if something goes wrong.<span class="example">&ldquo;Create a separate draft and keep the source files unchanged.&rdquo;</span></p></div>
+        <div class="card"><div class="card-name">Describe it.</div><p class="card-body">State the result you want.<span class="example">&ldquo;A one-page sales report by region.&rdquo;</span></p></div>
+        <div class="card"><div class="card-name">Check it.</div><p class="card-body">Know how you will judge the result.<span class="example">&ldquo;Each region&rsquo;s sales must match the source records.&rdquo;</span></p></div>
+        <div class="card"><div class="card-name">Recover from it.</div><p class="card-body">Limit the damage if something goes wrong.<span class="example">&ldquo;Create a separate draft and keep the source files unchanged.&rdquo;</span></p></div>
       </div>
-      <div class="decision-notes" data-step="4">
+      <div class="decision-notes">
         <p><strong>Taste and judgment:</strong> ask for options and review them.</p>
         <p><strong>Actions that are hard to undo:</strong> review and approve the exact action before it happens.</p>
       </div>
-      <p class="split-highlight bottom-highlight" data-step="4">Drafting the report and emailing it are separate actions.</p>
+      <p class="split-highlight bottom-highlight">Drafting the report and emailing it are separate actions.</p>
     </div>
   </div>
 </section>
@@ -224,14 +230,14 @@
       <table class="brief-table">
         <thead><tr><th scope="col">Part</th><th scope="col">What it defines</th><th scope="col">For the Monday report</th></tr></thead>
         <tbody>
-          <tr data-step="1"><td>Goal</td><td data-mobile-label="Meaning">Who needs the result and why.</td><td data-mobile-label="Example">Help the sales lead decide which regions need follow-up.</td></tr>
-          <tr data-step="2"><td>Materials</td><td data-mobile-label="Meaning">The inputs and references.</td><td data-mobile-label="Example">Sales sheets for both weeks. Last Monday&rsquo;s report as the layout reference.</td></tr>
-          <tr data-step="3"><td>Limits</td><td data-mobile-label="Meaning">What the agent may do and must leave alone.</td><td data-mobile-label="Example">Create a separate draft. No forecasts, source edits, or sending.</td></tr>
-          <tr data-step="4"><td>Done</td><td data-mobile-label="Meaning">What must be true when the task is finished.</td><td data-mobile-label="Example">One page. One row per region. Correct dates and amounts. Show both weeks and the change in sales amount. Label missing data.</td></tr>
+          <tr><td>Goal</td><td data-mobile-label="Meaning">Who needs the result and why.</td><td data-mobile-label="Example">Help the sales lead decide which regions need follow-up.</td></tr>
+          <tr><td>Materials</td><td data-mobile-label="Meaning">The inputs and references.</td><td data-mobile-label="Example">Sales sheets for both weeks. Last Monday&rsquo;s report as the layout reference.</td></tr>
+          <tr><td>Limits</td><td data-mobile-label="Meaning">What the agent may do and must leave alone.</td><td data-mobile-label="Example">Create a separate draft. No forecasts, source edits, or sending.</td></tr>
+          <tr><td>Done</td><td data-mobile-label="Meaning">What must be true when the task is finished.</td><td data-mobile-label="Example">One page. One row per region. Correct dates and amounts. Show both weeks and the change in sales amount. Label missing data.</td></tr>
         </tbody>
       </table>
-      <p class="split-highlight bottom-highlight" data-step="5">Decide what counts as done before work starts.</p>
-      <p class="fine-print" data-step="5">Tool permissions can block actions. Set them to match the limits in your brief.</p>
+      <p class="split-highlight bottom-highlight">Decide what counts as done before work starts.</p>
+      <p class="fine-print">Tool permissions can block actions. Set them to match the limits in your brief.</p>
     </div>
   </div>
 </section>
@@ -245,16 +251,16 @@
     <div class="body-center">
       <div class="clarify-layout">
         <div class="questions">
-          <p class="question" data-step="1">&ldquo;Which dates count as a week?&rdquo;</p>
-          <p class="question" data-step="1">&ldquo;Should returns reduce the sales amount?&rdquo;</p>
-          <p class="question" data-step="1">&ldquo;Is West&rsquo;s missing entry missing data, or a confirmed zero?&rdquo;</p>
+          <p class="question">&ldquo;Which dates count as a week?&rdquo;</p>
+          <p class="question">&ldquo;Should returns reduce the sales amount?&rdquo;</p>
+          <p class="question">&ldquo;Is West&rsquo;s missing entry missing data, or a confirmed zero?&rdquo;</p>
         </div>
         <div>
-          <blockquote class="say" data-step="2"><span class="say-label">You say</span>&ldquo;Before making changes, ask me about choices that affect the result. State your proposed assumptions and any missing information. Then draft the brief and a short plan for me to review.&rdquo;</blockquote>
-          <div class="plan-steps" data-step="3"><p><strong>Brief</strong>What are we building?</p><span class="flow-arrow">&rarr;</span><p><strong>Plan</strong>How will you build and check it?</p></div>
+          <blockquote class="say"><span class="say-label">You say</span>&ldquo;Before making changes, ask me about choices that affect the result. State your proposed assumptions and any missing information. Then draft the brief and a short plan for me to review.&rdquo;</blockquote>
+          <div class="plan-steps"><p><strong>Brief</strong>What are we building?</p><span class="flow-arrow">&rarr;</span><p><strong>Plan</strong>How will you build and check it?</p></div>
         </div>
       </div>
-      <p class="split-highlight bottom-highlight" data-step="4">New questions may appear during execution. Agree when the agent should pause and ask you.</p>
+      <p class="split-highlight bottom-highlight">New questions may appear during execution. Agree when the agent should pause and ask you.</p>
     </div>
   </div>
 </section>
@@ -266,15 +272,15 @@
     <h2>Rule 4: Build and check one complete path before expanding.</h2>
     <p class="lede">For the Monday report, start with one region.</p>
     <div class="body-center">
-      <div class="path" data-step="1" aria-label="One complete path: source records for both weeks, sales totals, comparison, and a report row.">
+      <div class="path" aria-label="One complete path: source records for both weeks, sales totals, comparison, and a report row.">
         <div class="path-stage">Both weeks&rsquo;<br>source records</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage">Sales totals</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage">Comparison</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage path-stage--result">One report row</div>
       </div>
       <div class="slice-pair">
-        <div class="card" data-step="2"><div class="card-name">First version</div><p class="card-body">Read one region&rsquo;s records. Calculate its sales and the change. Put the result in the agreed layout.</p></div>
-        <div class="card" data-step="3"><div class="card-name">After it passes</div><p class="card-body">Add the other regions. Check every region and the full-report totals. Finish the one-page report.</p></div>
+        <div class="card"><div class="card-name">First version</div><p class="card-body">Read one region&rsquo;s records. Calculate its sales and the change. Put the result in the agreed layout.</p></div>
+        <div class="card"><div class="card-name">After it passes</div><p class="card-body">Add the other regions. Check every region and the full-report totals. Finish the one-page report.</p></div>
       </div>
-      <p class="split-highlight bottom-highlight" data-step="4">Ask the agent to show which records it used and what it checked. Verify the result before expanding.</p>
-      <p class="fine-print" data-step="4">A layout with invented numbers does not test the calculation. If you notice a wrong assumption, correct it at the next safe stopping point.</p>
+      <p class="split-highlight bottom-highlight">Ask the agent to show which records it used and what it checked. Verify the result before expanding.</p>
+      <p class="fine-print">A layout with invented numbers does not test the calculation. If you notice a wrong assumption, correct it at the next safe stopping point.</p>
     </div>
   </div>
 </section>
@@ -286,10 +292,10 @@
   <div class="accent-line enter" style="--i: 1; margin: 0 auto 1.5rem;"></div>
   <h1 class="enter" style="--i: 2;">Use these four rules to delegate a task.</h1>
   <div class="closing-grid">
-    <div class="card" data-step="1"><span class="step-circle">1</span><div class="card-name">Choose the task</div><p class="card-body">Describe the result, decide how to check it, and limit the damage.</p></div>
-    <div class="card" data-step="2"><span class="step-circle">2</span><div class="card-name">Write the brief</div><p class="card-body">State the goal, materials, limits, and what counts as done.</p></div>
-    <div class="card" data-step="3"><span class="step-circle">3</span><div class="card-name">Clarify and plan</div><p class="card-body">Resolve important choices and review the plan before work starts.</p></div>
-    <div class="card" data-step="4"><span class="step-circle">4</span><div class="card-name">Start small</div><p class="card-body">Check one complete path, then expand after it passes.</p></div>
+    <div class="card"><span class="step-circle">1</span><div class="card-name">Choose the task</div><p class="card-body">Describe the result, decide how to check it, and limit the damage.</p></div>
+    <div class="card"><span class="step-circle">2</span><div class="card-name">Write the brief</div><p class="card-body">State the goal, materials, limits, and what counts as done.</p></div>
+    <div class="card"><span class="step-circle">3</span><div class="card-name">Clarify and plan</div><p class="card-body">Resolve important choices and review the plan before work starts.</p></div>
+    <div class="card"><span class="step-circle">4</span><div class="card-name">Start small</div><p class="card-body">Check one complete path, then expand after it passes.</p></div>
   </div>
 </section>
 </div>

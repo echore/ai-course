@@ -10,6 +10,12 @@
 <body>
 <div id="deck">
 <style>
+#deck,
+#deck * {
+  animation: none !important;
+  transition: none !important;
+}
+
   #deck .layout-cover .cover-tags { flex-wrap: wrap; }
   /* Roadmap: four stages in the shared timeline layout */
   #roadmap .step-title { max-width: 19vw; }
@@ -166,23 +172,23 @@
     <div class="body-center">
       <div class="reach">
         <div class="reach-col">
-          <div class="col-label" data-step="1">It comes with</div>
-          <div class="has-item" data-step="1">Reading and editing files in your folder</div>
-          <div class="has-item" data-step="1" style="--d: 70ms;">Running commands on your computer</div>
-          <div class="has-item" data-step="1" style="--d: 140ms;">Searching the web</div>
+          <div class="col-label">It comes with</div>
+          <div class="has-item">Reading and editing files in your folder</div>
+          <div class="has-item" style="--d: 70ms;">Running commands on your computer</div>
+          <div class="has-item" style="--d: 140ms;">Searching the web</div>
         </div>
         <div class="reach-col reach-col--right">
-          <div class="col-label col-label--off" data-step="2">It can&rsquo;t open</div>
+          <div class="col-label col-label--off">It can&rsquo;t open</div>
           <div class="app-chips">
-            <div class="app-chip" data-step="2">Google Sheets</div>
-            <div class="app-chip" data-step="2" style="--d: 60ms;">Google Drive</div>
-            <div class="app-chip" data-step="2" style="--d: 120ms;">Slack</div>
-            <div class="app-chip" data-step="2" style="--d: 180ms;">Notion</div>
+            <div class="app-chip">Google Sheets</div>
+            <div class="app-chip" style="--d: 60ms;">Google Drive</div>
+            <div class="app-chip" style="--d: 120ms;">Slack</div>
+            <div class="app-chip" style="--d: 180ms;">Notion</div>
           </div>
-          <p class="reach-note" data-step="2" style="--d: 240ms;">They live in other apps, behind your login.</p>
+          <p class="reach-note" style="--d: 240ms;">They live in other apps, behind your login.</p>
         </div>
       </div>
-      <p class="split-highlight bottom-highlight" data-step="3">So for the Monday report, you copy the numbers in by hand, every week.</p>
+      <p class="split-highlight bottom-highlight">So for the Monday report, you copy the numbers in by hand, every week.</p>
     </div>
   </div>
 </section>
@@ -204,14 +210,14 @@
             </marker>
           </defs>
           <!-- Google Sheets -->
-          <g data-step="1">
+          <g>
             <rect x="10" y="30" width="150" height="64" rx="12" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.3)" stroke-width="1.5"/>
             <text x="85" y="58" text-anchor="middle" font-size="17" font-weight="600">Google Sheets</text>
             <text x="85" y="80" text-anchor="middle" font-size="13.5" class="body-text">sales numbers</text>
             <path d="M 162 70 C 200 80, 205 130, 222 150" fill="none" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowT)"/>
           </g>
           <!-- Google Drive -->
-          <g data-step="2">
+          <g>
             <rect x="10" y="236" width="150" height="64" rx="12" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.3)" stroke-width="1.5"/>
             <text x="85" y="264" text-anchor="middle" font-size="17" font-weight="600">Google Drive</text>
             <text x="85" y="286" text-anchor="middle" font-size="13.5" class="body-text">last week&#8217;s report</text>
@@ -221,7 +227,7 @@
           <circle cx="262" cy="165" r="42" fill="#1e2bfa"/>
           <text x="262" y="171" text-anchor="middle" font-size="18" font-weight="600" class="on-primary">Agent</text>
           <!-- Google Docs -->
-          <g data-step="3">
+          <g>
             <line x1="262" y1="210" x2="262" y2="238" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowT)"/>
             <rect x="192" y="246" width="140" height="64" rx="12" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
             <text x="262" y="274" text-anchor="middle" font-size="17" font-weight="600">Google Docs</text>
@@ -230,10 +236,10 @@
         </svg>
       </div>
       <div class="split-right">
-        <div class="card" data-step="1"><div class="card-name">Google Sheets</div><p class="card-body">It reads last week&rsquo;s sales numbers.</p></div>
-        <div class="card" data-step="2"><div class="card-name">Google Drive</div><p class="card-body">It finds last week&rsquo;s report and follows the same format.</p></div>
-        <div class="card" data-step="3"><div class="card-name">Google Docs</div><p class="card-body">It writes this week&rsquo;s draft for you to review.</p></div>
-        <p class="split-highlight" data-step="4">You review the report instead of moving the data.</p>
+        <div class="card"><div class="card-name">Google Sheets</div><p class="card-body">It reads last week&rsquo;s sales numbers.</p></div>
+        <div class="card"><div class="card-name">Google Drive</div><p class="card-body">It finds last week&rsquo;s report and follows the same format.</p></div>
+        <div class="card"><div class="card-name">Google Docs</div><p class="card-body">It writes this week&rsquo;s draft for you to review.</p></div>
+        <p class="split-highlight">You review the report instead of moving the data.</p>
       </div>
     </div>
     <p class="source">What it can do depends on the connection and the access you give it.</p>
@@ -250,7 +256,7 @@
     <h2>MCP is the standard way to make these connections.</h2>
     <div class="body-center">
       <div class="mcp-pair">
-        <div class="mcp-panel" data-step="1">
+        <div class="mcp-panel">
           <div class="col-label col-label--off">Before</div>
           <svg viewBox="0 0 360 250" role="img" aria-label="Three AI apps each wired separately to four other apps: twelve separate links">
             <g stroke="#9a9a9a" stroke-width="1.5" fill="none">
@@ -270,7 +276,7 @@
           </svg>
           <p class="mcp-caption">Every AI app needed its own custom link to every other app.</p>
         </div>
-        <div class="mcp-panel mcp-panel--after" data-step="2">
+        <div class="mcp-panel mcp-panel--after">
           <div class="col-label">With MCP</div>
           <svg viewBox="0 0 360 250" role="img" aria-label="The same apps, all linked through one MCP connection point in the middle">
             <g stroke="#1e2bfa" stroke-opacity="0.55" stroke-width="2" fill="none">
@@ -292,7 +298,7 @@
           <p class="mcp-caption">An app builds one MCP connection, and every AI app that supports MCP can use it.</p>
         </div>
       </div>
-      <p class="split-highlight bottom-highlight" data-step="3">Think of it as USB-C for AI: one port that works everywhere.</p>
+      <p class="split-highlight bottom-highlight">Think of it as USB-C for AI: one port that works everywhere.</p>
     </div>
     <p class="source">Products call these connectors, apps, or plugins. You&rsquo;ll add one in the Live session.</p>
   </div>
@@ -308,12 +314,12 @@
     <h2>A permission mode decides what the agent can do without&nbsp;asking&nbsp;you.</h2>
     <p class="lede">Your instruction file can&rsquo;t stop an action. A permission can.</p>
     <div class="body-center">
-      <div class="dial-axis" data-step="1"><span>Asks you more</span><span class="dial-line"></span><span>Works more on its own</span></div>
+      <div class="dial-axis"><span>Asks you more</span><span class="dial-line"></span><span>Works more on its own</span></div>
       <div class="mode-grid">
-        <div class="card" data-step="1" style="--d: 60ms;"><div class="card-name">Plan</div><p class="card-body">It only reads and writes a plan. Nothing changes yet.</p></div>
-        <div class="card" data-step="1" style="--d: 130ms;"><div class="card-name">Manual</div><p class="card-body">It asks before every edit or command.</p></div>
-        <div class="card" data-step="1" style="--d: 200ms;"><div class="card-name">Accept edits</div><p class="card-body">It edits files on its own, and asks before most commands.</p></div>
-        <div class="card" data-step="1" style="--d: 270ms;"><div class="card-name">Auto</div><p class="card-body">It works on its own, and a safety check reviews each action.</p></div>
+        <div class="card" style="--d: 60ms;"><div class="card-name">Plan</div><p class="card-body">It only reads and writes a plan. Nothing changes yet.</p></div>
+        <div class="card" style="--d: 130ms;"><div class="card-name">Manual</div><p class="card-body">It asks before every edit or command.</p></div>
+        <div class="card" style="--d: 200ms;"><div class="card-name">Accept edits</div><p class="card-body">It edits files on its own, and asks before most commands.</p></div>
+        <div class="card" style="--d: 270ms;"><div class="card-name">Auto</div><p class="card-body">It works on its own, and a safety check reviews each action.</p></div>
       </div>
     </div>
     <p class="fine-print">Mode names from Claude Code. Other tools have similar modes.</p>
@@ -330,11 +336,11 @@
     <h2>A simple routine for any task.</h2>
     <div class="body-center">
       <div class="routine">
-        <div class="routine-step" data-step="1"><span class="step-circle">1</span><div class="routine-title">Start in Plan.</div><p class="routine-body">Read its plan and fix anything wrong before it touches your files.</p></div>
-        <div class="routine-step" data-step="2"><span class="step-circle">2</span><div class="routine-title">Save a version with Git.</div><p class="routine-body">Git keeps saved versions of your project, so you can go back if something breaks. You can ask the agent to do it for you.</p></div>
-        <div class="routine-step" data-step="3"><span class="step-circle">3</span><div class="routine-title">Switch to Auto and let it work.</div><p class="routine-body">Switch to Manual when a step feels risky or new.</p></div>
+        <div class="routine-step"><span class="step-circle">1</span><div class="routine-title">Start in Plan.</div><p class="routine-body">Read its plan and fix anything wrong before it touches your files.</p></div>
+        <div class="routine-step"><span class="step-circle">2</span><div class="routine-title">Save a version with Git.</div><p class="routine-body">Git keeps saved versions of your project, so you can go back if something breaks. You can ask the agent to do it for you.</p></div>
+        <div class="routine-step"><span class="step-circle">3</span><div class="routine-title">Switch to Auto and let it work.</div><p class="routine-body">Switch to Manual when a step feels risky or new.</p></div>
       </div>
-      <p class="split-highlight bottom-highlight" data-step="4">Never use a mode that skips every check on your own computer.</p>
+      <p class="split-highlight bottom-highlight">Never use a mode that skips every check on your own computer.</p>
     </div>
   </div>
 </section>
@@ -346,9 +352,9 @@
   <div class="accent-line enter" style="--i: 0; margin: 0 auto 1.5rem;"></div>
   <h1 class="enter" style="--i: 1;">Takeaway</h1>
   <div class="closing-grid">
-    <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Connect when you copy</div><p class="card-body">If you keep copying things in from another app, consider connecting it.</p></div>
-    <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">Allow only what the task needs</div><p class="card-body">A report draft doesn&rsquo;t need permission to email your whole team.</p></div>
-    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Plan, save, then let go</div><p class="card-body">Approve its plan and save a version with Git before it works on its own.</p></div>
+    <div class="card"><span class="step-circle">&#10003;</span><div class="card-name">Connect when you copy</div><p class="card-body">If you keep copying things in from another app, consider connecting it.</p></div>
+    <div class="card"><span class="step-circle">&#10003;</span><div class="card-name">Allow only what the task needs</div><p class="card-body">A report draft doesn&rsquo;t need permission to email your whole team.</p></div>
+    <div class="card"><span class="step-circle">&#10003;</span><div class="card-name">Plan, save, then let go</div><p class="card-body">Approve its plan and save a version with Git before it works on its own.</p></div>
   </div>
 </section>
 </div>

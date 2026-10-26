@@ -10,6 +10,12 @@
 <body>
 <div id="deck">
 <style>
+#deck,
+#deck * {
+  animation: none !important;
+  transition: none !important;
+}
+
   #deck .layout-cover .cover-tags { flex-wrap: wrap; }
   /* Four-stage roadmap, using the same timeline as lessons 01 and 02. */
   #roadmap .step-title { max-width: 19vw; }
@@ -155,12 +161,12 @@
             <rect x="148" y="158" width="130" height="6" rx="3"/><rect x="148" y="174" width="112" height="6" rx="3"/>
           </g>
           <!-- in -->
-          <g data-step="1">
+          <g>
             <text x="70" y="108" text-anchor="middle" font-size="16" font-weight="600">01 &#160;In</text>
             <line x1="20" y1="125" x2="122" y2="125" class="flow flow--on" marker-end="url(#q-head-on)"/>
           </g>
           <!-- stays -->
-          <g data-step="2">
+          <g>
             <line x1="220" y1="206" x2="220" y2="250" class="flow flow--on" marker-end="url(#q-head-on)"/>
             <text x="234" y="234" font-size="16" font-weight="600">02 &#160;Stays</text>
             <path d="M 186 258 L 240 258 L 254 272 L 254 322 L 186 322 Z" class="paper paper--on"/>
@@ -170,17 +176,17 @@
             <text x="266" y="298" font-size="14" class="body-text">in a file</text>
           </g>
           <!-- out -->
-          <g data-step="3">
+          <g>
             <text x="370" y="108" text-anchor="middle" font-size="16" font-weight="600">03 &#160;Out</text>
             <line x1="318" y1="125" x2="420" y2="125" class="flow flow--out" marker-end="url(#q-head)"/>
           </g>
         </svg>
       </div>
       <div class="split-right">
-        <div class="card" data-step="1"><div class="card-name">Rule 1 &middot; Give it less</div><p class="card-body"><strong>What goes in?</strong> Give it only what this task needs.</p></div>
-        <div class="card" data-step="2"><div class="card-name">Rule 2 &middot; Write it down</div><p class="card-body"><strong>What must stay?</strong> Put what matters in a file, outside the conversation.</p></div>
-        <div class="card" data-step="3"><div class="card-name">Rule 3 &middot; Reset on purpose</div><p class="card-body"><strong>When do you clear it?</strong> Reset on purpose.</p></div>
-        <p class="split-highlight" data-step="4">Most of the time you just keep working. These three habits keep a long job on track.</p>
+        <div class="card"><div class="card-name">Rule 1 &middot; Give it less</div><p class="card-body"><strong>What goes in?</strong> Give it only what this task needs.</p></div>
+        <div class="card"><div class="card-name">Rule 2 &middot; Write it down</div><p class="card-body"><strong>What must stay?</strong> Put what matters in a file, outside the conversation.</p></div>
+        <div class="card"><div class="card-name">Rule 3 &middot; Reset on purpose</div><p class="card-body"><strong>When do you clear it?</strong> Reset on purpose.</p></div>
+        <p class="split-highlight">Most of the time you just keep working. These three habits keep a long job on track.</p>
       </div>
     </div>
   </div>
@@ -202,17 +208,17 @@
         <span class="cmp-head"></span>
         <div class="col-label col-label--on cmp-head">Just enough</div>
 
-        <div class="cmp-label" data-step="1">What you ask for</div>
-        <div class="cmp-cell cmp-cell--much" data-step="1">&ldquo;Look through all my sales files.&rdquo;</div>
-        <span class="flow-arrow" data-step="1">&rarr;</span>
-        <div class="cmp-cell cmp-cell--enough" data-step="1">&ldquo;Open last week&rsquo;s sales sheet and read the Totals tab.&rdquo;</div>
+        <div class="cmp-label">What you ask for</div>
+        <div class="cmp-cell cmp-cell--much">&ldquo;Look through all my sales files.&rdquo;</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="cmp-cell cmp-cell--enough">&ldquo;Open last week&rsquo;s sales sheet and read the Totals tab.&rdquo;</div>
 
-        <div class="cmp-label" data-step="2">How you split the work</div>
-        <div class="cmp-cell cmp-cell--much" data-step="2">One conversation for the sales report, a job ad, and a trip plan.</div>
-        <span class="flow-arrow" data-step="2">&rarr;</span>
-        <div class="cmp-cell cmp-cell--enough" data-step="2">One conversation for each job.</div>
+        <div class="cmp-label">How you split the work</div>
+        <div class="cmp-cell cmp-cell--much">One conversation for the sales report, a job ad, and a trip plan.</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="cmp-cell cmp-cell--enough">One conversation for each job.</div>
       </div>
-      <p class="split-highlight bottom-highlight" data-step="3">The less it has to reread, the less likely it is to miss something.</p>
+      <p class="split-highlight bottom-highlight">The less it has to reread, the less likely it is to miss something.</p>
     </div>
   </div>
 </section>
@@ -248,7 +254,7 @@
             <rect x="36" y="88" width="132" height="6" rx="3" class="ln-on"/>
           </g>
           <!-- instruction file -->
-          <g data-step="1">
+          <g>
             <text x="268" y="20" font-size="13.5" class="label">STAYS</text>
             <path d="M 268 32 L 420 32 L 440 52 L 440 124 L 268 124 Z" class="paper paper--on"/>
             <path d="M 420 32 L 420 52 L 440 52" class="fold"/>
@@ -259,7 +265,7 @@
             </g>
           </g>
           <!-- handoff note -->
-          <g data-step="2">
+          <g>
             <path d="M 268 144 L 420 144 L 440 164 L 440 236 L 268 236 Z" class="paper paper--on"/>
             <path d="M 420 144 L 420 164 L 440 164" class="fold"/>
             <text x="284" y="170" font-size="15" font-weight="600">Handoff note</text>
@@ -272,13 +278,13 @@
         </svg>
       </div>
       <div class="split-right">
-        <div class="card" data-step="1"><div class="card-name">Instruction file</div><p class="card-body">Rules that hold every week, such as the report format. The agent reads it on its own at the start of every conversation.</p></div>
-        <div class="card" data-step="2"><div class="card-name">Handoff note</div><p class="card-body">This week&rsquo;s rules and progress, such as &ldquo;leave out the Boston store&rdquo;. The agent reads it only when you ask.</p></div>
+        <div class="card"><div class="card-name">Instruction file</div><p class="card-body">Rules that hold every week, such as the report format. The agent reads it on its own at the start of every conversation.</p></div>
+        <div class="card"><div class="card-name">Handoff note</div><p class="card-body">This week&rsquo;s rules and progress, such as &ldquo;leave out the Boston store&rdquo;. The agent reads it only when you ask.</p></div>
       </div>
     </div>
     <div class="pair-row">
-      <div class="say" data-step="3"><span class="col-label col-label--on">You say</span><span>&ldquo;Write a handoff note for this report: the goal, my rules, what is done, what is left, and where the files are. Save it as handoff.md.&rdquo;</span></div>
-      <p class="split-highlight" data-step="4">A note the agent never reads does nothing. Next time, start with: &ldquo;Read handoff.md first.&rdquo;</p>
+      <div class="say"><span class="col-label col-label--on">You say</span><span>&ldquo;Write a handoff note for this report: the goal, my rules, what is done, what is left, and where the files are. Save it as handoff.md.&rdquo;</span></div>
+      <p class="split-highlight">A note the agent never reads does nothing. Next time, start with: &ldquo;Read handoff.md first.&rdquo;</p>
     </div>
     <p class="fine-print">The instruction file is usually called CLAUDE.md or AGENTS.md.</p>
   </div>
@@ -299,21 +305,21 @@
         <span class="guide-head"></span>
         <div class="col-label col-label--on guide-head">Do this</div>
 
-        <div class="guide-when" data-step="1">Same job, going well, conversation still short</div>
-        <span class="flow-arrow" data-step="1">&rarr;</span>
-        <div class="guide-do guide-do--default" data-step="1"><span class="guide-act">Keep going</span><span>Change nothing.</span></div>
+        <div class="guide-when">Same job, going well, conversation still short</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="guide-do guide-do--default"><span class="guide-act">Keep going</span><span>Change nothing.</span></div>
 
-        <div class="guide-when" data-step="2">Starting an unrelated job</div>
-        <span class="flow-arrow" data-step="2">&rarr;</span>
-        <div class="guide-do" data-step="2"><span class="guide-act">Start fresh</span><span>Open a new, empty conversation. Your instruction file loads again.</span></div>
+        <div class="guide-when">Starting an unrelated job</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="guide-do"><span class="guide-act">Start fresh</span><span>Open a new, empty conversation. Your instruction file loads again.</span></div>
 
-        <div class="guide-when" data-step="3">Same job, long conversation</div>
-        <span class="flow-arrow" data-step="3">&rarr;</span>
-        <div class="guide-do" data-step="3"><span class="guide-act">Compact</span><span>The agent replaces the conversation with a short summary, and you keep going. Then ask it to repeat your rules.</span></div>
+        <div class="guide-when">Same job, long conversation</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="guide-do"><span class="guide-act">Compact</span><span>The agent replaces the conversation with a short summary, and you keep going. Then ask it to repeat your rules.</span></div>
 
-        <div class="guide-when" data-step="4">Same job, but the conversation is a mess, or you will continue another day</div>
-        <span class="flow-arrow" data-step="4">&rarr;</span>
-        <div class="guide-do" data-step="4"><span class="guide-act">Hand off</span><span>Ask for a handoff note, start fresh, then say &ldquo;Read handoff.md first.&rdquo;</span></div>
+        <div class="guide-when">Same job, but the conversation is a mess, or you will continue another day</div>
+        <span class="flow-arrow">&rarr;</span>
+        <div class="guide-do"><span class="guide-act">Hand off</span><span>Ask for a handoff note, start fresh, then say &ldquo;Read handoff.md first.&rdquo;</span></div>
       </div>
     </div>
     <p class="fine-print">In Claude Code and Codex, <code>/clear</code> starts a new conversation and <code>/compact</code> makes the summary.</p>
@@ -327,9 +333,9 @@
   <div class="accent-line enter" style="--i: 0; margin: 0 auto 1.5rem;"></div>
   <h1 class="enter" style="--i: 1;">Takeaway</h1>
   <div class="closing-grid">
-    <div class="card" data-step="1"><span class="step-circle">1</span><div class="card-name">Give it less</div><p class="card-body">Only what this task needs. One job per conversation.</p></div>
-    <div class="card" data-step="2"><span class="step-circle">2</span><div class="card-name">Write it down</div><p class="card-body">Rules and progress go in a file. Next time, ask the agent to read it.</p></div>
-    <div class="card" data-step="3"><span class="step-circle">3</span><div class="card-name">Reset on purpose</div><p class="card-body">New job: start fresh. Long job: compact, or hand off.</p></div>
+    <div class="card"><span class="step-circle">1</span><div class="card-name">Give it less</div><p class="card-body">Only what this task needs. One job per conversation.</p></div>
+    <div class="card"><span class="step-circle">2</span><div class="card-name">Write it down</div><p class="card-body">Rules and progress go in a file. Next time, ask the agent to read it.</p></div>
+    <div class="card"><span class="step-circle">3</span><div class="card-name">Reset on purpose</div><p class="card-body">New job: start fresh. Long job: compact, or hand off.</p></div>
   </div>
 </section>
 </div>

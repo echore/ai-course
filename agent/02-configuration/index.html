@@ -10,6 +10,12 @@
 <body>
 <div id="deck">
 <style>
+#deck,
+#deck * {
+  animation: none !important;
+  transition: none !important;
+}
+
   /* Roadmap: four steps, so titles can be wider than the five-step default */
   .timeline-track--even .step-title { max-width: 19vw; }
 
@@ -102,16 +108,16 @@
     <p class="lede">Remember the Monday report from Module 1?</p>
     <div class="why-split">
       <div>
-        <div class="col-label" data-step="1">Without an instruction file</div>
+        <div class="col-label">Without an instruction file</div>
         <div class="week-stack">
-          <div class="card" data-step="1"><div class="card-name">Week 1</div><p class="card-body">You explain the format, the tone, and who reads it.</p></div>
-          <div class="card" data-step="1" style="--d: 90ms;"><div class="card-name">Week 2</div><p class="card-body">New session. You explain it all again.</p></div>
-          <div class="card" data-step="1" style="--d: 180ms;"><div class="card-name">Week 3</div><p class="card-body">Same again.</p></div>
+          <div class="card"><div class="card-name">Week 1</div><p class="card-body">You explain the format, the tone, and who reads it.</p></div>
+          <div class="card" style="--d: 90ms;"><div class="card-name">Week 2</div><p class="card-body">New session. You explain it all again.</p></div>
+          <div class="card" style="--d: 180ms;"><div class="card-name">Week 3</div><p class="card-body">Same again.</p></div>
         </div>
       </div>
       <div class="why-right">
-        <div class="col-label col-label--on" data-step="2">With an instruction file</div>
-        <svg viewBox="0 0 440 290" role="img" aria-label="One instruction file, read by the Week 1, Week 2 and Week 3 sessions" data-step="2">
+        <div class="col-label col-label--on">With an instruction file</div>
+        <svg viewBox="0 0 440 290" role="img" aria-label="One instruction file, read by the Week 1, Week 2 and Week 3 sessions">
           <defs>
             <marker id="arrowW" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
               <path d="M0 0 L10 5 L0 10 z" fill="#6b6b6b"/>
@@ -142,7 +148,7 @@
         </svg>
       </div>
     </div>
-    <p class="split-highlight bottom-highlight" data-step="3">Write it in an instruction file once. Every new session reads it.</p>
+    <p class="split-highlight bottom-highlight">Write it in an instruction file once. Every new session reads it.</p>
   </div>
 </section>
 
@@ -156,24 +162,24 @@
     <h2>This course focuses on four areas of configuration.</h2>
     <div class="body-center">
       <div class="map-grid">
-        <div class="map-group" data-step="1">What it knows</div>
-        <div class="card card--here" data-step="1" style="--d: 60ms;">
+        <div class="map-group">What it knows</div>
+        <div class="card card--here" style="--d: 60ms;">
           <div class="card-name">01 &nbsp; Always-on instructions</div>
           <p class="card-body">What it should know in every session.</p>
           <span class="where where--here">This module</span>
         </div>
-        <div class="card" data-step="1" style="--d: 130ms;">
+        <div class="card" style="--d: 130ms;">
           <div class="card-name">02 &nbsp; Skills</div>
           <p class="card-body">Reusable instructions and workflows, loaded when needed.</p>
           <span class="where">AI Basics</span>
         </div>
-        <div class="map-group" data-step="2">What it can do</div>
-        <div class="card" data-step="2" style="--d: 60ms;">
+        <div class="map-group">What it can do</div>
+        <div class="card" style="--d: 60ms;">
           <div class="card-name">03 &nbsp; External tools</div>
           <p class="card-body">Connections to other tools, services, and data.</p>
           <span class="where">Module 3</span>
         </div>
-        <div class="card" data-step="2" style="--d: 130ms;">
+        <div class="card" style="--d: 130ms;">
           <div class="card-name">04 &nbsp; Permissions</div>
           <p class="card-body">What it may do, what it may not, and when it must ask.</p>
           <span class="where">Module 3</span>
@@ -200,7 +206,7 @@
             </marker>
           </defs>
           <!-- folder -->
-          <g data-step="1">
+          <g>
             <path d="M 45 40 L 135 40 L 155 60 L 370 60 L 370 175 L 45 175 Z" fill="rgba(30,43,250,0.06)" stroke="rgba(30,43,250,0.3)" stroke-width="1.5"/>
             <text x="65" y="88" font-size="14" class="label">YOUR FOLDER</text>
             <!-- the file inside -->
@@ -211,7 +217,7 @@
             <text x="255" y="150" font-size="14" class="body-text">or AGENTS.md</text>
           </g>
           <!-- loaded automatically -->
-          <g data-step="2">
+          <g>
             <line x1="205" y1="182" x2="205" y2="238" stroke="#6b6b6b" stroke-width="2.5" marker-end="url(#arrowF)"/>
             <text x="222" y="215" font-size="15" class="body-text">loaded automatically</text>
             <rect x="105" y="248" width="200" height="72" rx="36" fill="#1e2bfa"/>
@@ -221,9 +227,9 @@
         </svg>
       </div>
       <div class="split-right">
-        <div class="card" data-step="1"><div class="card-name">01 &nbsp; Plain text</div><p class="card-body">A file written in everyday language.</p></div>
-        <div class="card" data-step="2"><div class="card-name">02 &nbsp; Read automatically</div><p class="card-body">Put it in the right place, and the agent loads it when a session starts.</p></div>
-        <div class="card" data-step="3"><div class="card-name">03 &nbsp; Guidance, not a lock</div><p class="card-body">It guides what the agent does. Hard limits come from permissions, in Module&nbsp;3.</p></div>
+        <div class="card"><div class="card-name">01 &nbsp; Plain text</div><p class="card-body">A file written in everyday language.</p></div>
+        <div class="card"><div class="card-name">02 &nbsp; Read automatically</div><p class="card-body">Put it in the right place, and the agent loads it when a session starts.</p></div>
+        <div class="card"><div class="card-name">03 &nbsp; Guidance, not a lock</div><p class="card-body">It guides what the agent does. Hard limits come from permissions, in Module&nbsp;3.</p></div>
       </div>
     </div>
     <p class="fine-print">Claude Code uses <code>CLAUDE.md</code>. Codex uses <code>AGENTS.md</code>.</p>
@@ -242,13 +248,13 @@
       <div class="split-left">
         <svg viewBox="0 0 400 330" role="img" aria-label="The global level covers every project; each project level covers only that project">
           <!-- global scope -->
-          <g data-step="1">
+          <g>
             <rect x="15" y="15" width="370" height="300" rx="20" fill="rgba(30,43,250,0.04)" stroke="#1e2bfa" stroke-opacity="0.45" stroke-width="2" stroke-dasharray="8 7"/>
             <text x="40" y="54" font-size="15" class="label">GLOBAL</text>
             <text x="40" y="78" font-size="15" class="body-text">applies to every project</text>
           </g>
           <!-- project scopes -->
-          <g data-step="2">
+          <g>
             <rect x="40" y="105" width="150" height="180" rx="14" fill="#1e2bfa"/>
             <text x="115" y="140" text-anchor="middle" font-size="14" font-weight="600" letter-spacing="0.08em" class="on-primary" opacity="0.8">PROJECT</text>
             <text x="115" y="192" text-anchor="middle" font-size="20" font-weight="600" class="on-primary">Monday</text>
@@ -263,9 +269,9 @@
         </svg>
       </div>
       <div class="split-right">
-        <div class="card" data-step="1"><div class="card-name">Global</div><p class="card-body">Your habits and preferences. Applies to every project.</p></div>
-        <div class="card" data-step="2"><div class="card-name">Project</div><p class="card-body">This project&rsquo;s goal and rules. Applies only to this project.</p></div>
-        <p class="split-highlight" data-step="3">Keep the two consistent. Tools handle conflicts differently, so don&rsquo;t write rules that contradict each other.</p>
+        <div class="card"><div class="card-name">Global</div><p class="card-body">Your habits and preferences. Applies to every project.</p></div>
+        <div class="card"><div class="card-name">Project</div><p class="card-body">This project&rsquo;s goal and rules. Applies only to this project.</p></div>
+        <p class="split-highlight">Keep the two consistent. Tools handle conflicts differently, so don&rsquo;t write rules that contradict each other.</p>
       </div>
     </div>
   </div>
@@ -281,9 +287,9 @@
     <h2>It usually covers three things.</h2>
     <div class="body-center">
       <div class="piece-grid">
-        <div class="card" data-step="1"><div class="card-name">01 &nbsp; The project</div><p class="card-body">What it is and what it&rsquo;s for.</p></div>
-        <div class="card" data-step="2"><div class="card-name">02 &nbsp; Your preferences</div><p class="card-body">Language, tone, format.</p></div>
-        <div class="card" data-step="3"><div class="card-name">03 &nbsp; Standing rules</div><p class="card-body">What to always do, and what never to do.</p></div>
+        <div class="card"><div class="card-name">01 &nbsp; The project</div><p class="card-body">What it is and what it&rsquo;s for.</p></div>
+        <div class="card"><div class="card-name">02 &nbsp; Your preferences</div><p class="card-body">Language, tone, format.</p></div>
+        <div class="card"><div class="card-name">03 &nbsp; Standing rules</div><p class="card-body">What to always do, and what never to do.</p></div>
       </div>
     </div>
   </div>
@@ -302,22 +308,22 @@
       <div class="compare">
         <span></span><span class="compare-head">Vague</span><span></span><span class="compare-head compare-head--on">Specific</span>
         <div class="compare-row">
-          <span class="level level--global" data-step="1">Global</span>
-          <div class="vague" data-step="1">&ldquo;Understand what I want.&rdquo;</div>
-          <span class="flow-arrow" data-step="1">&rarr;</span>
-          <div class="specific" data-step="1" style="--d: 90ms;">&ldquo;Before a multi-step task, confirm in one sentence the goal, what&rsquo;s out of scope, and what &lsquo;done&rsquo; looks like.&rdquo;</div>
+          <span class="level level--global">Global</span>
+          <div class="vague">&ldquo;Understand what I want.&rdquo;</div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="specific" style="--d: 90ms;">&ldquo;Before a multi-step task, confirm in one sentence the goal, what&rsquo;s out of scope, and what &lsquo;done&rsquo; looks like.&rdquo;</div>
         </div>
         <div class="compare-row">
-          <span class="level level--project" data-step="2">Project</span>
-          <div class="vague" data-step="2">&ldquo;Make the report clear.&rdquo;</div>
-          <span class="flow-arrow" data-step="2">&rarr;</span>
-          <div class="specific" data-step="2" style="--d: 90ms;">&ldquo;Open with three bullet points on what changed since last week. Put the full numbers in a table below.&rdquo;</div>
+          <span class="level level--project">Project</span>
+          <div class="vague">&ldquo;Make the report clear.&rdquo;</div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="specific" style="--d: 90ms;">&ldquo;Open with three bullet points on what changed since last week. Put the full numbers in a table below.&rdquo;</div>
         </div>
         <div class="compare-row">
-          <span class="level level--project" data-step="3">Project</span>
-          <div class="vague" data-step="3">&ldquo;Keep it short.&rdquo;</div>
-          <span class="flow-arrow" data-step="3">&rarr;</span>
-          <div class="specific" data-step="3" style="--d: 90ms;">&ldquo;Keep the summary under 200 words, because the team reads it on their phones.&rdquo;</div>
+          <span class="level level--project">Project</span>
+          <div class="vague">&ldquo;Keep it short.&rdquo;</div>
+          <span class="flow-arrow">&rarr;</span>
+          <div class="specific" style="--d: 90ms;">&ldquo;Keep the summary under 200 words, because the team reads it on their phones.&rdquo;</div>
         </div>
       </div>
     </div>
@@ -332,9 +338,9 @@
   <div class="accent-line enter" style="--i: 0; margin: 0 auto 1.5rem;"></div>
   <h1 class="enter" style="--i: 1;">Takeaway</h1>
   <div class="closing-grid">
-    <div class="card" data-step="1"><span class="step-circle">&#10003;</span><div class="card-name">Write it down</div><p class="card-body">If you&rsquo;ve had to explain it twice, put it in the instruction file.</p></div>
-    <div class="card" data-step="2"><span class="step-circle">&#10003;</span><div class="card-name">Guidance, not a lock</div><p class="card-body">The agent usually follows it, but not always.</p></div>
-    <div class="card" data-step="3"><span class="step-circle">&#10003;</span><div class="card-name">Be specific</div><p class="card-body">If you can&rsquo;t tell whether it followed a rule, the rule is too vague.</p></div>
+    <div class="card"><span class="step-circle">&#10003;</span><div class="card-name">Write it down</div><p class="card-body">If you&rsquo;ve had to explain it twice, put it in the instruction file.</p></div>
+    <div class="card"><span class="step-circle">&#10003;</span><div class="card-name">Guidance, not a lock</div><p class="card-body">The agent usually follows it, but not always.</p></div>
+    <div class="card"><span class="step-circle">&#10003;</span><div class="card-name">Be specific</div><p class="card-body">If you can&rsquo;t tell whether it followed a rule, the rule is too vague.</p></div>
   </div>
 </section>
 </div>
