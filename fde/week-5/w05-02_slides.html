@@ -1,611 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Module 05-02: Decomposing &amp; Designing Multi-Agent Systems</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-
-  <style>
-    :root {
-      --bg: #fdfae7;
-      --primary: #1e2bfa;
-      --text: #111111;
-      --text-muted: #6b6b6b;
-      --text-light: #9a9a9a;
-      --accent-light: rgba(30, 43, 250, 0.08);
-      --accent-medium: rgba(30, 43, 250, 0.15);
-      --border: rgba(30, 43, 250, 0.2);
-      --card-bg: rgba(30, 43, 250, 0.04);
-    }
-
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-
-    html, body {
-      width: 100%; height: 100%; overflow: hidden;
-      font-family: 'Inter', sans-serif; background: var(--bg); color: var(--text);
-    }
-
-    .deck { width: 100vw; height: 100vh; position: relative; overflow: hidden; }
-
-    .slide {
-      position: absolute; top: 0; left: 0; width: 100vw; height: 100vh;
-      display: flex; flex-direction: column; padding: 3.5vw 4vw 8.5vh 4vw;
-      opacity: 0; pointer-events: none; transform: translateX(40px);
-      transition: opacity 0.5s ease, transform 0.5s ease; overflow: hidden;
-    }
-
-    .slide.active { opacity: 1; pointer-events: all; transform: translateX(0); z-index: 10; }
-    .slide.prev { transform: translateX(-40px); }
-
-    h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; line-height: 1.1; letter-spacing: -0.02em; }
-    h1 { font-size: clamp(2.8rem, 5vw, 4.2rem); font-weight: 700; }
-    h2 { font-size: clamp(1.8rem, 3vw, 2.6rem); margin-bottom: 1.5rem; }
-    h3 { font-size: clamp(1.1rem, 1.8vw, 1.5rem); font-weight: 500; line-height: 1.3; }
-    h4 { font-size: clamp(0.85rem, 1.2vw, 1rem); font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--primary); }
-    p, li { font-size: clamp(0.85rem, 1.1vw, 1.05rem); line-height: 1.6; color: var(--text-muted); }
-    .numeral { font-family: 'Space Grotesk', sans-serif; font-weight: 700; color: var(--primary); }
-
-    .slide-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2.5vh; flex-shrink: 0; }
-    .slide-header .tag { font-family: 'Space Grotesk', sans-serif; font-size: 0.75rem; font-weight: 500; color: var(--primary); background: var(--accent-light); padding: 0.35rem 0.9rem; border-radius: 100px; }
-    .slide-content { flex: 1; display: flex; flex-direction: column; min-height: 0; }
-
-    .nav-controls { position: fixed; bottom: 2.5vh; right: 3vw; display: flex; align-items: center; gap: 0.8rem; z-index: 100; }
-    .nav-btn { width: 44px; height: 44px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--bg); color: var(--primary); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.2s ease; font-size: 1.1rem; }
-    .nav-btn:hover { background: var(--primary); color: var(--bg); border-color: var(--primary); }
-    .nav-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-    .slide-counter { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.05em; position: fixed; bottom: 2.5vh; left: 3vw; z-index: 100; }
-    .progress-bar { position: fixed; bottom: 0; left: 0; height: 3px; background: var(--primary); transition: width 0.4s ease; z-index: 100; }
-    .accent-line { width: 60px; height: 4px; background: var(--primary); border-radius: 2px; margin-bottom: 1.5rem; }
-
-    /* Layouts */
-    .layout-cover { justify-content: center; align-items: flex-start; padding-left: 8vw; }
-    .layout-cover h1 { max-width: 75vw; margin-bottom: 1.5rem; line-height: 1.05; }
-    .layout-cover .subtitle { font-size: clamp(1rem, 1.5vw, 1.25rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 3rem; }
-    .layout-cover .meta { font-family: 'Space Grotesk', sans-serif; font-size: 0.8rem; color: var(--text-light); letter-spacing: 0.05em; }
-    .layout-cover .cover-decoration { position: absolute; top: 0; right: 0; width: 35vw; height: 100vh; background: var(--accent-light); clip-path: polygon(30% 0, 100% 0, 100% 100%, 0% 100%); }
-
-    .layout-detail .detail-body { display: grid; grid-template-columns: repeat(2, 1fr); gap: 2rem 3rem; flex: 1; margin-top: 0.5rem; overflow: hidden; }
-    .detail-col { display: flex; flex-direction: column; gap: 1.2rem; }
-    .detail-block { padding: 1.4rem 1.6rem; border-radius: 12px; background: var(--card-bg); border: 1.5px solid var(--border); }
-    .detail-block h3 { font-size: clamp(1rem, 1.3vw, 1.1rem); margin-bottom: 0.8rem; color: var(--text); }
-    .detail-block ul { list-style: none; margin: 0; padding: 0; }
-    .detail-block ul li { position: relative; padding-left: 1.1rem; padding-bottom: 0.5rem; font-size: clamp(0.85rem, 1vw, 0.95rem); line-height: 1.5; }
-    .detail-block ul li::before { content: ''; position: absolute; left: 0; top: 0.55rem; width: 5px; height: 5px; border-radius: 50%; background: var(--primary); }
-
-    .layout-dashboard .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; margin-top: 0.5rem; }
-    .stat-cell { display: flex; flex-direction: column; gap: 0.5rem; padding: 1.4rem 1.5rem; border-radius: 12px; background: var(--card-bg); border: 1px solid var(--border); }
-    .stat-cell .stat-name { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.1vw, 1.05rem); color: var(--primary); line-height: 1.35; font-weight: 600; }
-    .stat-cell .stat-context { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; padding-top: 0.4rem; border-top: 1px solid var(--border); flex: 1; }
-
-    .layout-split .split-body { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5rem; margin-top: 0.5rem; }
-    .split-left, .split-right { display: flex; flex-direction: column; gap: 1.4rem; }
-    .split-right { padding-left: 2.5rem; border-left: 2px solid var(--border); }
-    .split-highlight { font-family: 'Space Grotesk', sans-serif; font-size: clamp(1.15rem, 1.55vw, 1.5rem); font-weight: 500; color: var(--text); line-height: 1.4; padding: 1.3rem 1.5rem; background: var(--accent-light); border-radius: 12px; border-left: 4px solid var(--primary); }
-    .split-highlight cite { display: block; margin-top: 0.7rem; font-style: normal; font-size: 0.78rem; font-weight: 500; color: var(--text-muted); letter-spacing: 0.04em; text-transform: uppercase; }
-    .insight-list { list-style: none; display: flex; flex-direction: column; gap: 1.1rem; margin: 0; padding-top: 1rem; counter-reset: insight;}
-    .insight-list li { position: relative; padding-left: 1.8rem; font-size: clamp(0.9rem, 1.05vw, 1rem); color: var(--text); line-height: 1.55; counter-increment: insight;}
-    .insight-list li::before { content: counter(insight, decimal-leading-zero); position: absolute; left: 0; top: 0; font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
-
-    .layout-timeline .timeline-track { display: flex; gap: 1.5rem; flex: 1; align-items: center; justify-content: center; margin-top: 0.5rem; }
-    .timeline-step { flex: 1; display: flex; flex-direction: column; align-items: center; text-align: center; position: relative; }
-    .timeline-step:not(:last-child)::after { content: ''; position: absolute; top: 28px; right: -0.75rem; width: 1.5rem; height: 2px; background: var(--border); }
-    .step-circle { width: 56px; height: 56px; border-radius: 50%; background: var(--primary); color: var(--bg); display: flex; align-items: center; justify-content: center; font-family: 'Space Grotesk', sans-serif; font-size: 1.3rem; font-weight: 700; margin-bottom: 1.2rem; flex-shrink: 0; }
-    .timeline-step:nth-child(2) .step-circle { opacity: 0.85; }
-    .timeline-step:nth-child(3) .step-circle { opacity: 0.7; }
-    .timeline-step:nth-child(4) .step-circle { opacity: 0.55; }
-    .step-title { font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.95rem, 1.4vw, 1.15rem); font-weight: 600; color: var(--text); margin-bottom: 0.4rem; }
-    .step-desc { font-size: clamp(0.75rem, 1vw, 0.9rem); color: var(--text-muted); line-height: 1.5; max-width: 220px; }
-
-    .layout-closing { justify-content: center; align-items: center; text-align: center; }
-    .layout-closing .closing-sub { font-size: clamp(1rem, 1.5vw, 1.3rem); color: var(--text-muted); max-width: 55vw; margin-bottom: 2.5rem; }
-    .layout-closing .cta-btn { display: inline-block; font-family: 'Space Grotesk', sans-serif; font-size: 0.95rem; font-weight: 600; color: var(--bg); background: var(--primary); padding: 0.9rem 2.2rem; border-radius: 100px; text-decoration: none; letter-spacing: 0.02em; transition: transform 0.2s ease, box-shadow 0.2s ease; }
-    .layout-closing .cta-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(30, 43, 250, 0.25); }
-    .layout-closing .closing-decoration { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 500px; height: 500px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.4; pointer-events: none; }
-    .layout-closing .closing-decoration-2 { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 360px; height: 360px; border: 1px solid var(--border); border-radius: 50%; opacity: 0.3; pointer-events: none; }
-
-    .keyboard-hint { position: fixed; bottom: 2.5vh; left: 50%; transform: translateX(-50%); font-size: 0.7rem; color: var(--text-light); z-index: 100; opacity: 0.6; }
-  
-    /* Typography follows the existing course decks exactly. */
-    .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:1.5rem; margin-top:1.5rem; }
-    .cards.two { grid-template-columns:repeat(2,1fr); }
-    .card { padding:1.4rem 1.6rem; border:1.5px solid var(--border); background:var(--card-bg); border-radius:12px; }
-    .card h3 { font-size:clamp(1rem,1.3vw,1.1rem); line-height:1.3; color:var(--text); margin-bottom:.8rem; }
-    .card p,.lead,.takeaway,.compare { font-size:clamp(.85rem,1.1vw,1.05rem); line-height:1.6; }
-    .card p + p { margin-top:.7rem; }
-    .card ul { list-style:none; padding:0; }
-    .card li { position:relative; padding-left:1.1rem; padding-bottom:.5rem; font-size:clamp(.85rem,1vw,.95rem); line-height:1.5; }
-    .card li::before { content:''; position:absolute; left:0; top:.55rem; width:5px; height:5px; border-radius:50%; background:var(--primary); }
-    .lead { max-width:1100px; }
-    .takeaway { margin-top:1.5rem; padding:1.1rem 1.5rem; border-left:4px solid var(--primary); background:var(--accent-light); color:var(--text); border-radius:0 12px 12px 0; }
-    .flow { display:flex; align-items:stretch; gap:1rem; margin:1.5rem 0 .5rem; }
-    .flow .card { flex:1; text-align:center; padding:1.2rem; }
-    .flow .card h3 { font-size:clamp(.95rem,1.4vw,1.15rem); color:var(--primary); }
-    .flow .card p { font-size:clamp(.75rem,1vw,.9rem); line-height:1.5; }
-    .arrow { align-self:center; color:var(--primary); font-size:1.3rem; }
-    .compare { width:100%; border-collapse:collapse; margin-top:1rem; }
-    .compare th,.compare td { padding:.85rem 1.1rem; text-align:left; border-bottom:1px solid var(--border); vertical-align:top; }
-    .compare th { color:var(--primary); font-family:'Space Grotesk',sans-serif; font-weight:600; }
-    .compare td:first-child { font-weight:600; width:22%; }
-    .compare td { width:39%; }
-    .hub { position:fixed; top:1rem; right:1.5rem; z-index:100; color:var(--primary); font-size:.75rem; text-decoration:none; }
-    @media(max-width:700px) { .slide { padding:4rem 6vw 6rem; overflow-y:auto; } .cards,.cards.two { grid-template-columns:1fr; } .flow { flex-wrap:wrap; } .flow .card { flex-basis:40%; } .arrow { display:none; } .card { padding:1rem; } .compare th,.compare td { padding:.6rem; } .layout-cover .subtitle,.layout-closing .closing-sub { max-width:85vw; } .keyboard-hint { display:none; } .layout-cover h1 { max-width:85vw; } }
-    @media(prefers-reduced-motion:reduce) { .slide,.progress-bar { transition:none; } }
-
-    /* Content-aware visual layouts: same course palette and typography. */
-    .visual-icon { display:flex; align-items:center; justify-content:center; width:44px; height:44px; color:var(--primary); border-radius:50%; background:var(--accent-light); margin-bottom:1rem; flex-shrink:0; }
-    .visual-icon svg { display:block; }
-
-    /* Open editorial columns for parallel responsibilities and choices. */
-    .cards.visual-columns { gap:2.5rem; }
-    .visual-columns > .card { background:none; border:0; border-radius:0; padding:0 1.5rem 0 0; }
-    .visual-columns > .card + .card { border-left:1px solid var(--border); padding-left:2rem; }
-    .visual-columns > .card h3 { border-top:2px solid var(--primary); padding-top:1rem; }
-    .visual-columns > .card .visual-icon + h3 { border-top:0; padding-top:0; }
-
-    /* A paired comparison keeps the text open, with distinct heading tabs. */
-    .cards.visual-pair { gap:4rem; padding:1.2rem 0; }
-    .visual-pair > .card { background:none; border:0; border-radius:0; padding:0 1.3rem; }
-    .visual-pair > .card + .card { border-left:1px solid var(--border); padding-left:2.5rem; }
-    .visual-pair > .card h3 { display:inline-block; color:var(--primary); border-bottom:2px solid var(--primary); padding-bottom:.6rem; margin-bottom:1.1rem; }
-    .visual-pair > .card .visual-icon { background:none; border:1px solid var(--border); }
-
-    /* Numbered paths for discovery, scoping, and customer delivery. */
-    .cards.visual-rail { display:flex; flex-direction:column; gap:0; counter-reset:visual-item; position:relative; }
-    .visual-rail > .card { display:grid; grid-template-columns:44px minmax(180px,23%) 1fr; gap:1.3rem; position:relative; padding:1.15rem 0; border:0; border-radius:0; border-bottom:1px solid var(--border); background:none; counter-increment:visual-item; }
-    .visual-rail > .card::before { content:counter(visual-item,decimal-leading-zero); display:flex; justify-content:center; align-items:center; width:38px; height:38px; border:1px solid var(--primary); border-radius:50%; color:var(--primary); background:var(--bg); font:500 .8rem 'Space Grotesk',sans-serif; position:relative; z-index:1; }
-    .visual-rail > .card:not(:last-child)::after { content:''; position:absolute; top:3.5rem; bottom:-1.2rem; width:1px; background:var(--border); left:19px; }
-    .visual-rail > .card h3 { padding-top:.45rem; margin-bottom:0; }
-    .visual-rail .rail-body p + p { margin-top:.3rem; }
-    .visual-rail .rail-body ul { columns:2; column-gap:2rem; }
-    .visual-rail .rail-body li { break-inside:avoid; }
-    .visual-rail > .card:last-child { border-bottom:0; }
-
-    /* Diagram nodes sit on a connected track rather than in boxes. */
-    .flow.visual-steps { position:relative; gap:1.8rem; counter-reset:visual-step; padding-top:.4rem; }
-    .visual-steps > .card { padding:.1rem .9rem .4rem; border:0; border-radius:0; background:none; position:relative; counter-increment:visual-step; }
-    .visual-steps > .card::before { content:counter(visual-step,decimal-leading-zero); font:500 .8rem 'Space Grotesk',sans-serif; display:flex; align-items:center; justify-content:center; width:42px; height:42px; margin:0 auto 1rem; border-radius:50%; color:var(--bg); background:var(--primary); position:relative; z-index:1; }
-    .visual-steps > .card:not(:last-of-type)::after { content:''; position:absolute; top:21px; left:calc(50% + 21px); width:calc(100% + 1.8rem - 42px); border-top:1px solid var(--border); }
-    .visual-steps > .arrow { display:none; }
-    .visual-steps .card h3 { color:var(--text); }
-    .visual-steps.return-track { padding-bottom:2rem; }
-    .visual-steps.return-track::after { content:''; position:absolute; left:12%; right:12%; height:1.3rem; bottom:0; border:1px solid var(--border); border-top:0; border-radius:0 0 18px 18px; }
-    .visual-steps.return-track::before { content:''; position:absolute; left:12%; bottom:1.25rem; width:6px; height:6px; border-left:1px solid var(--primary); border-top:1px solid var(--primary); transform:rotate(45deg); }
-
-    /* One full-size loop diagram, read clockwise in the original order. */
-    .flow.visual-loop { display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:2.6rem 8rem; padding:1rem 5rem; width:min(100%,1000px); align-self:center; position:relative; margin:auto 0; }
-    .visual-loop::before { content:''; position:absolute; inset:3rem 2rem; border:1.5px solid var(--border); border-radius:80px; }
-    .visual-loop > .card { background:var(--bg); border:0; border-radius:0; padding:.5rem 1rem; position:relative; }
-    .visual-loop > .card:nth-of-type(3) { grid-column:2; grid-row:2; }
-    .visual-loop > .card:nth-of-type(4) { grid-column:1; grid-row:2; }
-    .visual-loop > .arrow { display:none; }
-    .visual-loop .visual-icon { margin:0 auto .7rem; border:1px solid var(--border); background:var(--bg); }
-    .visual-loop .card h3 { color:var(--text); }
-    .loop-directions { position:absolute; left:2rem; top:3rem; width:calc(100% - 4rem); height:calc(100% - 6rem); overflow:visible; color:var(--primary); pointer-events:none; }
-
-    /* Quiet supporting notes leave the process diagram as the main visual. */
-    .cards.visual-notes { gap:2rem; margin-top:1rem; }
-    .visual-notes > .card { background:none; border:0; border-left:2px solid var(--border); border-radius:0; padding:.5rem 1.2rem; }
-
-    /* A document silhouette is useful for sources, formats, and evidence. */
-    .cards.visual-documents { gap:2rem; }
-    .visual-documents > .card { background:rgba(255,255,255,.22); border-radius:2px; border:1px solid var(--border); position:relative; padding:1.5rem 1.6rem; box-shadow:5px 5px 0 var(--accent-light); }
-    .visual-documents > .card::after { content:''; position:absolute; right:-1px; top:-1px; width:24px; height:24px; background:linear-gradient(45deg,var(--accent-medium) 50%,var(--bg) 51%); border-left:1px solid var(--border); border-bottom:1px solid var(--border); }
-    .visual-documents .visual-icon { border-radius:0; background:none; margin-bottom:.65rem; }
-
-    /* Four decisions become a numbered agenda with clear reading order. */
-    .cards.visual-agenda { gap:1.8rem 3rem; counter-reset:visual-agenda; }
-    .visual-agenda > .card { padding:.5rem 1rem 1rem 3.7rem; position:relative; border:0; border-radius:0; border-top:1px solid var(--border); background:none; counter-increment:visual-agenda; }
-    .visual-agenda > .card::before { content:counter(visual-agenda,decimal-leading-zero); font:500 .8rem 'Space Grotesk',sans-serif; display:flex; align-items:center; justify-content:center; width:35px; height:35px; position:absolute; left:0; top:.5rem; color:var(--primary); background:var(--accent-light); border-radius:50%; }
-    .visual-agenda > .card h3 { margin-top:.35rem; }
-
-    /* Two retrieval routes converge on a shared selection stage. */
-    .cards.visual-fusion { position:relative; display:grid; grid-template-columns:1fr .17fr 1fr; gap:1.6rem 0; }
-    .visual-fusion > .card { background:none; border:0; border-radius:0; padding:.8rem 1.3rem; }
-    .visual-fusion > .card:nth-child(1) { grid-column:1; grid-row:1; border-left:3px solid var(--primary); }
-    .visual-fusion > .card:nth-child(2) { grid-column:1; grid-row:2; border-left:3px solid var(--primary); }
-    .visual-fusion > .card:nth-child(3) { grid-column:3; grid-row:1 / span 2; align-self:center; border:1px solid var(--border); border-radius:36px; padding:2rem; background:var(--accent-light); }
-    .fusion-lines { position:absolute; width:7.8%; height:100%; left:46.1%; top:0; color:var(--primary); pointer-events:none; overflow:visible; }
-    .visual-fusion .visual-icon { width:36px; height:36px; margin-bottom:.5rem; }
-
-    /* State and trace lists feel like records instead of generic cards. */
-    .cards.visual-records { gap:3rem; }
-    .visual-records > .card { border:0; border-radius:0; background:none; padding:.5rem 1.5rem; border-left:2px solid var(--primary); }
-    .visual-records > .card ul { border-top:1px solid var(--border); margin-top:1rem; padding-top:1rem; }
-    .visual-records > .card li { padding-left:1.5rem; padding-bottom:.9rem; }
-    .visual-records > .card li::before { width:7px; height:7px; background:var(--bg); border:1px solid var(--primary); border-radius:50%; z-index:1; left:0; }
-    .visual-records > .card li:not(:last-child)::after { content:''; position:absolute; top:.95rem; bottom:-.55rem; left:3px; width:1px; background:var(--border); }
-
-    /* Gates visually mark a control boundary on an existing process. */
-    .flow.visual-gates { gap:1.2rem; padding:1rem 0; }
-    .visual-gates > .card { background:none; border:0; border-left:3px solid var(--primary); border-radius:0; text-align:left; padding:.4rem 1.1rem; }
-    .visual-gates .visual-icon { background:none; border:1px solid var(--border); margin-bottom:.8rem; }
-
-    /* Preserve real tables; use grouped rows and accent labels. */
-    .compare.visual-table { border-collapse:separate; border-spacing:0 .6rem; margin-top:.4rem; }
-    .visual-table th { padding:.55rem 1rem; border-bottom:1.5px solid var(--primary); }
-    .visual-table td { background:var(--card-bg); border-bottom:0; padding:.8rem 1rem; }
-    .visual-table td:first-child { border-left:3px solid var(--primary); border-radius:0; }
-    .visual-table td:last-child { border-radius:0 10px 10px 0; }
-    .compare.visual-matrix th { background:var(--primary); color:var(--bg); }
-    .visual-matrix td { border-right:1px solid var(--border); }
-    .visual-matrix td:first-child { color:var(--primary); background:var(--accent-light); }
-    .visual-matrix td:last-child { border-right:0; }
-
-    .visual-divider .cover-decoration { clip-path:none; width:32vw; height:32vw; max-width:530px; max-height:530px; border:1px solid var(--border); background:none; border-radius:50%; top:50%; right:-5vw; transform:translateY(-50%); }
-    .visual-divider .cover-decoration::after { content:''; position:absolute; inset:15%; border:1px solid var(--border); border-radius:50%; }
-
-    @media(max-width:700px) {
-      .cards.visual-columns,.cards.visual-pair,.cards.visual-documents,.cards.visual-agenda,.cards.visual-records { grid-template-columns:1fr; gap:1.5rem; }
-      .visual-columns > .card + .card,.visual-pair > .card + .card { border-left:0; padding-left:0; border-top:1px solid var(--border); padding-top:1.2rem; }
-      .visual-columns > .card,.visual-pair > .card { padding-left:0; padding-right:0; }
-      .visual-rail > .card { grid-template-columns:38px 1fr; gap:.6rem 1rem; }
-      .visual-rail .rail-body { grid-column:2; }
-      .visual-rail .rail-body ul { columns:1; }
-      .flow.visual-steps { display:flex; flex-direction:column; flex-wrap:nowrap; flex-shrink:0; padding:0; gap:1.4rem; width:100%; }
-      .visual-steps > .card { flex:none; flex-basis:auto; max-width:100%; text-align:left; padding-left:3.8rem; }
-      .visual-steps > .card::before { position:absolute; left:0; top:0; }
-      .visual-steps > .card:not(:last-of-type)::after { left:21px; top:42px; width:0; height:calc(100% + 1.4rem - 42px); border-top:0; border-left:1px solid var(--border); }
-      .visual-steps.return-track::before,.visual-steps.return-track::after { display:none; }
-      .flow.visual-loop { grid-template-columns:1fr; grid-template-rows:auto; padding:0; gap:1rem; margin:1rem 0; }
-      .visual-loop > .card:nth-of-type(3),.visual-loop > .card:nth-of-type(4) { grid-column:auto; grid-row:auto; }
-      .visual-loop::before,.loop-directions { display:none; }
-      .cards.visual-fusion { display:flex; flex-direction:column; gap:1rem; }
-      .fusion-lines { display:none; }
-      .visual-fusion > .card:nth-child(3) { align-self:stretch; padding:1.3rem; }
-      .flow.visual-gates { flex-direction:column; flex-wrap:nowrap; flex-shrink:0; }
-      .visual-gates > .card { flex:none; flex-basis:auto; }
-      .compare.visual-table { border-spacing:0 .4rem; }
-      .visual-table td,.visual-table th { padding:.5rem; }
-    }
-
-
-    .cards.four { grid-template-columns:repeat(2,1fr); }
-    .branch-diagram { margin:1rem 0 .2rem; display:flex; flex-direction:column; align-items:center; }
-    .branch-diagram > .card { background:var(--accent-light); border:1px solid var(--border); border-radius:28px; padding:.8rem 1.6rem; width:70%; text-align:center; }
-    .branch-diagram > .card h3 { margin-bottom:.4rem; }
-    .branch-diagram > .card p { margin:0; }
-    .branch-diagram .cards { width:100%; margin:0; }
-    .branch-diagram .cards .card { text-align:center; padding:.5rem 1rem; }
-    .branch-lines { width:100%; height:25px; color:var(--primary); flex-shrink:0; }
-    .branch-lines svg { display:block; width:100%; height:100%; }
-    .return-lines { transform:rotate(180deg); }
-    .diagram-note { margin-top:.8rem; }
-    .compact-track .card { padding-left:.25rem; padding-right:.25rem; }
-    .compact-track .card h3 { overflow-wrap:normal; }
-    .flow.visual-steps.continue-track { counter-reset:visual-step 3; }
-    .source-table td:first-child { width:23%; }
-    .source-table td:nth-child(2) { width:38%; }
-    .source-table td:nth-child(3) { width:39%; }
-    @media(max-width:700px) {
-      .closing-decoration,.closing-decoration-2 { max-width:85vw; max-height:85vw; }
-      .cards.four { grid-template-columns:1fr; }
-      .branch-diagram { flex-shrink:0; }
-      .branch-diagram > .card { width:100%; }
-      .branch-diagram .cards { grid-template-columns:1fr; }
-      .branch-lines { display:none; }
-      .branch-diagram .cards .card { text-align:left; border-left:1px solid var(--border); padding:1rem; }
-    }
-
-  
-/* Weeks 5 and 6 readability and presenter highlights. */
-
-h2 { font-size: clamp(2.1rem, 3.2vw, 2.9rem); }
-h4 { font-size: clamp(0.95rem, 1.2vw, 1.05rem); }
-p, li { font-size: clamp(1.125rem, 1.5vw, 1.375rem); line-height: 1.55; }
-.detail-block h3, .stat-cell .stat-name {
-  font-size: clamp(1.2rem, 1.6vw, 1.4rem);
-}
-.detail-block ul li, .stat-cell .stat-context, .insight-list li {
-  font-size: clamp(1.125rem, 1.45vw, 1.375rem);
-}
-.layout-cover .subtitle, .layout-closing .closing-sub {
-  font-size: clamp(1.25rem, 1.8vw, 1.6rem);
-}
-.layout-cover .meta { font-size: 0.95rem; }
-.split-highlight { font-size: clamp(1.3rem, 1.8vw, 1.7rem); }
-.split-highlight cite { font-size: 0.85rem; }
-.slide-header .tag, .hub { font-size: 0.85rem; }
-.slide-counter { font-size: 0.85rem; }
-.insight-list li { padding-left: 2.3rem; }
-
-.focus-block {
-  cursor: pointer;
-  transition: background-color 220ms ease, box-shadow 220ms ease, transform 220ms ease;
-}
-.focus-block:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
-.focus-block.is-highlighted {
-  background-color: var(--accent-medium);
-  box-shadow: inset 0 0 0 2px var(--primary), 0 6px 18px rgba(30, 43, 250, 0.1);
-  transform: translateY(-2px);
-}
-.insight-list > .focus-block, .split-left > p.focus-block,
-.detail-block li.focus-block { border-radius: 8px; }
-.focus-block.is-highlighted, .focus-block.is-highlighted .stat-context,
-.focus-block.is-highlighted p, .focus-block.is-highlighted li { color: var(--text); }
-.split-left > p.is-highlighted { box-shadow: 0 0 0 2px var(--primary), 0 6px 18px rgba(30, 43, 250, 0.1); }
-.focus-status { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
-
-@media (max-width: 700px) {
-  .slide { padding: 4rem 6vw 7.5rem; scroll-padding: 4.5rem 0 7.5rem; }
-  .layout-cover, .layout-closing { justify-content: flex-start; padding-top: 6rem; }
-  .layout-cover h1, .layout-cover .subtitle, .layout-cover .meta,
-  .layout-closing h1, .layout-closing .closing-sub, .layout-quote blockquote { max-width: 100%; }
-  .layout-cover .cover-decoration { opacity: 0.5; pointer-events: none; }
-  .layout-cover .meta { line-height: 1.5; }
-  .split-right { padding-left: 0; border-left: 0; }
-  .detail-body > .detail-col { grid-column: 1 / -1 !important; min-width: 0; }
-  .detail-block { padding: 1.2rem; }
-  .nav-controls { gap: 0.5rem; bottom: 1rem; }
-  .slide-counter { bottom: 1.65rem; }
-  .deck::after {
-    content: ''; position: fixed; inset: auto 0 0; height: 5rem;
-    background: var(--bg); border-top: 1px solid var(--border);
-    z-index: 90; pointer-events: none;
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Module 05-02 — Decomposing &amp; Designing Multi-Agent Systems</title><style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+:root{--bg:#fdfae7;--blue:#1e2bfa;--ink:#111;--muted:#6b6b6b;--line:rgba(30,43,250,.2);--tint:rgba(30,43,250,.06);--body:clamp(1.125rem,1.5vw,1.375rem)}
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:var(--bg);color:var(--ink)}body{font-family:Inter,sans-serif;overflow:hidden}h1,h2,h3,.stage,.step-no,.brand,.counter{font-family:'Space Grotesk',sans-serif}h1,h2,h3,p,figure{margin:0}h1,h2{font-size:clamp(2.1rem,3.2vw,2.9rem);font-weight:600;line-height:1.14;letter-spacing:-.035em}h3{font-size:clamp(1.2rem,1.6vw,1.4rem);font-weight:600;line-height:1.3;margin:0 0 .6rem}p,li,td,th,dt,dd{font-size:var(--body);line-height:1.5}p+p{margin-top:.65rem}b,strong{font-weight:600}a{color:var(--blue);text-decoration:none}a:hover{text-decoration:underline}
+.orientation{position:fixed;z-index:4;top:0;left:0;width:100%;padding:14px 4vw 0;background:var(--bg)}.brand{display:flex;justify-content:space-between;gap:1rem;color:var(--blue);font-size:.85rem;letter-spacing:.025em;margin-bottom:12px}.brand span{font-weight:600}.brand a{white-space:nowrap}.process-mini .map-inner{min-width:660px}.map-scroll{overflow-x:auto;overscroll-behavior-x:contain}.stages{display:grid;grid-template-columns:repeat(6,1fr);gap:18px;padding:2px}.stage{border:1px solid var(--line);border-radius:24px;padding:6px 7px;text-align:center;color:var(--blue);position:relative;font-size:1rem;line-height:1.2}.stage:not(:last-child)::after{content:'→';position:absolute;right:-17px;color:var(--blue);top:6px}.current-stage{background:var(--blue);color:white;border-color:var(--blue)}.feedback{display:block;width:100%;height:28px;color:var(--blue);overflow:visible;opacity:.6}.feedback>path{stroke:currentColor;stroke-width:1.1;fill:none;stroke-dasharray:3 3}.process-full .map-inner{min-width:900px}.process-full .stage{border-radius:0;border:0;border-top:3px solid var(--blue);background:none;color:var(--ink);padding:18px 10px;text-align:left}.process-full .stage>span{font-size:clamp(1.2rem,1.6vw,1.4rem);color:var(--blue);font-weight:600}.process-full .stage p{margin-top:12px;font-size:var(--body);color:var(--muted)}.process-full .stage:not(:last-child)::after{top:18px}.process-full .feedback{height:50px}.feedback-label{color:var(--blue);text-align:center;margin-top:12px}.slide{display:none;height:100dvh;overflow-y:auto;padding:138px 4vw 86px;scroll-padding-top:155px;scroll-padding-bottom:95px}.slide.active{display:flex;flex-direction:column;gap:20px}.slide-title{max-width:1120px;flex-shrink:0}.visual{flex:1;display:flex;flex-direction:column;justify-content:center;gap:20px;min-height:min-content}.takeaway{border-left:4px solid var(--blue);padding:12px 17px;background:var(--tint);font-size:var(--body);line-height:1.45;flex-shrink:0;border-radius:0 10px 10px 0}.takeaway::before{content:'Takeaway  ';font-family:'Space Grotesk',sans-serif;font-weight:600;color:var(--blue)}.case-intro{display:grid;grid-template-columns:1fr 1.15fr;gap:5vw;align-items:center}.case-context h3{color:var(--blue)}.example-label{color:var(--muted);font-size:1.125rem;line-height:1.4}.document{position:relative;border:1px solid var(--line);border-top:4px solid var(--blue);padding:20px 24px;background:rgba(255,255,255,.25);border-radius:0 0 12px 12px}.document::after{content:'';width:22px;height:22px;position:absolute;right:-1px;top:-4px;background:linear-gradient(225deg,var(--bg) 49%,var(--line) 50%,var(--tint) 55%)}.document h3{color:var(--blue)}.documents{display:grid;grid-template-columns:repeat(3,1fr);gap:30px}.cover .slide-title{font-size:clamp(2.8rem,5vw,4.2rem);line-height:1.05;max-width:1180px}.cover .case-intro{gap:4vw}.cover .visual{gap:16px}.track{display:grid;grid-template-columns:repeat(3,1fr);gap:38px;padding:12px 0}.track.five{grid-template-columns:repeat(5,1fr);gap:28px}.step{position:relative;border-top:1px solid var(--line);padding-top:17px}.step:not(:last-child)::after{content:'→';position:absolute;right:-27px;top:8px;color:var(--blue);font-size:1.6rem}.step-no{display:flex;width:38px;height:38px;border-radius:50%;background:var(--blue);color:white;align-items:center;justify-content:center;font-size:.9rem;margin-bottom:16px}.step h3{color:var(--blue)}.step p{color:var(--muted)}.approval-band{padding:16px 20px;border:1px solid var(--blue);border-radius:12px;display:flex;align-items:center;gap:25px}.approval-band b{font-size:var(--body);color:var(--blue);flex:1}.approval-band span{flex:1.8;font-size:var(--body);line-height:1.5}.scale-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:35px;border-bottom:1px solid var(--line);padding-bottom:20px}.scale-strip>div+div{border-left:1px solid var(--line);padding-left:25px}.scale-strip strong{font-family:'Space Grotesk',sans-serif;font-size:clamp(2.3rem,4vw,3.6rem);font-weight:500;color:var(--blue)}.scale-strip p{margin-top:5px;color:var(--muted)}.columns{display:grid;grid-template-columns:repeat(3,1fr);gap:40px}.open-column{border-top:2px solid var(--blue);padding-top:20px}.open-column h3{color:var(--blue)}.open-column p{color:var(--muted)}.rail{padding:0;margin:0;list-style:none;counter-reset:rail;display:grid;gap:20px}.rail li{position:relative;padding-left:62px;counter-increment:rail;display:grid;grid-template-columns:.8fr 1.8fr;gap:25px;align-items:start}.rail li::before{content:counter(rail,decimal-leading-zero);font-family:'Space Grotesk',sans-serif;color:var(--blue);border:1px solid var(--line);position:absolute;left:0;top:0;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:1rem;background:var(--bg)}.rail li:not(:last-child)::after{content:'';position:absolute;left:19px;top:42px;width:1px;height:calc(100% - 24px);background:var(--line)}.rail li h3{margin:4px 0}.rail li p{color:var(--muted)}.record-chain .rail li{grid-template-columns:.8fr 2fr}.table-wrap{width:100%;overflow-x:auto}table{border-collapse:collapse;width:100%;text-align:left}thead{color:var(--blue)}th{font-weight:600}th,td{padding:12px 16px;vertical-align:top;border-bottom:1px solid var(--line)}th:first-child{width:34%}tbody tr:nth-child(even){background:rgba(30,43,250,.025)}tbody td{color:var(--muted)}.row-trigger{font:inherit;color:inherit;background:none;border:0;padding:0;text-align:left;cursor:pointer}.visual-note{border-left:2px solid var(--blue);padding:9px 16px;color:var(--muted)}.worked-example{display:grid;grid-template-columns:1fr 48px 1fr;align-items:center;gap:22px}.big-arrow{font-size:2.5rem;color:var(--blue);text-align:center}.fan{display:flex;flex-direction:column;align-items:center;gap:23px}.fan-parent{text-align:center;padding:12px 28px;background:var(--tint);border-radius:12px;width:80%}.fan-parent h3{color:var(--blue)}.fan-parent p{color:var(--muted)}.fan-branches{display:grid;grid-template-columns:repeat(3,1fr);width:92%;gap:45px;position:relative}.fan-branches>div{padding:18px 14px;text-align:center;border-top:2px solid var(--blue);border-bottom:1px solid var(--line);position:relative}.fan-branches>div::before{content:'↓';color:var(--blue);position:absolute;top:-26px;left:calc(50% - 8px)}.fan-branches>div::after{content:'↓';color:var(--blue);position:absolute;bottom:-26px;left:calc(50% - 8px)}.fan-branches h3{color:var(--blue)}.fan-branches p{color:var(--muted)}.gate-layout{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:38px;align-items:center}.gate{border-left:4px solid var(--blue);border-right:4px solid var(--blue);padding:30px 24px;position:relative;background:var(--tint)}.gate::before,.gate::after{content:'→';position:absolute;color:var(--blue);top:45%;font-size:1.8rem}.gate::before{left:-35px}.gate::after{right:-35px}.gate-layout h3{color:var(--blue)}.gate-layout p{color:var(--muted)}.system-notes{display:grid;grid-template-columns:1fr 1fr;gap:32px}.system-notes p{border-left:2px solid var(--blue);padding:8px 16px;margin:0}.training-submap{display:flex;gap:20px;justify-content:center;border-bottom:1px solid var(--line);padding-bottom:16px}.training-submap span{font-family:'Space Grotesk',sans-serif;color:var(--muted);font-size:1.125rem;padding:7px 14px;position:relative;border-radius:8px}.training-submap span+span::before{content:'→';position:absolute;left:-19px;top:7px;color:var(--blue)}.training-submap .selected{background:var(--tint);color:var(--blue);box-shadow:inset 0 0 0 1px var(--line)}.adapter-diagram{display:grid;grid-template-columns:1.05fr 1fr;gap:5vw;align-items:stretch}.base-model{border:2px solid var(--line);border-radius:90px 90px 20px 20px;padding:32px 38px}.adapter{border-left:8px solid var(--blue);background:var(--tint);padding:24px 30px}.adapter h3,.base-model h3{color:var(--blue)}.results-layout{display:grid;grid-template-columns:1.25fr 1fr;gap:40px;align-items:center}.learning-figure svg{width:100%;height:auto;max-height:245px;overflow:visible}.learning-figure svg text{font-family:Inter,sans-serif;font-size:19px;fill:var(--muted)}.axis{stroke:var(--muted);stroke-width:1;fill:none}.train-line{stroke:var(--blue);stroke-width:4;fill:none}.val-line{stroke:#6b6b6b;stroke-width:3;fill:none;stroke-dasharray:9 7}.checkpoint-line{stroke:var(--blue);stroke-width:1.5;stroke-dasharray:4 5}.learning-figure figcaption{font-size:1.125rem;line-height:1.5;color:var(--muted);text-align:center}.legend-train{color:var(--blue)}dl{margin:0}dt{font-weight:600;color:var(--ink)}dd{margin:0 0 10px;color:var(--muted)}
+.footer{position:fixed;z-index:5;bottom:0;left:0;width:100%;height:65px;background:var(--bg);display:flex;justify-content:space-between;align-items:center;padding:0 3vw;border-top:1px solid rgba(30,43,250,.08)}.counter{font-size:.85rem;color:var(--muted)}.nav{display:flex;gap:10px}.nav button{width:42px;height:42px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--line);color:var(--blue);font-size:1.5rem;background:var(--bg);cursor:pointer}.nav button:hover{background:var(--tint)}.nav button:disabled{opacity:.3;cursor:default}.progress{position:fixed;bottom:0;left:0;height:3px;background:var(--blue);z-index:6;transition:width .22s}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}[data-focus]{outline:2px solid transparent;outline-offset:5px;transition:background .22s,outline-color .22s,transform .22s;cursor:pointer}[data-focus].is-highlighted{outline-color:var(--blue);background:rgba(30,43,250,.08);transform:translateY(-2px);border-radius:8px}.focus-trigger:focus-visible,.row-trigger:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--blue);outline-offset:6px}.focus-trigger{touch-action:pan-y}.is-highlighted th,.is-highlighted td{background:rgba(30,43,250,.04)}
+@media(min-width:1600px){.slide{padding-top:160px;padding-bottom:110px;gap:32px}.orientation{padding-top:24px}.process-mini .stage{font-size:1.05rem;padding:9px}.stage:not(:last-child)::after{top:9px}.process-mini .feedback{height:34px}.visual{gap:32px}.track{padding:35px 0}.step{padding-top:26px}.step-no{margin-bottom:28px;width:48px;height:48px}.document{padding:28px 32px}.rail{gap:32px}.rail li{padding-top:8px;padding-bottom:8px}td,th{padding:20px}.fan{gap:36px}.fan-parent{padding:23px 32px}.fan-branches>div{padding:28px}.learning-figure svg{max-height:350px}.training-submap{padding-bottom:28px}}
+@media(max-width:850px){.orientation{padding:12px 20px 0}.brand{font-size:.75rem}.slide{padding:130px 24px 94px;gap:23px}.slide-title{font-size:clamp(2.1rem,4.8vw,2.9rem)}.cover .slide-title{font-size:clamp(2.8rem,7vw,4.2rem)}.case-intro,.documents,.columns,.worked-example,.adapter-diagram,.gate-layout,.results-layout{grid-template-columns:1fr;gap:26px}.track,.track.five{display:flex;flex-direction:column;gap:29px;padding:0}.step{display:grid;grid-template-columns:42px 1fr;column-gap:15px;padding-top:13px}.step-no{grid-row:1/3;width:34px;height:34px;margin:0}.step p{grid-column:2}.step h3{margin-bottom:7px}.step:not(:last-child)::after{content:'↓';right:auto;left:9px;top:auto;bottom:-30px}.approval-band{display:block}.approval-band span{display:block;margin-top:10px}.rail li,.record-chain .rail li{display:block;padding-left:53px}.rail li p{margin-top:8px}.scale-strip{gap:12px}.scale-strip>div+div{padding-left:12px}.scale-strip strong{font-size:2rem}.scale-strip p{font-size:1.125rem}.metrics{grid-template-columns:1fr}.metrics>div{display:grid;grid-template-columns:90px 1fr;align-items:start;gap:12px;padding:10px 0}.metrics>div+div{padding-left:0;border-left:0;border-top:1px solid var(--line)}.metrics p{margin-top:0}.big-arrow{transform:rotate(90deg);line-height:1}.document{padding:20px 22px}.open-column{padding-top:15px}.table-wrap table{table-layout:fixed}th,td{padding:12px 8px;overflow-wrap:anywhere}th:first-child{width:39%}.fan-parent{width:100%;padding:17px}.fan-branches{width:100%;gap:10px}.fan-branches>div{padding:15px 7px}.fan-branches h3{font-size:1.125rem}.fan-branches p{font-size:1.125rem}.gate{padding:22px;margin:10px 0}.gate::before{content:'↓';left:47%;top:-35px}.gate::after{content:'↓';right:47%;top:auto;bottom:-35px}.system-notes{grid-template-columns:1fr;gap:20px}.training-submap{display:grid;grid-template-columns:1fr 1fr;gap:8px;justify-content:start}.training-submap span{font-size:1.125rem;padding:8px;text-align:left}.training-submap span+span::before{display:none}.base-model{padding:32px 26px;border-radius:55px 55px 16px 16px}.adapter{padding:22px}.feedback-label{text-align:left;font-size:1.125rem}.visual{flex:none}.slide.active{display:flex}.footer{height:65px;padding:0 20px}.takeaway{padding:12px 14px}.learning-figure svg text{font-size:22px}}
+@media(max-height:620px) and (min-width:851px){.slide{padding-top:125px;gap:18px}.visual{flex:none}.step-no{margin-bottom:10px}.document{padding:17px 20px}.case-intro{align-items:start}}
+.track.four{grid-template-columns:repeat(4,1fr)}
+@media(max-width:850px){.brand span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.brand a{flex-shrink:0}.scale-strip:not(.metrics){grid-template-columns:1fr}.scale-strip:not(.metrics)>div{display:grid;grid-template-columns:110px 1fr;align-items:center;gap:12px;padding:8px 0}.scale-strip:not(.metrics)>div+div{padding-left:0;border-left:0;border-top:1px solid var(--line)}.fan-branches{grid-template-columns:1fr;border-left:2px solid var(--line);margin-left:15px;width:calc(100% - 15px);padding-left:20px}.fan-branches>div{padding:14px;text-align:left;border-top:0}.fan-branches>div::before{content:'→';left:-23px;top:14px}.fan-branches>div::after{display:none}}
+@media(max-width:850px){.learning-figure{overflow-x:auto}.learning-figure svg{min-width:560px;max-height:none}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;transition:none!important;animation:none!important}}
+@media print{html,body{height:auto;overflow:visible}.orientation,.footer,.progress{display:none}.slide,.slide.active{display:flex;height:auto;min-height:100vh;overflow:visible;padding:40px;break-after:page}.visual{flex:1}.stage{print-color-adjust:exact}.process-full .map-inner{min-width:0}.takeaway{margin-top:25px}}
+</style></head><body><header class="orientation"><div class="brand"><span>Module 05-02 · Decomposing &amp; Designing Multi-Agent Systems</span><a href="../index.html">Course hub ↗</a></div><div class="active-process" aria-label="Project process; filled stages indicate the current focus"></div></header><main><section class="slide cover" id="slide-1" aria-labelledby="title-1" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process overview"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage current-stage" ><span>Discover</span></div><div class="stage current-stage" ><span>Build</span></div><div class="stage current-stage" ><span>Evaluate</span></div><div class="stage current-stage" ><span>Improve</span></div><div class="stage current-stage" ><span>Deploy</span></div><div class="stage current-stage" ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-5" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-5)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-5)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-5)"/></svg></div></div></div></template><h1 class="slide-title" id="title-1" tabindex="-1">How should we respond to a port closure?</h1><div class="visual"><div class="case-intro"><div class="case-context"><h3>The customer</h3><p>A freight company’s coordinators manually check disruptions, find affected loads, and compare reroutes.</p><p>Overlapping disruptions make this preparation slow.</p><p class="example-label">Illustrative thread: refrigerated Load A travels through Port P.</p></div><section class="document " data-focus><h3>The finished interaction</h3><p><b>Alert:</b> Port P is closed.</p><p><b>AI proposal:</b> Compare waiting with eligible Route B.</p><p><b>Coordinator:</b> Reviews and approves the exact plan.</p><p><b>System:</b> Updates SAP TM, notifies the carrier, and records the outcome.</p></section></div></div><p class="takeaway">Automate the preparation; keep the shipment decision under authorized human control.</p></section><section class="slide " id="slide-2" aria-labelledby="title-2" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process overview"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage current-stage" ><span>Discover</span></div><div class="stage current-stage" ><span>Build</span></div><div class="stage current-stage" ><span>Evaluate</span></div><div class="stage current-stage" ><span>Improve</span></div><div class="stage current-stage" ><span>Deploy</span></div><div class="stage current-stage" ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-6" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-6)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-6)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-6)"/></svg></div></div></div></template><h1 class="slide-title" id="title-2" tabindex="-1">How will we work through this project?</h1><div class="visual"><div class="process-full" role="group" aria-label="Project process overview"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage current-stage" data-focus><span>Discover</span><p>Define the decision</p></div><div class="stage current-stage" data-focus><span>Build</span><p>Trace one load</p></div><div class="stage current-stage" data-focus><span>Evaluate</span><p>Find failures</p></div><div class="stage current-stage" data-focus><span>Improve</span><p>Fix their causes</p></div><div class="stage current-stage" data-focus><span>Deploy</span><p>Pilot with owners</p></div><div class="stage current-stage" data-focus><span>Monitor</span><p>Learn from use</p></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-1" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-1)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-1)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-1)"/></svg></div></div><p class="feedback-label">Improve → Evaluate &nbsp; · &nbsp; Monitor → Discover / Improve</p></div></div><p class="takeaway">Build a simple version, test it, and revisit earlier decisions when evidence changes.</p></section><section class="slide " id="slide-3" aria-labelledby="title-3" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Discover"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage current-stage" ><span>Discover</span></div><div class="stage " ><span>Build</span></div><div class="stage " ><span>Evaluate</span></div><div class="stage " ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-7" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-7)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-7)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-7)"/></svg></div></div></div></template><h1 class="slide-title" id="title-3" tabindex="-1">What decision does the first pilot need to support?</h1><div class="visual"><div class="scale-strip"><div data-focus><strong>45,000</strong><p>active shipments</p></div><div data-focus><strong>200+</strong><p>carriers</p></div><div data-focus><strong>30</strong><p>regional hubs</p></div></div><ol class="rail"><li data-focus><h3>Start with one slice</h3><p>Port disruptions affecting refrigerated loads; agree which alerts deserve action.</p></li><li data-focus><h3>Define authority and success</h3><p>Who approves or escalates? Track decision time, feasible options, and coordinator effort.</p></li></ol></div><p class="takeaway">A bounded pilot turns “automate disruption response” into a testable delivery goal.</p></section><section class="slide " id="slide-4" aria-labelledby="title-4" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Discover"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage current-stage" ><span>Discover</span></div><div class="stage " ><span>Build</span></div><div class="stage " ><span>Evaluate</span></div><div class="stage " ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-8" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-8)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-8)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-8)"/></svg></div></div></div></template><h1 class="slide-title" id="title-4" tabindex="-1">What evidence does the decision require?</h1><div class="visual"><div class="table-wrap"><table><thead><tr><th scope="col">Case input</th><th scope="col">What it contributes</th></tr></thead><tbody><tr data-focus><th scope="row">Tomorrow.io FleetIQ</th><td>Weather signals that may affect a route</td></tr><tr data-focus><th scope="row">Portcast</th><td>Port congestion and predicted waiting</td></tr><tr data-focus><th scope="row">project44</th><td>Carrier exceptions, available slots, and quotes</td></tr><tr data-focus><th scope="row">SAP TM</th><td>Shipment records and every route leg</td></tr><tr data-focus><th scope="row">Approved-carrier database</th><td>Eligibility for refrigerated and other shipment types</td></tr><tr data-focus><th scope="row">Internal contract-rate table</th><td>Rates and agreed delay-cost inputs</td></tr></tbody></table></div></div><p class="takeaway">Confirm actual interfaces, freshness, permissions, and identifiers with the customer.</p></section><section class="slide " id="slide-5" aria-labelledby="title-5" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Build"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage current-stage" ><span>Build</span></div><div class="stage " ><span>Evaluate</span></div><div class="stage " ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-9" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-9)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-9)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-9)"/></svg></div></div></div></template><h1 class="slide-title" id="title-5" tabindex="-1">What is the simplest complete workflow?</h1><div class="visual"><div class="track five"><div class="step" data-focus><span class="step-no">01</span><h3>Detect</h3><p>Confirm a disruption.</p></div><div class="step" data-focus><span class="step-no">02</span><h3>Identify</h3><p>Find loads and estimate delay.</p></div><div class="step" data-focus><span class="step-no">03</span><h3>Options</h3><p>Find eligible routes.</p></div><div class="step" data-focus><span class="step-no">04</span><h3>Recommend</h3><p>Compare costs; explain the choice.</p></div><div class="step" data-focus><span class="step-no">05</span><h3>Execute</h3><p>Apply the approved plan.</p></div></div><div class="approval-band" data-focus><b>Human approval sits before Execute.</b><span>The application blocks SAP writes until an authorized decision exists.</span></div></div><p class="takeaway">Five agent roles cover six responsibilities; cost calculation and packaging share Recommend.</p></section><section class="slide " id="slide-6" aria-labelledby="title-6" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Build"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage current-stage" ><span>Build</span></div><div class="stage " ><span>Evaluate</span></div><div class="stage " ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-10" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-10)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-10)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-10)"/></svg></div></div></div></template><h1 class="slide-title" id="title-6" tabindex="-1">What does the system produce for Load A?</h1><div class="visual"><div class="worked-example"><section class="document " data-focus><h3>Input: one confirmed event</h3><p>Port P closure → match Load A across <b>all route legs</b>.</p><p>Retrieve delay estimate, valid carrier options, and contract rates.</p></section><span class="big-arrow" aria-hidden="true">→</span><section class="document " data-focus><h3>Output: one reviewable decision</h3><p><b>Wait:</b> Estimated delay and contractual delay cost.</p><p><b>Route B:</b> Eligible carrier, quote, timing, and reroute cost.</p><p><b>Status:</b> Recommendation awaiting approval.</p></section></div></div><p class="takeaway">A recommendation compares the proposed reroute with the real alternative: waiting.</p></section><section class="slide " id="slide-7" aria-labelledby="title-7" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Evaluate"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage " ><span>Build</span></div><div class="stage current-stage" ><span>Evaluate</span></div><div class="stage " ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-11" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-11)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-11)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-11)"/></svg></div></div></div></template><h1 class="slide-title" id="title-7" tabindex="-1">How do we know this baseline is useful?</h1><div class="visual"><div class="table-wrap"><table><thead><tr><th scope="col">Test to run</th><th scope="col">Evidence to collect</th></tr></thead><tbody><tr data-focus><th scope="row">Detection</th><td>Which alerts are real? Which relevant disruptions were missed?</td></tr><tr data-focus><th scope="row">Shipment matching</th><td>Does an intermediate Port P stop correctly identify Load A?</td></tr><tr data-focus><th scope="row">Recommendation</th><td>Are carrier, quote, cost inputs, and route feasible?</td></tr><tr data-focus><th scope="row">Authority</th><td>Can any SAP write occur without matching approval?</td></tr></tbody></table></div><p class="visual-note">Also measure time to recommendation, model/tool cost, and human review effort.</p></div><p class="takeaway">Test decision quality, missed events, and authorization before choosing improvements.</p></section><section class="slide " id="slide-8" aria-labelledby="title-8" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Improve"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage " ><span>Build</span></div><div class="stage " ><span>Evaluate</span></div><div class="stage current-stage" ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-12" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-12)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-12)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-12)"/></svg></div></div></div></template><h1 class="slide-title" id="title-8" tabindex="-1">Which failure deserves which improvement?</h1><div class="visual"><div class="table-wrap"><table><thead><tr><th scope="col">If testing shows…</th><th scope="col">Change this first</th></tr></thead><tbody><tr data-focus><th scope="row">Duplicate or missed events</th><td>Signal mapping, deduplication, and detection thresholds</td></tr><tr data-focus><th scope="row">Ineligible routes or wrong totals</th><td>Eligibility checks and calculation code</td></tr><tr data-focus><th scope="row">Slow independent searches</th><td>Bounded parallel work for separate loads</td></tr><tr data-focus><th scope="row">Confusing recommendations</th><td>Instructions and the structured output format</td></tr></tbody></table></div></div><p class="takeaway">Add complexity to address a measured problem; this case does not require model training.</p></section><section class="slide " id="slide-9" aria-labelledby="title-9" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Improve"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage " ><span>Build</span></div><div class="stage " ><span>Evaluate</span></div><div class="stage current-stage" ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-13" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-13)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-13)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-13)"/></svg></div></div></div></template><h1 class="slide-title" id="title-9" tabindex="-1">What must each agent hand to the next?</h1><div class="visual"><div class="record-chain"><ol class="rail"><li data-focus><h3>Event record</h3><p>Event ID · source evidence · location · severity · observation time</p></li><li data-focus><h3>Affected-load record</h3><p>Load A · matching route leg · estimated delay · shipment version</p></li><li data-focus><h3>Option and recommendation record</h3><p>Eligible carrier · quote expiry · cost comparison · plan version · review status</p></li></ol></div></div><p class="takeaway">Keep each event’s business records separate, and pass traceable records rather than loose prose.</p></section><section class="slide " id="slide-10" aria-labelledby="title-10" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Improve"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage " ><span>Build</span></div><div class="stage " ><span>Evaluate</span></div><div class="stage current-stage" ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-14" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-14)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-14)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-14)"/></svg></div></div></div></template><h1 class="slide-title" id="title-10" tabindex="-1">Where can work happen in parallel?</h1><div class="visual"><div class="fan"><div class="fan-parent" data-focus><h3>Options router</h3><p>Assign independent searches with limits and deadlines.</p></div><div class="fan-branches"><div data-focus><h3>Load A</h3><p>Refrigerated carrier options</p></div><div data-focus><h3>Load B</h3><p>Its own eligible options</p></div><div data-focus><h3>Load C</h3><p>Its own eligible options</p></div></div><div class="fan-parent" data-focus><h3>Collect results and status</h3><p>Keep completed, unavailable, and failed results distinct.</p></div></div></div><p class="takeaway">Separate disruptions may run concurrently; shared shipments still require conflict checks.</p></section><section class="slide " id="slide-11" aria-labelledby="title-11" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Improve"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage " ><span>Build</span></div><div class="stage " ><span>Evaluate</span></div><div class="stage current-stage" ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-15" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-15)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-15)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-15)"/></svg></div></div></div></template><h1 class="slide-title" id="title-11" tabindex="-1">What turns a recommendation into permission?</h1><div class="visual"><div class="gate-layout"><div class="decision-list" data-focus><h3>Coordinator decision</h3><p><b>Approve</b> the exact plan</p><p><b>Escalate</b> for more authority</p><p><b>Defer</b> and keep it open</p></div><div class="gate" data-focus><h3>Trusted execution gate</h3><p>Check approver, plan version, quote expiry, and shipment version.</p></div><div data-focus><h3>Execute and record</h3><p>SAP update → carrier notice → audit outcome</p><p>Changed plan? Return for review.</p></div></div></div><p class="takeaway">Approval is a recorded authorization checked by application code, not an instruction in a prompt.</p></section><section class="slide " id="slide-12" aria-labelledby="title-12" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Evaluate"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage " ><span>Build</span></div><div class="stage current-stage" ><span>Evaluate</span></div><div class="stage " ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-16" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-16)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-16)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-16)"/></svg></div></div></div></template><h1 class="slide-title" id="title-12" tabindex="-1">What must pass before we pilot?</h1><div class="visual"><div class="table-wrap"><table><thead><tr><th scope="col">Failure scenario</th><th scope="col">Required behavior</th></tr></thead><tbody><tr data-focus><th scope="row">Duplicate source alerts</th><td>One traceable event, not duplicate reroute actions</td></tr><tr data-focus><th scope="row">Ineligible carrier / search timeout</th><td>Exclude the carrier; report missing results explicitly</td></tr><tr data-focus><th scope="row">No approval / conflicting update</th><td>Block the write and request authorized review</td></tr><tr data-focus><th scope="row">SAP succeeds; carrier notice fails</th><td>Preserve the SAP outcome; retry only the notification</td></tr></tbody></table></div></div><p class="takeaway">Reconcile uncertain outcomes before retrying; a retry must not repeat a completed action.</p></section><section class="slide " id="slide-13" aria-labelledby="title-13" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Build, Evaluate"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage current-stage" ><span>Build</span></div><div class="stage current-stage" ><span>Evaluate</span></div><div class="stage " ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-17" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-17)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-17)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-17)"/></svg></div></div></div></template><h1 class="slide-title" id="title-13" tabindex="-1">How does Load A move through the improved system?</h1><div class="visual"><div class="track five"><div class="step" data-focus><span class="step-no">01</span><h3>Detect</h3><p>Port P event + evidence</p></div><div class="step" data-focus><span class="step-no">02</span><h3>Identify</h3><p>Load A + delay estimate</p></div><div class="step" data-focus><span class="step-no">03</span><h3>Options</h3><p>Eligible Route B + quote</p></div><div class="step" data-focus><span class="step-no">04</span><h3>Recommend</h3><p>Wait vs reroute + plan</p></div><div class="step" data-focus><span class="step-no">05</span><h3>Execute</h3><p>Approved update + notice</p></div></div><div class="system-notes"><p data-focus><b>Along the chain:</b> Structured records, bounded workers, and visible failure status.</p><p data-focus><b>At the write:</b> Human approval, freshness checks, duplicate protection, and audit.</p></div></div><p class="takeaway">The original decision stays the same; the implementation now makes its boundaries enforceable.</p></section><section class="slide " id="slide-14" aria-labelledby="title-14" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Deploy"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage " ><span>Build</span></div><div class="stage " ><span>Evaluate</span></div><div class="stage " ><span>Improve</span></div><div class="stage current-stage" ><span>Deploy</span></div><div class="stage " ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-18" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-18)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-18)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-18)"/></svg></div></div></div></template><h1 class="slide-title" id="title-14" tabindex="-1">How do we deliver a pilot the customer can operate?</h1><div class="visual"><ol class="rail"><li data-focus><h3>Replay, then read-only use</h3><p>Exercise historical cases, then let coordinators review recommendations without automated writes.</p></li><li data-focus><h3>Enable a limited approved-write pilot</h3><p>Use the customer’s private AWS environment, durable review queue, and audit store.</p></li><li data-focus><h3>Name owners and recovery actions</h3><p>Assign integration, workflow, and review owners. Disable a bad release and reconcile pending work.</p></li></ol></div><p class="takeaway">Rolling back software does not automatically reverse shipment decisions already executed.</p></section><section class="slide " id="slide-15" aria-labelledby="title-15" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process; current focus: Monitor"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage " ><span>Discover</span></div><div class="stage " ><span>Build</span></div><div class="stage " ><span>Evaluate</span></div><div class="stage " ><span>Improve</span></div><div class="stage " ><span>Deploy</span></div><div class="stage current-stage" ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-19" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-19)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-19)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-19)"/></svg></div></div></div></template><h1 class="slide-title" id="title-15" tabindex="-1">What does live feedback tell us to revisit?</h1><div class="visual"><div class="columns "><section class="open-column" data-focus><h3>Quality and boundaries</h3><p>Missed disruptions · infeasible options · unmatched approvals</p></section><section class="open-column" data-focus><h3>Operating effort</h3><p>Time to recommendation · model/tool cost · review queue age</p></section><section class="open-column" data-focus><h3>Next decision</h3><p>New shipment category → Discover<br>Failure within scope → Improve → Evaluate</p></section></div><p class="visual-note">An unauthorized write calls for stopping the affected execution path and incident review.</p></div><p class="takeaway">Monitoring creates the next project decision; it is not just a dashboard.</p></section><section class="slide " id="slide-16" aria-labelledby="title-16" aria-hidden="true"><template><div class="process-mini" role="group" aria-label="Project process overview"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage current-stage" ><span>Discover</span></div><div class="stage current-stage" ><span>Build</span></div><div class="stage current-stage" ><span>Evaluate</span></div><div class="stage current-stage" ><span>Improve</span></div><div class="stage current-stage" ><span>Deploy</span></div><div class="stage current-stage" ><span>Monitor</span></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-20" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-20)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-20)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-20)"/></svg></div></div></div></template><h1 class="slide-title" id="title-16" tabindex="-1">What changes when we add hazardous freight?</h1><div class="visual"><div class="process-full" role="group" aria-label="Project process overview"><div class="map-scroll"><div class="map-inner"><div class="stages"><div class="stage current-stage" data-focus><span>Discover</span><p>Revisit constraints</p></div><div class="stage current-stage" data-focus><span>Build</span><p>Update the workflow</p></div><div class="stage current-stage" data-focus><span>Evaluate</span><p>Test the new slice</p></div><div class="stage current-stage" data-focus><span>Improve</span><p>Fix specific failures</p></div><div class="stage current-stage" data-focus><span>Deploy</span><p>Approve expansion</p></div><div class="stage current-stage" data-focus><span>Monitor</span><p>Watch real outcomes</p></div></div><svg class="feedback" viewBox="0 0 1200 50" preserveAspectRatio="none" aria-hidden="true"><defs><marker id="arrow-2" markerWidth="7" markerHeight="7" refX="5" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6" fill="none" stroke="currentColor"/></marker></defs><path d="M700 1 V12 H500 V1" marker-end="url(#arrow-2)"/><path d="M1100 1 V29 H700 V17" marker-end="url(#arrow-2)"/><path d="M1100 29 V45 H100 V1" marker-end="url(#arrow-2)"/></svg></div></div><p class="feedback-label">Improve → Evaluate &nbsp; · &nbsp; Monitor → Discover / Improve</p></div><p class="visual-note"><b>Exercise:</b> Name one new carrier rule, one approval question, and one test before expanding the pilot.</p></div><p class="takeaway">Clear responsibilities plus verified boundaries make a multi-agent system deliverable.</p></section></main><footer class="footer"><div class="counter"><span id="current">1</span> / <span id="total">16</span></div><nav class="nav" aria-label="Slide navigation"><button id="prevBtn" aria-label="Previous slide">‹</button><button id="nextBtn" aria-label="Next slide">›</button></nav></footer><div id="progress" class="progress"></div><div id="status" class="sr-only" aria-live="polite"></div><script>
+(() => {
+ const slides=[...document.querySelectorAll('.slide')],total=slides.length;
+ const currentEl=document.getElementById('current'),prev=document.getElementById('prevBtn'),next=document.getElementById('nextBtn'),status=document.getElementById('status');
+ let current=0,highlight=-1;
+ const targets=slides.map(slide=>[...slide.querySelectorAll('[data-focus]')]);
+ targets.flat().forEach(target=>{
+  let control=target;
+  if(target.tagName==='TR'){
+   const cell=target.querySelector('th'); control=document.createElement('button');control.className='row-trigger';control.innerHTML=cell.innerHTML;cell.replaceChildren(control);
+  } else {control.setAttribute('role','button');control.classList.add('focus-trigger');}
+  target._control=control;control.setAttribute('aria-pressed','false');control.tabIndex=-1;
+  const select=event=>{if(target.closest('.slide')!==slides[current])return;event.stopPropagation();const index=targets[current].indexOf(target);setHighlight(index===highlight?-1:index,true);};
+  control.addEventListener('click',select);
+  if(target.tagName==='TR')target.addEventListener('click',select);
+  control.addEventListener('keydown',event=>{if(event.key==='Enter'||event.key===' '){event.preventDefault();select(event);}});
+ });
+ function setHighlight(index,scroll){
+  targets[current].forEach((t,i)=>{const on=i===index;t.classList.toggle('is-highlighted',on);t._control.setAttribute('aria-pressed',String(on));});highlight=index;
+  status.textContent=index<0?'Highlight cleared':`Highlighted: ${targets[current][index].textContent.trim().replace(/\s+/g,' ')}`;
+  if(scroll&&index>=0){const el=targets[current][index],r=el.getBoundingClientRect(),top=document.querySelector('.orientation').getBoundingClientRect().bottom+14,bottom=innerHeight-85;
+   if(r.top<top||r.bottom>bottom)el.scrollIntoView({block:'center',inline:'nearest',behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'instant':'smooth'});
   }
-}
-@media (min-width: 701px) and (max-height: 600px) {
-  .slide { overflow-y: auto; padding-bottom: 6rem; }
-  .layout-cover, .layout-closing { justify-content: flex-start; }
-  .slide-content { flex: none; min-height: auto; }
-  .layout-detail .detail-body { flex: none; overflow: visible; }
-  .deck::after {
-    content: ''; position: fixed; inset: auto 0 0; height: 5rem;
-    background: var(--bg); border-top: 1px solid var(--border);
-    z-index: 90; pointer-events: none;
-  }
-}
-
-
-
-/* Map the established Week 1/2 scale onto the Weeks 5 and 6 visual components. */
-h2 { margin-bottom: 1rem; }
-.slide-header { gap: .75rem; }
-.slide-header .tag { flex-shrink: 0; white-space: nowrap; }
-.card h3, .flow .card h3 { font-size: clamp(1.2rem, 1.6vw, 1.4rem); }
-.card p, .card li, .flow .card p, .takeaway, .compare {
-  font-size: clamp(1.125rem, 1.45vw, 1.375rem); line-height: 1.5;
-}
-.lead { font-size: clamp(1.125rem, 1.5vw, 1.375rem); line-height: 1.55; max-width: 100%; }
-.cards { margin-top: 1.1rem; }
-.takeaway { margin-top: 1.1rem; padding: .85rem 1.2rem; }
-.cards.visual-pair { gap: 3rem; padding: .5rem 0; }
-.cards.visual-fusion { gap: 1rem 0; margin-top: .75rem; }
-.visual-pair > .card h3 { padding-bottom: .4rem; margin-bottom: .7rem; }
-.visual-rail > .card { padding: .8rem 0; gap: 1rem; grid-template-columns: 44px minmax(180px,23%) minmax(0,1fr); }
-.visual-records > .card li { padding-bottom: .6rem; }
-.flow.visual-loop { width: 100%; padding: .8rem 2rem; gap: 1.5rem 5rem; margin: .5rem 0; }
-.card, .rail-body, .slide-content { min-width: 0; }
-.focus-row-control { display: block; }
-.focus-trigger:focus-visible { outline: 2px solid var(--primary); outline-offset: 4px; }
-.focus-block.is-highlighted { border-radius: 8px; }
-.compare tr.is-highlighted { transform: none; box-shadow: none; }
-.compare tr.is-highlighted > td { background-color: var(--accent-medium); color: var(--text); box-shadow: inset 0 2px var(--primary), inset 0 -2px var(--primary); }
-.compare tr.is-highlighted > td:first-child { box-shadow: inset 2px 0 var(--primary), inset 0 2px var(--primary), inset 0 -2px var(--primary); }
-.compare tr.is-highlighted > td:last-child { box-shadow: inset -2px 0 var(--primary), inset 0 2px var(--primary), inset 0 -2px var(--primary); }
-@media (max-width:700px) {
-  .slide-content { flex: none; min-height: auto; }
-  .cards, .cards.two, .cards.four { grid-template-columns: minmax(0,1fr); }
-  .visual-rail > .card { grid-template-columns: 38px minmax(0,1fr); gap: .6rem 1rem; }
-  .flow { flex-direction: column; flex-wrap: nowrap; }
-  .flow > .card { flex: none; flex-basis: auto; min-width: 0; }
-  .flow.visual-loop { grid-template-columns: minmax(0,1fr); padding: 0; gap: 1rem; margin: 1rem 0; }
-  .flow.visual-loop > .card { min-width: 0; }
-  .compare { display: block; width: 100%; }
-  .compare thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); }
-  .compare tbody { display: block; }
-  .compare tbody tr { display: block; margin: 1rem 0; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-  .compare tbody td { display: block; width: auto; border: 0; padding: .8rem 1rem; overflow-wrap: anywhere; }
-  .compare tbody td::before { content: attr(data-label); display: block; margin-bottom: .3rem; color: var(--primary); font: 600 .9rem 'Space Grotesk',sans-serif; }
-  .compare tr.is-highlighted > td { box-shadow: none; }
-  .compare tbody tr.is-highlighted { box-shadow: inset 0 0 0 2px var(--primary); }
-  .cards.visual-pair { gap: 1.5rem; }
-}
-@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
-/* Fixed-size arrowheads keep their shape when the loop spans a wide screen. */
-.loop-arrow { position: absolute; width: 28px; height: 20px; color: var(--primary); pointer-events: none; }
-.loop-arrow-top { left: 50%; top: 3rem; transform: translate(-50%,-50%); }
-.loop-arrow-right { right: 2rem; top: 50%; transform: translate(50%,-50%) rotate(90deg); }
-.loop-arrow-bottom { left: 50%; bottom: 3rem; transform: translate(-50%,50%) rotate(180deg); }
-.loop-arrow-left { left: 2rem; top: 50%; transform: translate(-50%,-50%) rotate(-90deg); }
-@media (max-width:700px) { .loop-arrow { display: none; } }
-/* Keep the same visual text scale on a full-HD recording canvas. */
-@media (min-width:1600px) and (min-height:900px) {
-  h1 { font-size: clamp(2.8rem, 5vw, 5.9rem); }
-  h2 { font-size: clamp(2.1rem, 3.2vw, 3.9rem); }
-  .card h3, .flow .card h3 { font-size: clamp(1.2rem, 1.6vw, 2rem); }
-  p, li, .lead { font-size: clamp(1.125rem, 1.5vw, 1.9375rem); }
-  .card p, .card li, .flow .card p, .takeaway, .compare { font-size: clamp(1.125rem, 1.45vw, 1.875rem); }
-  .layout-cover .subtitle, .layout-closing .closing-sub { font-size: clamp(1.25rem, 1.8vw, 2.2rem); }
-}
-@media (max-width:700px) { .compare tbody td { width: auto !important; } }
-/* Tighter table spacing preserves the readable type size on recording screens. */
-@media (min-width:701px) and (min-height:601px) {
-  .compare.recording-table { table-layout:fixed; border-spacing:0 .3rem; margin-top:.25rem; }
-  .compare.recording-table th, .compare.recording-table td { padding:.4rem .85rem; }
-  .compare.recording-table th:nth-child(1), .compare.recording-table td:nth-child(1) { width:25%; }
-  .compare.recording-table th:nth-child(2), .compare.recording-table td:nth-child(2) { width:38%; }
-  .compare.recording-table th:nth-child(3), .compare.recording-table td:nth-child(3) { width:37%; }
-}
-@media (max-width:700px) {
-  .layout-closing h1 { max-width:100%; overflow-wrap:anywhere; }
-  .flow.visual-steps.compact-track > .card { padding-left:3.8rem; padding-right:0; text-align:left; }
-}
-@media (max-width:350px) {
-  .layout-closing h1 { hyphens:auto; hyphenate-limit-chars:8 4 4; }
-}
-</style>
-</head>
-<body>
-<a class="hub" href="../index.html">Course hub ↗</a><main class="deck">
-<section class="slide layout-cover active"><div class="cover-decoration"></div><div class="accent-line"></div><h1>Decomposing &amp; Designing<br>Multi-Agent Systems</h1><p class="subtitle">Turn a shipment-disruption workflow into bounded responsibilities, useful recommendations, and approved actions.</p><p class="meta">Module 05-02 · AI Forward Deployed Engineer</p></section>
-<section class="slide"><div class="slide-header"><h4>Illustrative logistics case</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>The customer needs faster disruption decisions</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/></svg></span><h3>45,000 active shipments</h3><p>Across North America, Europe, and Southeast Asia.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>200+ carriers</h3><p>Weather, port closures, and capacity failures change available routes.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><h3>30 regional hubs</h3><p>Multiple disruptions can overwhelm a coordinator working one event at a time.</p></div></div><div class="takeaway">Automate gathering, analysis, and packaging; give the coordinator a supported decision to review.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Clarifying questions</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Discovery turns the request into design inputs</h2><div class="cards four visual-agenda"><div class="card"><h3>Workflow and process</h3><p>Which signals trigger analysis? What threshold matters? Who approves, and when is manager approval required?</p></div><div class="card"><h3>Data and systems</h3><p>Which route legs, fields, and timestamps exist? How fresh are slots and quotes? Which signals describe the same event?</p></div><div class="card"><h3>Risk and authority</h3><p>What does a wrong reroute cost? Is a missed disruption worse than a false alarm? Which actions must be gated?</p></div><div class="card"><h3>Success and scope</h3><p>Which disruption and shipment types come first? What reduces review effort or missed rerouting windows?</p></div></div><div class="takeaway">Make thresholds, approval authority, input contracts, and pilot success criteria explicit.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Problem decomposition</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Decompose the work into six responsibilities</h2><div class="flow visual-steps compact-track"><div class="card"><h3>Detect</h3><p>Normalize signals and apply the agreed threshold.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Identify</h3><p>Map the event to affected shipments and delays.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Generate options</h3><p>Find feasible routes and approved carrier slots.</p></div></div><div class="flow visual-steps compact-track continue-track"><div class="card"><h3>Compare costs</h3><p>Rerouting cost versus the estimated cost of delay.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Package</h3><p>Present evidence, tradeoffs, and escalation items.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Execute</h3><p>Apply the approved change and record its outcome.</p></div></div><div class="takeaway">Read left to right across each row. The six responsibilities form one continuous workflow.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Non-negotiable case requirements</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Three constraints shape the architecture</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg></span><h3>Approval before SAP writes</h3><ul><li>The company requires an explicit authorized human decision.</li><li>An open recommendation is not permission to execute.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>Filter before ranking</h3><ul><li>Apply the shipment-type approved-carrier list first.</li><li>Hazardous, cold-chain, and oversized loads have separate constraints.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>Isolate concurrent events</h3><ul><li>Keep business context and results scoped to each disruption.</li><li>One slow or failed chain must not block unrelated work.</li></ul></div></div><div class="takeaway">These are system boundaries enforced by code, permissions, and state—not instructions in a prompt alone.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>System architecture</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Five agents implement the six responsibilities</h2><div class="flow visual-steps compact-track"><div class="card"><h3>Detect</h3><p>Confirmed disruption event.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Identify</h3><p>Affected loads and estimated delays.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Options</h3><p>Ranked, eligible alternatives per load.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Recommend</h3><p>Cost comparison and plain-language package.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Execute</h3><p>Wait for approval; then update and notify.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Combine related work</h3><p>The recommendation agent owns both cost comparison and packaging. Internal functions perform validated calculations.</p></div><div class="card"><h3>Enforce the final boundary</h3><p>Execution consumes a recorded decision. Analysis agents do not receive production write access.</p></div></div><div class="takeaway">Structured outputs connect the chain; the recommendation also uses the identification agent’s delay estimates.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Case data landscape</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Connect each responsibility to its evidence</h2><table class="compare visual-table recording-table"><thead><tr><th>Source</th><th>Provides in this case</th><th>Access and design check</th></tr></thead><tbody><tr><td>Tomorrow.io FleetIQ</td><td>Weather risk and severe-event signals</td><td>Scheduled read; confirm route coverage and thresholds.</td></tr><tr><td>Portcast</td><td>Port congestion and predicted waiting signals</td><td>Scheduled read; confirm fields and contracted ports.</td></tr><tr><td>project44</td><td>Carrier exceptions, slots, quotes, notifications</td><td>Polling and on demand; verify freshness and action interfaces.</td></tr><tr><td>SAP TM</td><td>Shipments, route legs, and rerouting records</td><td>Reads for analysis; writes only after approval.</td></tr><tr><td>Approved-carrier database</td><td>Eligibility by shipment type</td><td>Read-only lookup; check current certifications and contracts.</td></tr><tr><td>Internal contract rate table</td><td>Contract rates and SLA cost parameters</td><td>Read-only cost inputs; validate units and effective dates.</td></tr></tbody></table><div class="takeaway">Include financial parameters as well as operational feeds: cost comparison needs a verified contract-rate source.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Detection agent</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Detection produces one traceable event</h2><div class="flow visual-steps "><div class="card"><h3>Fetch scheduled signals</h3><p>Weather, port congestion, and carrier exceptions.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Normalize and deduplicate</h3><p>Align schemas; merge signals for the same event.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Apply the threshold</h3><p>Log low-level signals; dispatch confirmed disruptions.</p></div></div><div class="cards two visual-records"><div class="card"><h3>Event contract</h3><p>Event ID · source references · route/port/carrier · severity · observed time.</p></div><div class="card"><h3>Failure handling</h3><p>Mark unavailable or stale feeds; do not silently treat missing evidence as normal conditions.</p></div></div><div class="takeaway">Scheduled polling is recurring execution. It is distinct from retrying a failed analysis.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Identification agent</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Shipment impact includes every route leg</h2><p class="lead">A port disruption may affect a shipment even when its origin and final destination are elsewhere.</p><div class="flow visual-steps "><div class="card"><h3>Origin</h3><p>Shipment begins here.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Transit port</h3><p>The confirmed disruption affects this leg.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><h3>Destination</h3><p>Final delivery inherits the delay.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Input and lookup</h3><p>Use the confirmed route, port, or carrier to query active SAP TM loads across all relevant legs.</p></div><div class="card"><h3>Structured result</h3><p>Shipment IDs, matching legs, disruption type and severity, and estimated delay per shipment.</p></div></div><div class="takeaway">Retain the estimated delays: the recommendation stage needs them to compare rerouting with staying put.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Option generation router</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Options fan out once per affected shipment</h2><div class="branch-diagram"><div class="card"><h3>Parent option router</h3><p>Assign bounded work for the affected shipment list.</p></div><div class="branch-lines" aria-hidden="true"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M50 0V14M16.6 30V14H83.4V30M50 14V30" fill="none" stroke="currentColor" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg></div><div class="cards visual-columns"><div class="card"><h3>Load A worker</h3><p>Query slots; filter eligibility; rank feasible options.</p></div><div class="card"><h3>Load B worker</h3><p>Query slots; filter eligibility; rank feasible options.</p></div><div class="card"><h3>Load C worker</h3><p>Query slots; filter eligibility; rank feasible options.</p></div></div><div class="branch-lines return-lines" aria-hidden="true"><svg viewBox="0 0 100 30" preserveAspectRatio="none"><path d="M50 0V14M16.6 30V14H83.4V30M50 14V30" fill="none" stroke="currentColor" stroke-width="1.3" vector-effect="non-scaling-stroke"/></svg></div><div class="card"><h3>Collect per-load results</h3><p>Preserve completed, unavailable, and failed statuses before continuing.</p></div></div><div class="takeaway">Use bounded concurrency and deadlines. A large event must not overwhelm providers or the runtime.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Options and contractual constraints</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Eligibility is a filter, not a scoring preference</h2><div class="flow visual-gates "><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m15.5 15.5 5 5"/></svg></span><h3>Retrieve candidates</h3><p>Available carrier slots, routes, and current quotes.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>Enforce eligibility</h3><p>Shipment-type carrier list and mandatory requirements.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v18h17M8 16v-4M13 16V8M18 16V5"/></svg></span><h3>Rank feasible options</h3><p>Delivery impact, availability, and relevant tradeoffs.</p></div></div><div class="takeaway">No eligible option is a valid outcome: explain the constraint and route the shipment for review.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Recommendation agent</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>A recommendation compares two real scenarios</h2><div class="cards two visual-pair"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><h3>Keep the delayed route</h3><ul><li>Affected load and estimated delay from identification.</li><li>Contractual SLA and delay-cost parameters.</li><li>Remaining uncertainty and operational consequences.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>Take the alternative</h3><ul><li>Eligible route, carrier, slot, and quote validity.</li><li>Rerouting cost, delivery impact, and feasibility.</li><li>Evidence supporting the proposed choice.</li></ul></div></div><div class="takeaway">Package the comparison in plain language. Surface ambiguous or high-authority decisions first for escalation.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Human approval boundary</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Record the decision before taking action</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="m7 12 3 3 7-7"/></svg></span><h3>Approve</h3><p>An authorized decision allows the specified SAP update and carrier notification.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg></span><h3>Escalate</h3><p>Send the package to the manager queue when authority or uncertainty requires it.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><h3>Defer</h3><p>Keep the event open without executing or marking it resolved.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Approval record</h3><p>Approver identity · timestamp · decision · shipment and recommendation version.</p></div><div class="card"><h3>Durable queue</h3><p>The event and decision survive a service restart or coordinator session change.</p></div></div><div class="takeaway">Recheck record versions and quote validity before execution. Changed inputs require renewed review.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Execution agent</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Execution returns confirmations and an audit trail</h2><div class="flow visual-gates "><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>Check approval and freshness</h3><p>Validate authority, scope, and record version.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 4 16 4 16 0V5M4 12c0 4 16 4 16 0"/></svg></span><h3>Update SAP TM</h3><p>Apply the approved rerouting action.</p></div><span class="arrow" aria-hidden="true">→</span><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H5v18h14V8zM14 3v5h5M8 12h8M8 16h6"/></svg></span><h3>Notify and record</h3><p>Send the carrier notice; save outcome status.</p></div></div><div class="cards two visual-notes"><div class="card"><h3>Safe recovery</h3><p>Use idempotency or equivalent duplicate protection. Reconcile an uncertain write before retrying.</p></div><div class="card"><h3>Partial failure</h3><p>If SAP succeeds but notification fails, preserve both statuses and retry only the outstanding action.</p></div></div><div class="takeaway">Every write must link to its approval identity, timestamp, plan, and execution result.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Orchestration layer</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Combine three execution patterns deliberately</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></svg></span><h3>Scheduled detection</h3><p>Fresh polling cycles create confirmed events; polling is not a quality-improvement loop.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 10 5-10 5L2 8zM2 12l10 5 10-5M2 16l10 5 10-5"/></svg></span><h3>Sequential backbone</h3><p>Detect → identify → options → recommend → approved execution. Each stage needs a valid result.</p></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="4" r="2"/><circle cx="6" cy="20" r="2"/><circle cx="18" cy="5" r="2"/><path d="M6 6v12M18 7v3a5 5 0 0 1-5 5H6"/></svg></span><h3>Parallel work</h3><p>Independent event chains, plus per-load option workers inside each event.</p></div></div><div class="takeaway">Isolate event business state, while sharing infrastructure. Overlapping shipments still need conflict checks before writes.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>MCP and A2A</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Protocols connect interfaces; the runtime manages work</h2><div class="cards two visual-pair"><div class="card"><h3>MCP: tools and resources</h3><p>Model Context Protocol standardizes access to external capabilities.</p><ul><li>Expose typed integration interfaces where useful.</li><li>Configure authentication, authorization, and tool-level traces.</li></ul></div><div class="card"><h3>A2A: agent interoperability</h3><p>Agent-to-Agent connects agents through task and message interfaces.</p><ul><li>Useful across separately implemented agent services.</li><li>The runtime still owns worker creation, state, and concurrency.</li></ul></div></div><div class="takeaway">Both are optional architecture choices. Direct SDK calls and framework-local delegation can serve a single-system pilot.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>Evaluation plan</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Evaluate decisions, boundaries, and operating effort</h2><div class="cards visual-columns"><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3v18h17M8 16v-4M13 16V8M18 16V5"/></svg></span><h3>Detection precision and recall</h3><p>Use labeled historical events across the three feeds.</p><ul><li>Precision: how many triggered events were real?</li><li>Recall: how many relevant real events were caught?</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="7" r="4"/><path d="M4 21v-3a8 8 0 0 1 16 0v3"/></svg></span><h3>Recommendation quality</h3><p>Compare options with coordinator criteria and feasible alternatives.</p><ul><li>Check eligibility, costs, explanations, and uncertainty.</li><li>Add rejected recommendations to the evaluation set.</li></ul></div><div class="card"><span class="visual-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3 8 3v6c0 5-8 9-8 9s-8-4-8-9V6zM8 12l3 3 5-6"/></svg></span><h3>Audit completeness</h3><p>Every SAP write has a complete matching approval record.</p><ul><li>Missing identity, time, or approved-plan evidence is a failure.</li><li>Test denied and deferred decisions too.</li></ul></div></div><div class="takeaway">Also measure time to recommendation, model/tool cost, queue age, and coordinator review burden.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>AWS private-environment plan</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Deploy into the customer’s operating environment</h2><table class="compare visual-table recording-table"><thead><tr><th>Component</th><th>Deployment responsibility</th><th>Operational requirement</th></tr></thead><tbody><tr><td>Source polling</td><td>Scheduled jobs; secrets manager</td><td>Preserve existing integrations; monitor feed freshness.</td></tr><tr><td>Orchestration</td><td>Durable service and event state</td><td>Manage isolated chains, concurrency, deadlines, and recovery.</td></tr><tr><td>Agent workers</td><td>Container-based compute</td><td>Scale bounded per-load work; use approved model access.</td></tr><tr><td>Coordinator review</td><td>Persistent queue and web interface</td><td>Keep unresolved events and authorized decisions across sessions.</td></tr><tr><td>Audit storage</td><td>Append-only database</td><td>Retain approvals, writes, notifications, and correlated IDs.</td></tr></tbody></table><div class="takeaway">Confirm model endpoint, data handling, retention, and access policies during discovery; private compute alone does not settle them.</div></div></section>
-<section class="slide"><div class="slide-header"><h4>FDE delivery and handoff</h4><span class="tag">05-02</span></div><div class="slide-content"><h2>Prove one complete slice before expanding</h2><div class="cards visual-rail"><div class="card"><h3>Scope a useful pilot</h3><div class="rail-body"><p>Choose one high-impact disruption type, agreed shipment categories, and a bounded load volume.</p></div></div><div class="card"><h3>Exercise the boundaries</h3><div class="rail-body"><p>Test duplicate signals, stale quotes, no eligible carrier, denied approval, overlapping events, and partial execution.</p></div></div><div class="card"><h3>Transfer ownership</h3><div class="rail-body"><p>Hand off contracts, thresholds, evaluation cases, approval configuration, dashboards, and recovery runbooks.</p></div></div></div><div class="takeaway">Success means a supported decision and an auditable action that the customer can operate.</div></div></section>
-<section class="slide layout-closing"><div class="closing-decoration"></div><div class="closing-decoration-2"></div><div class="accent-line"></div><h1>Design clear responsibilities.<br>Enforce the boundaries.</h1><p class="closing-sub" style="margin-top:2rem">Discovery → decomposition → coordination → approval → evidence of success.</p></section>
-</main>
-  <div class="slide-counter"><span id="current">1</span> / <span id="total">20</span></div>
-  <span class="focus-status" id="focusStatus" role="status" aria-live="polite"></span>
-  <div class="progress-bar" id="progress"></div>
-  <div class="nav-controls">
-    <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)" aria-label="Previous slide">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
-    </button>
-    <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)" aria-label="Next slide">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
-    </button>
-  </div>
-
-  <script>
-    const slides = document.querySelectorAll('.slide');
-    const currentEl = document.getElementById('current');
-    const totalEl = document.getElementById('total');
-    const progressEl = document.getElementById('progress');
-    const prevBtn = document.getElementById('prevBtn');
-    const nextBtn = document.getElementById('nextBtn');
-
-    let current = Math.max(0, Math.min(slides.length - 1, (parseInt(location.hash.slice(1)) || 1) - 1));
-    const total = slides.length;
-    totalEl.textContent = total;
-
-    // Presenter highlighting follows the visible content in reading order.
-    const focusStatus = document.getElementById('focusStatus');
-    document.querySelectorAll('.compare').forEach(table => {
-      const labels = Array.from(table.querySelectorAll('thead th'), cell => cell.textContent.trim());
-      table.querySelectorAll('tbody tr').forEach(row => Array.from(row.cells).forEach((cell, i) => {
-        cell.dataset.label = labels[i] || '';
-      }));
-    });
-    const focusGroups = Array.from(slides, slide => {
-      if (slide.matches('.layout-cover, .layout-closing')) return [];
-      const items = Array.from(slide.querySelectorAll('.slide-content > .lead, .cards > .card, .branch-diagram > .card, .flow > .card, .compare tbody > tr, .slide-content > .takeaway'));
-      if (items.length < 2) return [];
-      items.forEach((item, index) => {
-        // Keep native table-row semantics; expose its label as the keyboard control.
-        let control = item;
-        if (item.matches('tr')) {
-          const cell = item.cells[0];
-          control = document.createElement('span');
-          control.className = 'focus-row-control';
-          while (cell.firstChild) control.appendChild(cell.firstChild);
-          cell.appendChild(control);
-        }
-        item.classList.add('focus-block');
-        item.focusControl = control;
-        control.classList.add('focus-trigger');
-        control.setAttribute('role', 'button');
-        control.setAttribute('tabindex', '-1');
-        control.setAttribute('aria-pressed', 'false');
-        item.addEventListener('click', () => setHighlight(highlightIndex === index ? -1 : index));
-        control.addEventListener('keydown', event => {
-          if (event.key === 'Enter' || event.key === ' ') {
-            event.preventDefault(); event.stopPropagation();
-            setHighlight(highlightIndex === index ? -1 : index);
-          }
-        });
-      });
-      return items;
-    });
-    let highlightIndex = -1;
-
-    function setHighlight(index, scroll = true) {
-      const items = focusGroups[current];
-      highlightIndex = index;
-      items.forEach((item, i) => {
-        item.classList.toggle('is-highlighted', i === index);
-        item.focusControl.setAttribute('aria-pressed', String(i === index));
-      });
-      focusStatus.textContent = index < 0 ? 'Highlight cleared. All content is visible.' : 'Block ' + (index + 1) + ' of ' + items.length + ' highlighted.';
-      if (scroll && index >= 0 && matchMedia('(max-width: 700px), (max-height: 600px)').matches) {
-        const rect = items[index].getBoundingClientRect();
-        if (rect.top < 72 || rect.bottom > innerHeight - 96) {
-          slides[current].scrollTo({top: slides[current].scrollTop + rect.top - 72,
-            behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth'});
-        }
-      }
-    }
-    function highlightNext() {
-      const items = focusGroups[current];
-      if (items.length) setHighlight(highlightIndex + 1 >= items.length ? -1 : highlightIndex + 1);
-    }
-    document.addEventListener('keydown', event => {
-      if (event.ctrlKey || event.metaKey || event.altKey || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName) || event.target.isContentEditable) return;
-      if (event.key.toLowerCase() === 'h') { event.preventDefault(); highlightNext(); }
-      else if (event.key === 'Escape' && highlightIndex >= 0) setHighlight(-1, false);
-    });
-
-    function updateSlide() {
-      if (document.activeElement.classList.contains('focus-trigger') && !slides[current].contains(document.activeElement)) document.activeElement.blur();
-      highlightIndex = -1;
-      focusGroups.flat().forEach(item => {
-        item.classList.remove('is-highlighted');
-        item.focusControl.setAttribute('aria-pressed', 'false');
-        item.focusControl.setAttribute('tabindex', slides[current].contains(item) ? '0' : '-1');
-      });
-      focusStatus.textContent = '';
-      slides[current].scrollTop = 0;
-
-      slides.forEach((slide, i) => {
-        slide.classList.remove('active', 'prev');
-        if (i === current) {
-          slide.classList.add('active');
-        } else if (i < current) {
-          slide.classList.add('prev');
-        }
-      });
-      currentEl.textContent = current + 1;
-      slides.forEach((slide,i)=>slide.setAttribute('aria-hidden',i !== current));
-      history.replaceState(null, '', '#' + (current + 1));
-      progressEl.style.width = ((current + 1) / total * 100) + '%';
-      prevBtn.disabled = current === 0;
-      nextBtn.disabled = current === total - 1;
-    }
-
-    function changeSlide(dir) {
-      const next = current + dir;
-      if (next >= 0 && next < total) {
-        current = next;
-        updateSlide();
-      }
-    }
-
-    document.addEventListener('keydown', (e) => {
-      if (e.key.toLowerCase() === 'f') { if (!document.fullscreenElement) document.documentElement.requestFullscreen?.(); else document.exitFullscreen?.(); }
-      else if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') { e.preventDefault(); changeSlide(1); }
-      else if (e.key === 'ArrowLeft' || e.key === 'PageUp') { e.preventDefault(); changeSlide(-1); }
-      else if (e.key === 'Home') { e.preventDefault(); current = 0; updateSlide(); }
-      else if (e.key === 'End') { e.preventDefault(); current = total - 1; updateSlide(); }
-    });
-
-    let touchStartX = 0;
-    let touchEndX = 0;
-    document.addEventListener('touchstart', (e) => { touchStartX = e.changedTouches[0].screenX; }, { passive: true });
-    document.addEventListener('touchend', (e) => {
-      touchEndX = e.changedTouches[0].screenX;
-      const diff = touchStartX - touchEndX;
-      if (Math.abs(diff) > 50) { changeSlide(diff > 0 ? 1 : -1); }
-    }, { passive: true });
-
-    window.addEventListener('hashchange', () => { current = Math.max(0, Math.min(total - 1, (parseInt(location.hash.slice(1)) || 1) - 1)); updateSlide(); });
-    updateSlide();
-  </script>
-
-</body>
-</html>
+ }
+ function show(index,writeHash=true){
+  const oldFocus=document.activeElement,focusWasContent=slides[current]?.contains(oldFocus);index=Math.max(0,Math.min(total-1,index));
+  targets.flat().forEach(t=>{t.classList.remove('is-highlighted');t._control.setAttribute('aria-pressed','false');t._control.tabIndex=-1;});highlight=-1;current=index;
+  slides.forEach((s,i)=>{s.classList.toggle('active',i===current);s.setAttribute('aria-hidden',String(i!==current));});
+  targets[current].forEach(t=>t._control.tabIndex=0);slides[current].scrollTop=0;
+  document.querySelector('.active-process').innerHTML=slides[current].querySelector('template').innerHTML;
+  const activeStage=document.querySelector('.active-process .current-stage');if(activeStage)activeStage.scrollIntoView({block:'nearest',inline:'nearest'});
+  currentEl.textContent=current+1;document.getElementById('total').textContent=total;prev.disabled=current===0;next.disabled=current===total-1;
+  document.getElementById('progress').style.width=((current+1)/total*100)+'%';
+  if(writeHash)history.replaceState(null,'','#'+(current+1));
+  if(focusWasContent)slides[current].querySelector('.slide-title').focus({preventScroll:true});
+  status.textContent=`Slide ${current+1} of ${total}: ${slides[current].querySelector('.slide-title').textContent}`;
+ }
+ function hashIndex(){const m=location.hash.match(/^#(?:slide-)?(\d+)$/);return m?Number(m[1])-1:0;}
+ prev.addEventListener('click',()=>show(current-1));next.addEventListener('click',()=>show(current+1));
+ addEventListener('hashchange',()=>show(hashIndex(),false));
+ document.addEventListener('keydown',event=>{
+  if(event.altKey||event.ctrlKey||event.metaKey||event.target.closest('input,textarea,select,[contenteditable="true"]'))return;
+  if(event.key.toLowerCase()==='h'){event.preventDefault();setHighlight(highlight+1>=targets[current].length?-1:highlight+1,true);return;}
+  if(event.key==='Escape'){setHighlight(-1,false);return;}
+  if(event.target.closest('button,a,[role="button"]')&&(event.key===' '||event.key==='Enter'))return;
+  if(['ArrowRight','PageDown',' '].includes(event.key)){event.preventDefault();show(current+1);}
+  else if(['ArrowLeft','PageUp'].includes(event.key)){event.preventDefault();show(current-1);}
+  else if(event.key==='Home'){event.preventDefault();show(0);}
+  else if(event.key==='End'){event.preventDefault();show(total-1);}
+  else if(event.key.toLowerCase()==='f'){event.preventDefault();const action=document.fullscreenElement?document.exitFullscreen():document.documentElement.requestFullscreen();action?.catch(()=>{});}
+ });
+ let start=null;
+ document.addEventListener('touchstart',e=>{if(e.touches.length!==1||e.target.closest('.map-scroll,.table-wrap,.learning-figure,button,a')){start=null;return;}start={x:e.touches[0].clientX,y:e.touches[0].clientY};},{passive:true});
+ document.addEventListener('touchend',e=>{if(!start)return;const dx=e.changedTouches[0].clientX-start.x,dy=e.changedTouches[0].clientY-start.y;start=null;if(Math.abs(dx)>65&&Math.abs(dx)>Math.abs(dy)*1.5)show(current+(dx<0?1:-1));},{passive:true});
+ show(hashIndex());
+})();
+</script></body></html>
