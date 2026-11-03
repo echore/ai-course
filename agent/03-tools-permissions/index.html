@@ -313,17 +313,17 @@
   </div>
   <div class="slide-content">
     <h2>A permission mode decides what the agent can do without&nbsp;asking&nbsp;you.</h2>
-    <p class="lede">Your instruction file can&rsquo;t stop an action. A permission can.</p>
+    <p class="lede">An instruction file can guide the agent, but it can&rsquo;t guarantee anything. A permission is a hard limit set by the tool.</p>
     <div class="body-center">
       <div class="dial-axis"><span>Asks you more</span><span class="dial-line"></span><span>Works more on its own</span></div>
       <div class="mode-grid">
-        <div class="card" style="--d: 60ms;"><div class="card-name">Plan</div><p class="card-body">It only reads and writes a plan. Nothing changes yet.</p></div>
-        <div class="card" style="--d: 130ms;"><div class="card-name">Manual</div><p class="card-body">It asks before every edit or command.</p></div>
-        <div class="card" style="--d: 200ms;"><div class="card-name">Accept edits</div><p class="card-body">It edits files on its own, and asks before most commands.</p></div>
-        <div class="card" style="--d: 270ms;"><div class="card-name">Auto</div><p class="card-body">It works on its own, and a safety check reviews each action.</p></div>
+        <div class="card" style="--d: 60ms;"><div class="card-name">Plan</div><p class="card-body">The agent reads, explores, and writes a plan. It can&rsquo;t edit your files until you approve.</p></div>
+        <div class="card" style="--d: 130ms;"><div class="card-name">Manual</div><p class="card-body">The agent asks you before most edits and commands.</p></div>
+        <div class="card" style="--d: 200ms;"><div class="card-name">Accept edits</div><p class="card-body">The agent edits files on its own, but it still asks before most commands.</p></div>
+        <div class="card" style="--d: 270ms;"><div class="card-name">Auto</div><p class="card-body">The agent works on its own. A second model checks the risky actions before they run.</p></div>
       </div>
     </div>
-    <p class="fine-print">Mode names from Claude Code. Other tools have similar modes.</p>
+    <p class="fine-print">These names come from Claude Code. Other tools have similar modes, maybe with different names.</p>
   </div>
 </section>
 
