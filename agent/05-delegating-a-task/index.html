@@ -42,8 +42,9 @@
   .role-table th, .brief-table th { padding: 0.65rem 1rem; font: 600 clamp(0.85rem, 1vw, 1rem)/1.35 'Space Grotesk', sans-serif; color: var(--primary); }
   .role-table td, .brief-table td { padding: 0.9rem 1rem; border-top: 1px solid var(--border); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; vertical-align: top; }
   .role-table td:first-child, .brief-table td:first-child { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
-  .role-table th:first-child { width: 12%; }
-  .role-table th:nth-child(2) { width: 43%; }
+  .role-table th:first-child { width: 17%; }
+  .role-table th:nth-child(2) { width: 40%; }
+  .role-table .stage-meta { display: block; margin-top: 0.15rem; font-size: 0.8em; font-weight: 500; color: var(--text-muted); }
   .brief-table th:first-child { width: 17%; }
   .brief-table th:nth-child(2) { width: 29%; }
   .role-table tr:nth-child(even) td, .brief-table tr:nth-child(even) td { background: var(--card-bg); }
@@ -187,9 +188,9 @@
       <table class="role-table">
         <thead><tr><th scope="col">Stage</th><th scope="col">Your responsibility</th><th scope="col">The agent can help by</th></tr></thead>
         <tbody>
-          <tr><td>01 &nbsp; Define</td><td data-mobile-label="You">Decide what you want, what the agent may do, and what counts as done.</td><td data-mobile-label="Agent">Ask questions and draft the brief.</td></tr>
-          <tr><td>02 &nbsp; Do</td><td data-mobile-label="You">Approve the plan and actions that need your permission.</td><td data-mobile-label="Agent">Carry out the work, check it, and report problems.</td></tr>
-          <tr><td>03 &nbsp; Check</td><td data-mobile-label="You">Decide whether the result meets your needs.</td><td data-mobile-label="Agent">Show evidence and fix the issues you identify.</td></tr>
+          <tr><td>01 &nbsp; Define<span class="stage-meta">Before &middot; Rules 1&ndash;3</span></td><td data-mobile-label="You">Decide what you want, what is off-limits for this task, and what counts as done.</td><td data-mobile-label="Agent">Ask questions and draft the brief.</td></tr>
+          <tr><td>02 &nbsp; Do<span class="stage-meta">During &middot; Rule 4</span></td><td data-mobile-label="You">Approve the plan and actions that need your permission.</td><td data-mobile-label="Agent">Carry out the work, check it, and report problems.</td></tr>
+          <tr><td>03 &nbsp; Check<span class="stage-meta">After &middot; Next module</span></td><td data-mobile-label="You">Decide whether the result meets your needs.</td><td data-mobile-label="Agent">Show evidence and fix the issues you identify.</td></tr>
         </tbody>
       </table>
       <p class="return-line">Check &rarr; revise the definition or the work &rarr; check again.</p>
@@ -237,7 +238,7 @@
         </tbody>
       </table>
       <p class="split-highlight bottom-highlight">Decide what counts as done before work starts.</p>
-      <p class="fine-print">Limits in a brief are instructions. Tool permissions can block some actions outright, so where possible, set them to match.</p>
+      <p class="fine-print">The instruction file holds rules for every task. The brief holds the details for this task. Permissions set the hard limits.</p>
     </div>
   </div>
 </section>
