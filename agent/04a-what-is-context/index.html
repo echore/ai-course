@@ -153,7 +153,7 @@
       </div>
       <p class="split-highlight bottom-highlight">If something is not in the context, the agent can&rsquo;t see it until it goes and gets it.</p>
     </div>
-    <p class="fine-print">Your agent tool, such as Claude Code or Codex, also adds its own built-in instructions. You can&rsquo;t edit those.</p>
+    <p class="fine-print">Your agent tool, such as Claude Code or Codex, also adds its own built-in instructions. You usually don&rsquo;t see or change those.</p>
   </div>
 </section>
 
@@ -164,7 +164,7 @@
     <span class="tag">Part 2 &middot; Long conversations</span>
   </div>
   <div class="slide-content">
-    <h2>In a long conversation, the agent starts to forget what you told it.</h2>
+    <h2>In a long conversation, the agent can lose track of what you told it.</h2>
     <p class="lede">Say you spend a day working with an agent on a weekly sales report.</p>
     <div class="body-center">
       <div class="day">
@@ -188,11 +188,11 @@
           <div class="col-label">End of day</div>
           <div class="card">
             <p class="day-text">The new draft includes the Boston store.</p>
-            <p class="day-text">It forgot what you asked this morning.</p>
+            <p class="day-text">It lost track of what you asked this morning.</p>
           </div>
         </div>
       </div>
-      <p class="split-highlight bottom-highlight">Nothing broke. The conversation just got long.</p>
+      <p class="split-highlight bottom-highlight">Nothing obviously broke. The conversation just got long.</p>
     </div>
   </div>
 </section>
@@ -270,11 +270,11 @@
       </div>
       <div class="split-right">
         <div class="card"><div class="card-name">01 &nbsp; Nothing stays in its head</div><p class="card-body">Between steps it keeps nothing. It reads the whole context again each time.</p></div>
-        <div class="card"><div class="card-name">02 &nbsp; Everything is added</div><p class="card-body">Each message, each file it opens, each result that comes back goes onto the pile.</p></div>
+        <div class="card"><div class="card-name">02 &nbsp; Almost everything is added</div><p class="card-body">Each message, each file it opens, each result that comes back goes onto the pile.</p></div>
         <p class="split-highlight">So the context keeps growing as you work, and there is a limit to how much fits.</p>
       </div>
     </div>
-    <p class="fine-print">When the context gets close to full, tools such as Claude Code and Codex shorten it for you. More on that in the next video.</p>
+    <p class="fine-print">When the context gets close to full, tools such as Claude Code and Codex shorten it for you by default, usually by summarizing earlier parts. More on that in the next video.</p>
   </div>
 </section>
 
@@ -285,8 +285,8 @@
     <span class="tag">Part 2 &middot; Long conversations</span>
   </div>
   <div class="slide-content">
-    <h2>The more it has to read, the less attention each part gets.</h2>
-    <p class="lede">Your morning request is still there. It is now one line in a very long page.</p>
+    <h2>The more it has to read, the less attention each part tends to get.</h2>
+    <p class="lede">Your morning request may still be there. But now it is one line in a very long page.</p>
     <div class="split-body">
       <div class="split-left">
         <svg viewBox="0 0 440 340" role="img" aria-label="A sketch: how well the agent works falls gradually as the context fills up. It is a slope, not a sudden drop.">
@@ -317,7 +317,7 @@
         <p class="split-highlight">There is no clear moment when it breaks. Treat these signs as a hint to check.</p>
       </div>
     </div>
-    <p class="fine-print">A longer context also uses up your plan or budget faster.</p>
+    <p class="fine-print">A longer context also usually uses up your plan or budget faster.</p>
     <p class="source">Sources: Anthropic, <a href="https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents" target="_blank">&ldquo;Effective context engineering for AI agents&rdquo;</a> (2025); Chroma, <a href="https://research.trychroma.com/context-rot" target="_blank">&ldquo;Context Rot&rdquo;</a> (2025)</p>
   </div>
 </section>
@@ -329,7 +329,7 @@
     <span class="tag">Part 3 &middot; Context sources</span>
   </div>
   <div class="slide-content">
-    <h2>Some of it is there before you type a word. Most of it piles up as you work.</h2>
+    <h2>Some of it is there before you type a word. In a long session, most of it piles up as you work.</h2>
     <div class="body-center">
       <div class="ctx-frame enter" style="--i: 1;">
         <div class="ctx-head"><span class="ctx-label">Context</span><span class="ctx-sub">the same four things, in two groups</span></div>
@@ -344,7 +344,7 @@
               </div>
               <div class="card">
                 <div class="card-name">Connected tools</div>
-                <p class="card-body">A note on what each one can do.</p>
+                <p class="card-body">A short list of what&rsquo;s available.</p>
               </div>
             </div>
           </div>
@@ -378,7 +378,7 @@
   <div class="closing-grid">
     <div class="card"><span class="step-circle">&#10003;</span><div class="card-name">Context is what it can see</div><p class="card-body">Instructions, tools, files and results, and your conversation.</p></div>
     <div class="card"><span class="step-circle">&#10003;</span><div class="card-name">It rereads all of it at every step</div><p class="card-body">And the pile keeps growing.</p></div>
-    <div class="card"><span class="step-circle">&#10003;</span><div class="card-name">Long means fuzzy</div><p class="card-body">Quality slips gradually as the context grows. Watch for the signs.</p></div>
+    <div class="card"><span class="step-circle">&#10003;</span><div class="card-name">Longer often means fuzzier</div><p class="card-body">Quality tends to slip gradually as the context grows. Watch for the signs.</p></div>
   </div>
   <p class="next-up">Next video: what to do about it.</p>
 </section>
