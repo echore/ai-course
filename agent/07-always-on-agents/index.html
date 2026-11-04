@@ -61,10 +61,11 @@
   .map-again { text-align: center; color: var(--primary); font: 600 clamp(0.95rem, 1.2vw, 1.1rem) 'Space Grotesk', sans-serif; }
 
   /* Step 2: the three blanks */
-  .blank { display: grid; grid-template-columns: 7.5rem 1fr; gap: 0.8rem; align-items: baseline; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); }
+  .blanks { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.3rem; margin-bottom: 1.3rem; }
+  .blank { display: flex; flex-direction: column; gap: 0.6rem; }
   .blank .col-label { color: var(--primary); }
-  .blank p { font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.4; color: var(--text); }
-  .split-body + .say { margin-top: 1.1rem; }
+  .blank p { font-size: clamp(1.1rem, 1.5vw, 1.4rem); line-height: 1.4; color: var(--text); }
+  .blank small { font-size: clamp(0.95rem, 1.15vw, 1.05rem); color: var(--text-muted); }
 
   /* When: practice */
   .two-q { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
@@ -101,9 +102,8 @@
     #deck .split-left { height: auto; }
     #deck .split-left svg { max-height: none; }
     #deck .split-right { padding-left: 0; border-left: none; }
-    .jobs, .map, .two-q { grid-template-columns: 1fr; gap: 0.8rem; }
+    .jobs, .map, .two-q, .blanks { grid-template-columns: 1fr; gap: 0.8rem; }
     .map > .flow-arrow { transform: rotate(90deg); }
-    .blank { grid-template-columns: 1fr; gap: 0.2rem; }
     .case-table, .case-table tbody { display: block; }
     .case-table thead { display: none; }
     .case-table tr { display: block; margin-bottom: 0.8rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
@@ -307,37 +307,16 @@
   <div class="slide-header"><h4>Module 6 &middot; Preview</h4><span class="tag">Step 2 &middot; Before it runs</span></div>
   <div class="slide-content">
     <h2>Step 2: Say what to do, when to do it, and when to tell you.</h2>
-    <div class="split-body">
-      <div class="split-left">
-        <svg viewBox="0 0 440 306" role="img" aria-label="Two phones. One gets six similar messages, and the important one is lost among them. The other gets one message: East dropped 24 percent, needs your call.">
-          <!-- tells you everything -->
-          <rect x="20" y="10" width="180" height="260" rx="22" fill="none" stroke="#6b6b6b" stroke-width="2"/>
-          <g>
-            <rect x="34" y="34" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="43" width="100" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/><rect x="44" y="52" width="70" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
-            <rect x="34" y="72" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="81" width="110" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/><rect x="44" y="90" width="60" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
-            <rect x="34" y="110" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="119" width="90" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/><rect x="44" y="128" width="76" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
-            <rect x="34" y="148" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="157" width="104" height="5" rx="2.5" fill="#1e2bfa" opacity="0.6"/><rect x="44" y="166" width="66" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
-            <rect x="34" y="186" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="195" width="96" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/><rect x="44" y="204" width="72" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
-            <rect x="34" y="224" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="233" width="108" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/><rect x="44" y="242" width="58" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
-          </g>
-          <text x="110" y="296" text-anchor="middle" font-size="14.5" class="body-text">Tells you everything</text>
-          <!-- tells you what matters -->
-          <rect x="240" y="10" width="180" height="260" rx="22" fill="none" stroke="#1e2bfa" stroke-width="2"/>
-          <rect x="254" y="34" width="152" height="62" rx="9" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
-          <text x="266" y="59" font-size="14.5" font-weight="600">East dropped 24%</text>
-          <text x="266" y="82" font-size="13.5" class="body-text">Needs your call</text>
-          <text x="330" y="296" text-anchor="middle" font-size="14.5" font-weight="600" fill="#1e2bfa">Only what matters</text>
-        </svg>
+    <p class="lede">Fill in three blanks.</p>
+    <div class="body-center">
+      <div class="blanks">
+        <div class="card blank"><span class="col-label">When</span><p>Every Monday at 8 a.m.</p></div>
+        <div class="card blank"><span class="col-label">Do</span><p>Make the one-page sales report from the two weekly sheets.</p></div>
+        <div class="card blank"><span class="col-label">Tell me if</span><p>A region drops more than 20%.</p><small>Only what needs you.</small></div>
       </div>
-      <div class="split-right">
-        <div class="blank"><span class="col-label">When</span><p>Every Monday at 8 a.m.</p></div>
-        <div class="blank"><span class="col-label">Do</span><p>Make the one-page sales report from the two weekly sheets.</p></div>
-        <div class="blank"><span class="col-label">Tell me if</span><p>A region drops more than 20%.</p></div>
-        <p class="split-highlight">If it tells you everything, you may miss the one message that matters.</p>
-      </div>
+      <blockquote class="say"><span class="say-label">You say</span>&ldquo;Every Monday at 8 a.m. Eastern, make the one-page sales report from the two weekly sheets. Tell me when the draft is ready. Message me right away only if a region drops more than 20%.&rdquo;</blockquote>
+      <p class="fine-print">If you set a time, include your time zone.</p>
     </div>
-    <blockquote class="say"><span class="say-label">You say</span>&ldquo;Every Monday at 8 a.m. Eastern, make the one-page sales report from the two weekly sheets, the same way as last week. Save the draft and tell me it&rsquo;s ready. Message me right away only if a region drops more than 20%.&rdquo;</blockquote>
-    <p class="fine-print">If you set a time, include your time zone, and ask it to confirm the schedule.</p>
   </div>
 </section>
 
