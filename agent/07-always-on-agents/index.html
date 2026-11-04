@@ -1,0 +1,486 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Always-on Agents — AI Agent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="../../shared/theme.css">
+<script src="../../shared/deck.js" defer></script>
+</head>
+<body>
+<div id="deck">
+<style>
+#deck,
+#deck * {
+  animation: none !important;
+  transition: none !important;
+}
+
+  /* Lesson layouts only. Colours, type and navigation come from shared/. */
+  #deck .lede { max-width: 76vw; }
+  .lesson-label { margin-bottom: 1.2rem; }
+  #roadmap .step-title { max-width: 16vw; }
+  #deck .layout-cover h1 { max-width: 72vw; }
+  #deck .layout-cover .cover-tags { flex-wrap: wrap; }
+  .bottom-highlight { margin-top: 1.1rem; }
+  .fine-print { margin-top: 0.85rem; padding-right: 7rem; font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.85rem, 1vw, 0.95rem); line-height: 1.4; color: var(--text-muted); }
+  .col-label { font: 600 clamp(0.85rem, 1vw, 1rem)/1.3 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .col-label--on { color: var(--primary); }
+  .flow-arrow { align-self: center; color: var(--text-light); font: 400 1.6rem 'Space Grotesk', sans-serif; text-align: center; }
+  .say { padding: 0.9rem 1.2rem; border-radius: 10px; background: var(--accent-medium); font: 500 clamp(1rem, 1.3vw, 1.2rem)/1.45 'Space Grotesk', sans-serif; color: var(--text); }
+  .say-label { display: block; margin-bottom: 0.4rem; color: var(--primary); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .question { padding: 0.85rem 1.2rem; border-left: 3px solid var(--primary); background: var(--card-bg); border-radius: 0 10px 10px 0; font-size: clamp(1rem, 1.35vw, 1.25rem); color: var(--text); line-height: 1.4; }
+  .question small { display: block; margin-top: 0.2rem; font-size: 0.85em; color: var(--text-muted); }
+
+  /* Illustrations beside cards */
+  .split-left svg { width: 100%; height: auto; max-height: 52vh; }
+  .split-right { display: flex; flex-direction: column; gap: 0.9rem; }
+  .split-right .card-name { font-size: clamp(1.05rem, 1.4vw, 1.3rem); }
+  .split-right .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
+  svg text { font-family: 'Space Grotesk', sans-serif; fill: var(--text); }
+  svg .body-text { font-family: 'Inter', sans-serif; fill: var(--text-muted); }
+  svg .on-primary { fill: var(--bg); }
+  svg .label { font-weight: 600; letter-spacing: 0.08em; fill: var(--primary); }
+  svg .muted-label { font-weight: 600; letter-spacing: 0.08em; fill: var(--text-muted); }
+
+  /* Why: three kinds of jobs */
+  .jobs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.3rem; }
+  .job { display: flex; flex-direction: column; gap: 0.6rem; }
+  .job svg { width: 64px; height: 64px; }
+  .job .card-name { font-size: clamp(1.1rem, 1.5vw, 1.4rem); }
+  .job .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); line-height: 1.45; }
+
+  /* How: the four-step map */
+  .map { display: grid; grid-template-columns: 1.35fr auto 1fr; gap: 1.6rem; align-items: center; }
+  .map-col { display: grid; gap: 0.6rem; }
+  .map-step { display: flex; align-items: center; gap: 1rem; padding: 0.85rem 1.1rem; border-radius: 12px; border: 2px solid var(--primary); background: var(--card-bg); }
+  .map-step strong { display: block; font: 600 clamp(1.1rem, 1.5vw, 1.4rem)/1.3 'Space Grotesk', sans-serif; color: var(--primary); }
+  .map-step p { font-size: clamp(0.95rem, 1.2vw, 1.1rem); color: var(--text-muted); line-height: 1.4; }
+  .map .step-circle { width: 44px; height: 44px; margin: 0; flex: none; font-size: 1.1rem; }
+  .map-down { text-align: center; color: var(--text-muted); font: 500 clamp(0.9rem, 1.1vw, 1rem) 'Space Grotesk', sans-serif; }
+  .map-again { text-align: center; color: var(--primary); font: 600 clamp(0.95rem, 1.2vw, 1.1rem) 'Space Grotesk', sans-serif; }
+
+  /* Step 2: the three blanks */
+  .blank { display: grid; grid-template-columns: 7.5rem 1fr; gap: 0.8rem; align-items: baseline; padding: 0.75rem 1rem; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); }
+  .blank .col-label { color: var(--primary); }
+  .blank p { font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.4; color: var(--text); }
+  .split-body + .say { margin-top: 1.1rem; }
+
+  /* When: practice */
+  .two-q { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
+  .two-q .question { margin: 0; }
+  .case-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
+  .case-table th { padding: 0.55rem 1rem; font: 600 clamp(0.85rem, 1vw, 1rem)/1.35 'Space Grotesk', sans-serif; color: var(--primary); }
+  .case-table td { padding: 0.65rem 1rem; border-top: 1px solid var(--border); font-size: clamp(1rem, 1.25vw, 1.15rem); line-height: 1.4; vertical-align: top; }
+  .case-table tr:nth-child(even) td { background: var(--card-bg); }
+  .case-table td:last-child { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+  .case-table td.no-fit { color: var(--text-muted); }
+  .case-table th:first-child { width: 55%; }
+
+  /* Takeaway */
+  #deck .layout-closing h1 { max-width: 80vw; font-size: clamp(2rem, 3.6vw, 3.2rem); }
+  #deck .closing-grid { width: 82vw; grid-template-columns: repeat(4, 1fr); }
+  #deck .closing-grid .card-name { font-size: clamp(1.1rem, 1.5vw, 1.4rem); }
+  #deck .closing-grid .card-body { font-size: clamp(1rem, 1.25vw, 1.15rem); }
+  .closing-note { margin-top: 1.6rem; font: 500 clamp(1.05rem, 1.4vw, 1.3rem)/1.4 'Space Grotesk', sans-serif; color: var(--primary); }
+
+  @media (max-width: 760px) {
+    #roadmap .timeline-track { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; gap: 1.5rem; margin-top: 1.2rem; }
+    #roadmap .timeline-step { display: grid; grid-template-columns: 72px 1fr; column-gap: 1.2rem; text-align: left; align-items: center; }
+    #roadmap .step-circle { grid-row: 1 / span 2; margin-bottom: 0; }
+    #roadmap .step-label { margin-bottom: 0.2rem; }
+    #roadmap .step-title { max-width: none; font-size: 1.3rem; }
+    #roadmap .timeline-step:not(:last-child)::after { top: calc(100% + 0.25rem); left: 35px; right: auto; width: 2px; height: 1rem; }
+    #deck .slide { overflow-x: hidden; overflow-y: auto; padding-bottom: 6rem; }
+    #deck .slide-content, #deck .body-center { flex: none; }
+    #deck .lede { max-width: none; }
+    #deck .layout-cover { justify-content: flex-start; padding-top: 12vh; }
+    #deck .layout-cover h1 { max-width: none; font-size: clamp(2.3rem, 7.5vw, 3rem); }
+    .fine-print { padding-right: 0; }
+    #deck .split-body { grid-template-columns: 1fr; gap: 1.2rem; }
+    #deck .split-left { height: auto; }
+    #deck .split-left svg { max-height: none; }
+    #deck .split-right { padding-left: 0; border-left: none; }
+    .jobs, .map, .two-q { grid-template-columns: 1fr; gap: 0.8rem; }
+    .map > .flow-arrow { transform: rotate(90deg); }
+    .blank { grid-template-columns: 1fr; gap: 0.2rem; }
+    .case-table, .case-table tbody { display: block; }
+    .case-table thead { display: none; }
+    .case-table tr { display: block; margin-bottom: 0.8rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .case-table td { display: block; padding: 0.65rem 0.9rem; }
+    .case-table td:first-child { border-top: none; background: var(--accent-light); font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
+    .case-table td[data-mobile-label]::before { content: attr(data-mobile-label); display: block; font: 600 0.75rem 'Space Grotesk', sans-serif; color: var(--text-muted); margin-bottom: 0.2rem; }
+    #deck .layout-closing { justify-content: flex-start; padding-top: 3rem; }
+    #deck .layout-closing h1 { max-width: none; }
+    #deck .closing-grid { grid-template-columns: 1fr; width: 100%; }
+  }
+  @media (min-width: 761px) and (max-height: 650px) {
+    #deck .slide { overflow-y: auto; padding-bottom: 5rem; }
+    #deck .slide-content, #deck .body-center { flex: none; }
+  }
+</style>
+
+<!-- 1 · Cover -->
+<section class="slide layout-cover" data-label="Always-on Agents">
+  <div class="cover-decoration"></div>
+  <div class="cover-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <h4 class="lesson-label enter" style="--i: 0;">Module 6 &middot; Preview</h4>
+  <div class="accent-line enter" style="--i: 1;"></div>
+  <h1 class="enter" style="--i: 2;">Always-on Agents</h1>
+  <div class="cover-tags enter" style="--i: 3;">
+    <span class="tag">Works while you&rsquo;re away</span><span class="tag">Set it up once</span><span class="tag">Check every run</span>
+  </div>
+</section>
+
+<!-- 2 · Overview -->
+<section class="slide" id="roadmap" data-label="Roadmap">
+  <div class="slide-header">
+    <h4>Module 6 &middot; Preview</h4>
+    <span class="tag">Overview</span>
+  </div>
+  <div class="slide-content">
+    <h2>Roadmap</h2>
+    <div class="timeline-track timeline-track--even">
+      <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">WHAT</div><div class="step-title">What it is</div></div>
+      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">WHY</div><div class="step-title">What it can do</div></div>
+      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">HOW</div><div class="step-title">Four steps</div></div>
+      <div class="timeline-step enter" style="--i: 4;"><div class="step-circle">4</div><div class="step-label">WHEN</div><div class="step-title">Which agent fits</div></div>
+      <div class="timeline-step enter" style="--i: 5;"><div class="step-circle">5</div><div class="step-label">Takeaway</div><div class="step-title">Recap</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · WHAT: it works while you're away -->
+<section class="slide" data-label="What it is">
+  <div class="slide-header"><h4>Module 6 &middot; Preview</h4><span class="tag">What &middot; The idea</span></div>
+  <div class="slide-content">
+    <h2>An always-on agent keeps working when you&rsquo;re not there.</h2>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 460 340" role="img" aria-label="Two timelines. A regular agent works only while you are there, and stops when you leave. An always-on agent starts at 8:00 and again when an email arrives, while you are away, and then comes back to you.">
+          <defs>
+            <marker id="arrowT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto">
+              <path d="M0 0 L10 5 L0 10 z" fill="#6b6b6b"/>
+            </marker>
+          </defs>
+          <!-- a regular agent -->
+          <text x="0" y="22" font-size="16" font-weight="600">A regular agent</text>
+          <rect x="110" y="36" width="200" height="96" rx="12" fill="#fdfae7" stroke="rgba(30,43,250,0.35)" stroke-width="1.5" stroke-dasharray="6 5"/>
+          <text x="210" y="60" text-anchor="middle" font-size="14" class="body-text">You&rsquo;re here</text>
+          <rect x="128" y="78" width="164" height="26" rx="6" fill="#1e2bfa"/>
+          <text x="210" y="96" text-anchor="middle" font-size="13.5" class="on-primary">You start it. It works.</text>
+          <text x="324" y="96" font-size="13.5" class="body-text">You leave. It stops.</text>
+          <!-- an always-on agent -->
+          <text x="0" y="176" font-size="16" font-weight="600">An always-on agent</text>
+          <rect x="1" y="190" width="458" height="96" rx="12" fill="none" stroke="#9a9a9a" stroke-width="1.5" stroke-dasharray="6 5"/>
+          <text x="230" y="212" text-anchor="middle" font-size="14" class="body-text">You&rsquo;re away</text>
+          <!-- a time you set -->
+          <circle cx="30" cy="244" r="14" fill="#ffffff" stroke="#1e2bfa" stroke-width="2"/>
+          <line x1="30" y1="244" x2="30" y2="235" stroke="#1e2bfa" stroke-width="2" stroke-linecap="round"/>
+          <line x1="30" y1="244" x2="37" y2="248" stroke="#1e2bfa" stroke-width="2" stroke-linecap="round"/>
+          <text x="30" y="276" text-anchor="middle" font-size="13.5" class="body-text">8:00</text>
+          <rect x="52" y="232" width="122" height="26" rx="6" fill="#1e2bfa"/>
+          <text x="113" y="250" text-anchor="middle" font-size="13.5" class="on-primary">Drafts the report</text>
+          <!-- something happens -->
+          <rect x="188" y="235" width="30" height="20" rx="3" fill="#ffffff" stroke="#1e2bfa" stroke-width="2"/>
+          <polyline points="188,236 203,248 218,236" fill="none" stroke="#1e2bfa" stroke-width="2"/>
+          <text x="203" y="276" text-anchor="middle" font-size="13.5" class="body-text">Email arrives</text>
+          <rect x="228" y="232" width="110" height="26" rx="6" fill="#1e2bfa"/>
+          <text x="283" y="250" text-anchor="middle" font-size="13.5" class="on-primary">Drafts a reply</text>
+          <!-- it comes back to you -->
+          <rect x="350" y="222" width="100" height="44" rx="10" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+          <text x="400" y="241" text-anchor="middle" font-size="13.5" font-weight="600">Comes back</text>
+          <text x="400" y="258" text-anchor="middle" font-size="13.5" font-weight="600">to you</text>
+          <!-- time -->
+          <line x1="0" y1="312" x2="452" y2="312" stroke="#6b6b6b" stroke-width="2" marker-end="url(#arrowT)"/>
+          <text x="0" y="334" font-size="13.5" class="body-text">Time</text>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="card"><div class="card-name">Who starts it</div><p class="card-body">A regular agent: you. An always-on agent: a time you set, or something that happens.</p></div>
+        <div class="card"><div class="card-name">Are you there while it works?</div><p class="card-body">A regular agent: yes. An always-on agent: usually not.</p></div>
+        <p class="split-highlight">It comes back with the result, or with a decision it needs from you.</p>
+      </div>
+    </div>
+    <p class="fine-print">Many run in the cloud, so they keep going when your laptop is closed. Some run on your own computer, and those usually need it to stay on.</p>
+  </div>
+</section>
+
+<!-- 4 · WHY: three kinds of jobs -->
+<section class="slide" data-label="What it can do">
+  <div class="slide-header"><h4>Module 6 &middot; Preview</h4><span class="tag">Why &middot; What it can do</span></div>
+  <div class="slide-content">
+    <h2>Some work needs to happen when you&rsquo;re not there.</h2>
+    <p class="lede">Here are three kinds. The example is a weekly sales report for your sales lead.</p>
+    <div class="body-center">
+      <div class="jobs">
+        <div class="card job">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="24" fill="#fdfae7" stroke="#1e2bfa" stroke-width="3"/><line x1="32" y1="32" x2="32" y2="17" stroke="#1e2bfa" stroke-width="3" stroke-linecap="round"/><line x1="32" y1="32" x2="43" y2="38" stroke="#1e2bfa" stroke-width="3" stroke-linecap="round"/></svg>
+          <div class="card-name">On a schedule</div>
+          <p class="card-body">Every Monday at 8 a.m., the sales report is drafted and waiting for you.</p>
+        </div>
+        <div class="card job">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="8" y="16" width="48" height="34" rx="5" fill="#fdfae7" stroke="#1e2bfa" stroke-width="3"/><polyline points="9,18 32,36 55,18" fill="none" stroke="#1e2bfa" stroke-width="3" stroke-linejoin="round"/></svg>
+          <div class="card-name">When something happens</div>
+          <p class="card-body">The sales lead emails asking for a change. A draft reply is ready for you to review.</p>
+        </div>
+        <div class="card job">
+          <svg viewBox="0 0 64 64" aria-hidden="true"><rect x="6" y="12" width="52" height="42" rx="6" fill="#fdfae7" stroke="#1e2bfa" stroke-width="3"/><line x1="6" y1="24" x2="58" y2="24" stroke="#1e2bfa" stroke-width="3"/><rect x="13" y="32" width="10" height="10" rx="2" fill="#1e2bfa"/><rect x="27" y="32" width="10" height="10" rx="2" fill="#1e2bfa"/><rect x="41" y="32" width="10" height="10" rx="2" fill="none" stroke="#1e2bfa" stroke-width="2"/></svg>
+          <div class="card-name">Over several days</div>
+          <p class="card-body">Each new week of sales comes in. The forecast gets updated, and you get the decisions.</p>
+        </div>
+      </div>
+      <p class="split-highlight bottom-highlight">You describe the job once. You don&rsquo;t have to start it again every time.</p>
+      <p class="fine-print">Runs can start a little late. So it&rsquo;s usually not the right tool for something that has to happen the moment it changes.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · HOW: the map -->
+<section class="slide" id="map" data-label="The four steps">
+  <div class="slide-header"><h4>Module 6 &middot; Preview</h4><span class="tag">How &middot; The four steps</span></div>
+  <div class="slide-content">
+    <h2>Set it up once. Check it every time.</h2>
+    <div class="body-center">
+      <div class="map">
+        <div class="map-col">
+          <div class="col-label col-label--on">Before it runs</div>
+          <div class="map-step"><span class="step-circle">1</span><div><strong>Start with a job you already do</strong><p>Low risk, and done by hand first.</p></div></div>
+          <span class="map-down" aria-hidden="true">&darr;</span>
+          <div class="map-step"><span class="step-circle">2</span><div><strong>Say what, when, and when to tell you</strong><p>Three blanks to fill in.</p></div></div>
+          <span class="map-down" aria-hidden="true">&darr;</span>
+          <div class="map-step"><span class="step-circle">3</span><div><strong>Decide what it can do on its own</strong><p>Before it starts, not while it runs.</p></div></div>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="map-col">
+          <div class="col-label">After each run</div>
+          <div class="map-step"><span class="step-circle">4</span><div><strong>Check every run</strong><p>Did it run? Is the result right?</p></div></div>
+          <span class="map-again">Again after every run</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · Step 1 -->
+<section class="slide" id="step-1" data-label="Step 1: Start with a job you already do">
+  <div class="slide-header"><h4>Module 6 &middot; Preview</h4><span class="tag">Step 1 &middot; Before it runs</span></div>
+  <div class="slide-content">
+    <h2>Step 1: Start with a low-risk job you already do.</h2>
+    <p class="lede">Low risk means a mistake is easy to spot and easy to fix.</p>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 440 250" role="img" aria-label="A line from easy to fix to hard to undo. Good first jobs sit at the easy end: draft a report, summarize messages, collect numbers. Not yet: email every client, pay invoices, delete files.">
+          <text x="0" y="18" font-size="13.5" class="label">GOOD FIRST JOBS</text>
+          <text x="440" y="18" text-anchor="end" font-size="13.5" class="muted-label">NOT YET</text>
+          <!-- easy end -->
+          <rect x="0" y="34" width="190" height="34" rx="17" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+          <text x="95" y="56" text-anchor="middle" font-size="14.5">Draft a report</text>
+          <rect x="0" y="80" width="190" height="34" rx="17" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+          <text x="95" y="102" text-anchor="middle" font-size="14.5">Summarize messages</text>
+          <rect x="0" y="126" width="190" height="34" rx="17" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+          <text x="95" y="148" text-anchor="middle" font-size="14.5">Collect numbers</text>
+          <!-- hard end -->
+          <rect x="250" y="34" width="190" height="34" rx="17" fill="none" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="6 5"/>
+          <text x="345" y="56" text-anchor="middle" font-size="14.5" class="body-text">Email every client</text>
+          <rect x="250" y="80" width="190" height="34" rx="17" fill="none" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="6 5"/>
+          <text x="345" y="102" text-anchor="middle" font-size="14.5" class="body-text">Pay invoices</text>
+          <rect x="250" y="126" width="190" height="34" rx="17" fill="none" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="6 5"/>
+          <text x="345" y="148" text-anchor="middle" font-size="14.5" class="body-text">Delete files</text>
+          <!-- the scale -->
+          <rect x="0" y="186" width="220" height="10" rx="5" fill="#1e2bfa"/>
+          <rect x="220" y="186" width="220" height="10" rx="5" fill="#9a9a9a" opacity="0.55"/>
+          <text x="0" y="222" font-size="14.5" font-weight="600">Easy to fix</text>
+          <text x="440" y="222" text-anchor="end" font-size="14.5" font-weight="600">Hard to undo</text>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="card"><div class="card-name">A job you already do</div><p class="card-body">You&rsquo;ve done it by hand at least once. You know what to ask for and what a good result looks like.</p></div>
+        <div class="card"><div class="card-name">Our example</div><p class="card-body">The agent drafts the Monday sales report. You still send it.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7 · Step 2 -->
+<section class="slide" id="step-2" data-label="Step 2: Say what, when, and when to tell you">
+  <div class="slide-header"><h4>Module 6 &middot; Preview</h4><span class="tag">Step 2 &middot; Before it runs</span></div>
+  <div class="slide-content">
+    <h2>Step 2: Say what to do, when to do it, and when to tell you.</h2>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 440 306" role="img" aria-label="Two phones. One gets six similar messages, and the important one is lost among them. The other gets one message: East dropped 24 percent, needs your call.">
+          <!-- tells you everything -->
+          <rect x="20" y="10" width="180" height="260" rx="22" fill="none" stroke="#6b6b6b" stroke-width="2"/>
+          <g>
+            <rect x="34" y="34" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="43" width="100" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/><rect x="44" y="52" width="70" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
+            <rect x="34" y="72" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="81" width="110" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/><rect x="44" y="90" width="60" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
+            <rect x="34" y="110" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="119" width="90" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/><rect x="44" y="128" width="76" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
+            <rect x="34" y="148" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="157" width="104" height="5" rx="2.5" fill="#1e2bfa" opacity="0.6"/><rect x="44" y="166" width="66" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
+            <rect x="34" y="186" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="195" width="96" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/><rect x="44" y="204" width="72" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
+            <rect x="34" y="224" width="152" height="30" rx="7" fill="#fdfae7" stroke="#d6d6d6"/><rect x="44" y="233" width="108" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/><rect x="44" y="242" width="58" height="5" rx="2.5" fill="#9a9a9a" opacity="0.55"/>
+          </g>
+          <text x="110" y="296" text-anchor="middle" font-size="14.5" class="body-text">Tells you everything</text>
+          <!-- tells you what matters -->
+          <rect x="240" y="10" width="180" height="260" rx="22" fill="none" stroke="#1e2bfa" stroke-width="2"/>
+          <rect x="254" y="34" width="152" height="62" rx="9" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+          <text x="266" y="59" font-size="14.5" font-weight="600">East dropped 24%</text>
+          <text x="266" y="82" font-size="13.5" class="body-text">Needs your call</text>
+          <text x="330" y="296" text-anchor="middle" font-size="14.5" font-weight="600" fill="#1e2bfa">Only what matters</text>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="blank"><span class="col-label">When</span><p>Every Monday at 8 a.m.</p></div>
+        <div class="blank"><span class="col-label">Do</span><p>Make the one-page sales report from the two weekly sheets.</p></div>
+        <div class="blank"><span class="col-label">Tell me if</span><p>A region drops more than 20%.</p></div>
+        <p class="split-highlight">If it tells you everything, you may miss the one message that matters.</p>
+      </div>
+    </div>
+    <blockquote class="say"><span class="say-label">You say</span>&ldquo;Every Monday at 8 a.m. Eastern, make the one-page sales report from the two weekly sheets, the same way as last week. Save the draft and tell me it&rsquo;s ready. Message me right away only if a region drops more than 20%.&rdquo;</blockquote>
+    <p class="fine-print">If you set a time, include your time zone, and ask it to confirm the schedule.</p>
+  </div>
+</section>
+
+<!-- 8 · Step 3 -->
+<section class="slide" id="step-3" data-label="Step 3: Decide what it can do on its own">
+  <div class="slide-header"><h4>Module 6 &middot; Preview</h4><span class="tag">Step 3 &middot; Before it runs</span></div>
+  <div class="slide-content">
+    <h2>Step 3: Decide ahead of time what it can do on its own.</h2>
+    <p class="lede">It may run when you&rsquo;re not there to answer. So you decide before it starts.</p>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 440 320" role="img" aria-label="Three steps up. Level 1: it reads and drafts. Level 2: it asks before it changes or sends anything. Level 3: it does routine steps alone. Start at levels 1 and 2. Level 3 comes later.">
+          <!-- level 1 -->
+          <rect x="0" y="200" width="140" height="80" rx="10" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+          <text x="14" y="224" font-size="13.5" class="label">LEVEL 1</text>
+          <text x="14" y="248" font-size="14.5">Reads and drafts</text>
+          <!-- level 2 -->
+          <rect x="150" y="130" width="140" height="150" rx="10" fill="#fdfae7" stroke="#1e2bfa" stroke-width="2"/>
+          <text x="164" y="154" font-size="13.5" class="label">LEVEL 2</text>
+          <text x="164" y="178" font-size="14.5">Asks you before</text>
+          <text x="164" y="197" font-size="14.5">it changes or</text>
+          <text x="164" y="216" font-size="14.5">sends anything</text>
+          <!-- level 3 -->
+          <rect x="300" y="60" width="140" height="220" rx="10" fill="none" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="6 5"/>
+          <text x="314" y="84" font-size="13.5" class="muted-label">LEVEL 3</text>
+          <text x="314" y="108" font-size="14.5" class="body-text">Does routine</text>
+          <text x="314" y="127" font-size="14.5" class="body-text">steps alone</text>
+          <!-- where to start -->
+          <path d="M 4 294 L 4 302 L 286 302 L 286 294" fill="none" stroke="#1e2bfa" stroke-width="2"/>
+          <text x="145" y="318" text-anchor="middle" font-size="14.5" font-weight="600" fill="#1e2bfa">Start here</text>
+          <text x="370" y="306" text-anchor="middle" font-size="14.5" class="body-text">Later</text>
+        </svg>
+      </div>
+      <div class="split-right">
+        <div class="card"><div class="card-name">Level 3, only when it&rsquo;s earned</div><p class="card-body">Only for a routine step you&rsquo;ve seen it do well a few times.</p></div>
+        <div class="card"><div class="card-name">For the sales report</div><p class="card-body">It reads the sheets and drafts the report. Sending it to the sales lead is your call.</p></div>
+      </div>
+    </div>
+    <p class="fine-print">Many tools also have a built-in safety check for risky actions. It helps, but it can miss things, so it doesn&rsquo;t replace your own limits.</p>
+  </div>
+</section>
+
+<!-- 9 · Step 4 -->
+<section class="slide" id="step-4" data-label="Step 4: Check every run">
+  <div class="slide-header"><h4>Module 6 &middot; Preview</h4><span class="tag">Step 4 &middot; After each run</span></div>
+  <div class="slide-content">
+    <h2>Step 4: Check every run, and pause what you don&rsquo;t use.</h2>
+    <div class="split-body">
+      <div class="split-left">
+        <svg viewBox="0 0 440 280" role="img" aria-label="A list of past runs. Weeks 1, 2 and 4 ran on Monday morning and the draft was ready. Week 3 didn't run because the usage limit was reached.">
+          <text x="0" y="18" font-size="13.5" class="label">PAST RUNS</text>
+          <!-- week 1 -->
+          <rect x="1" y="32" width="438" height="50" rx="10" fill="#fdfae7" stroke="rgba(30,43,250,0.35)" stroke-width="1.5"/>
+          <circle cx="30" cy="57" r="12" fill="#1e2bfa"/><polyline points="24,57 28,61 36,52" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="54" y="54" font-size="14.5" font-weight="600">Week 1 &middot; Mon 8:04 a.m.</text>
+          <text x="54" y="72" font-size="13.5" class="body-text">Draft ready</text>
+          <!-- week 2 -->
+          <rect x="1" y="94" width="438" height="50" rx="10" fill="#fdfae7" stroke="rgba(30,43,250,0.35)" stroke-width="1.5"/>
+          <circle cx="30" cy="119" r="12" fill="#1e2bfa"/><polyline points="24,119 28,123 36,114" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="54" y="116" font-size="14.5" font-weight="600">Week 2 &middot; Mon 8:06 a.m.</text>
+          <text x="54" y="134" font-size="13.5" class="body-text">Draft ready</text>
+          <!-- week 3: didn't run -->
+          <rect x="1" y="156" width="438" height="50" rx="10" fill="none" stroke="#9a9a9a" stroke-width="2" stroke-dasharray="6 5"/>
+          <circle cx="30" cy="181" r="12" fill="none" stroke="#9a9a9a" stroke-width="2"/><line x1="24" y1="181" x2="36" y2="181" stroke="#9a9a9a" stroke-width="2.5" stroke-linecap="round"/>
+          <text x="54" y="178" font-size="14.5" font-weight="600">Week 3 &middot; Mon</text>
+          <text x="54" y="196" font-size="13.5" class="body-text">Didn&rsquo;t run: usage limit reached</text>
+          <!-- week 4 -->
+          <rect x="1" y="218" width="438" height="50" rx="10" fill="#fdfae7" stroke="rgba(30,43,250,0.35)" stroke-width="1.5"/>
+          <circle cx="30" cy="243" r="12" fill="#1e2bfa"/><polyline points="24,243 28,247 36,238" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <text x="54" y="240" font-size="14.5" font-weight="600">Week 4 &middot; Mon 8:03 a.m.</text>
+          <text x="54" y="258" font-size="13.5" class="body-text">Draft ready</text>
+        </svg>
+      </div>
+      <div class="split-right">
+        <p class="question">1. Did it run at all?<small>A run can be late or skipped. Most tools list past runs on a schedule or activity page.</small></p>
+        <p class="question">2. Is the result right?<small>Compare it with your source sheets and your list of what must be true.</small></p>
+        <p class="split-highlight">Don&rsquo;t need it anymore? Pause it or delete it.</p>
+      </div>
+    </div>
+    <p class="fine-print">Pausing stops what comes next. It usually doesn&rsquo;t undo what the agent has already done.</p>
+  </div>
+</section>
+
+<!-- 10 · WHEN: practice -->
+<section class="slide" id="practice" data-label="Which agent fits">
+  <div class="slide-header"><h4>Module 6 &middot; Preview</h4><span class="tag">When &middot; Practice</span></div>
+  <div class="slide-content">
+    <h2>Which agent fits?</h2>
+    <div class="two-q">
+      <p class="question">Does it need to happen when you&rsquo;re not there?<small>No? A regular agent is enough.</small></p>
+      <p class="question">Is it low-risk enough to run without you watching?<small>No? Let it prepare the work, and do the last step yourself.</small></p>
+    </div>
+    <table class="case-table">
+      <thead><tr><th scope="col">Task</th><th scope="col">Use</th></tr></thead>
+      <tbody>
+        <tr><td>Summarize an article</td><td data-mobile-label="Use">Regular agent</td></tr>
+        <tr><td>Build the Monday report for the first time</td><td data-mobile-label="Use">Regular agent: get it right by hand first</td></tr>
+        <tr><td>Draft the report every Monday</td><td data-mobile-label="Use">Always-on</td></tr>
+        <tr><td>Tell me when the sales lead asks for a change</td><td data-mobile-label="Use">Always-on</td></tr>
+        <tr><td>Email the report to every client each Monday</td><td data-mobile-label="Use">Always-on drafts it. You send it.</td></tr>
+        <tr><td>Tell me the moment tickets go on sale</td><td data-mobile-label="Use" class="no-fit">Neither fits well: a run can start late</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 11 · Takeaway -->
+<section class="slide layout-closing" data-label="Takeaway">
+  <div class="closing-decoration"></div><div class="closing-decoration-2"></div>
+  <h4 class="lesson-label enter" style="--i: 0;">Takeaway</h4>
+  <div class="accent-line enter" style="--i: 1; margin: 0 auto 1.5rem;"></div>
+  <h1 class="enter" style="--i: 2;">It keeps working when you&rsquo;re not there. Set it up once, and check every run.</h1>
+  <div class="closing-grid">
+    <div class="card"><span class="step-circle">1</span><div class="card-name">Start with a job you already do</div><p class="card-body">Low risk. Done by hand first.</p></div>
+    <div class="card"><span class="step-circle">2</span><div class="card-name">Say what, when, and when to tell you</div><p class="card-body">Only tell me what matters.</p></div>
+    <div class="card"><span class="step-circle">3</span><div class="card-name">Decide what it can do on its own</div><p class="card-body">It drafts. You send.</p></div>
+    <div class="card"><span class="step-circle">4</span><div class="card-name">Check every run</div><p class="card-body">Did it run? Is it right?</p></div>
+  </div>
+  <p class="closing-note">You still make the decisions it brings back.</p>
+</section>
+</div>
+<!-- Instructor references (not student-facing):
+  Definition and "works while you're away":
+    OpenAI, Meet dots: https://learn.chatgpt.com/docs/dots
+    Anthropic, Get started with Claude Cowork: https://support.claude.com/en/articles/13345190-get-started-with-claude-cowork
+    Google, Gemini Spark overview: https://gemini.google/overview/agent/spark/
+  Local runs are skipped while the computer sleeps:
+    https://code.claude.com/docs/en/desktop-scheduled-tasks
+  Schedules and event triggers; run times are approximate; usage limits can stop a run;
+  not ideal for time-critical tasks:
+    https://support.google.com/gemini/answer/17094710
+  Start simple, avoid scheduling hard-to-undo actions, review each run, pause unused tasks:
+    Anthropic, Use Claude Cowork safely: https://support.claude.com/en/articles/13364135-use-claude-cowork-safely
+  Start with work you regularly check; say which changes deserve your attention; review the
+  first result before expanding; stopping doesn't undo completed actions:
+    https://learn.chatgpt.com/docs/dots
+  The three levels (read-only by default, ask before modifying, standing permission for
+  routine tasks you trust): Anthropic, "Our framework for developing safe and trustworthy
+  agents" (2025): https://www.anthropic.com/news/our-framework-for-developing-safe-and-trustworthy-agents
+  Approval for important actions, a log of actions, and the ability to stop the agent:
+    OpenAI, "Practices for Governing Agentic AI Systems" (2023)
+  The four-step structure and the three levels as drawn are a teaching synthesis, not a
+  vendor-defined standard. Sales figures and run times are fictional.
+-->
+</body>
+</html>
