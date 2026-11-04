@@ -2,118 +2,318 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Checking and Fixing | AI Agent</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" href="../../shared/theme.css">
 <script src="../../shared/deck.js" defer></script>
+</head>
+<body>
+<div id="deck">
 <style>
-
-#deck .slide{padding:3vw 4.5vw 8.5vh}#deck .slide-header{margin-bottom:2vh}
-#deck h2{font-size:clamp(1.8rem,3vw,2.65rem);margin-bottom:.9rem}
-#deck .lede{font-size:clamp(1rem,1.5vw,1.2rem);max-width:none;margin:0;color:var(--text-muted)}
-#deck .focus-figure{flex:1;display:flex;align-items:center;justify-content:center;min-height:0}
-#deck svg{width:100%;max-height:55vh;display:block}
-#deck .source{font-size:.7rem}
-@media(max-width:700px){#deck .slide{padding:1.3rem 1rem 5rem;overflow-y:auto}#deck h2{font-size:1.8rem}#deck .slide-header h4{font-size:.65rem}#deck .tag{font-size:.6rem}#deck .focus-figure{min-height:260px}#deck .lede{font-size:1rem}}
-
-#deck .readout{font-size:clamp(.95rem,1.3vw,1.1rem);line-height:1.4;max-width:92%;margin:0 0 .8rem;color:var(--text-muted)}
-
-
-/* Framing slides reuse lesson 5's cover, roadmap and closing layouts. */
-#deck .layout-cover, #deck #roadmap, #deck .layout-closing { padding: 3.5vw 4vw 8.5vh; }
-#deck .layout-cover { padding-left: 8vw; }
-#deck .lesson-label { margin-bottom: 1.2rem; }
-#deck .layout-cover h1 { max-width: 72vw; }
-#deck .layout-cover .cover-tags { flex-wrap: wrap; }
-#deck #roadmap .slide-header { margin-bottom: 2.5vh; }
-#deck #roadmap h2 { font-size: clamp(1.8rem,3vw,2.6rem); margin-bottom: 1.5rem; }
-#roadmap .step-title { max-width: 19vw; }
-#deck .layout-closing h1 { max-width: 80vw; font-size: clamp(2rem,3.6vw,3.2rem); }
-#deck .closing-grid { width: 84vw; grid-template-columns: repeat(4,1fr); }
-#deck .closing-grid .card-name { font-size: clamp(1.15rem,1.6vw,1.5rem); }
-#deck .closing-grid .card-body { font-size: clamp(1rem,1.3vw,1.2rem); }
-#deck .layout-cover > .source, #deck .layout-closing > .source { position: absolute; bottom: 9vh; left: 4vw; right: 4vw; }
-#deck .layout-cover > .source { left: 8vw; }
-@media (max-width: 760px) {
-  #roadmap .timeline-track { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; gap: 1.5rem; margin-top: 1.2rem; }
-  #roadmap .timeline-step { display: grid; grid-template-columns: 72px 1fr; column-gap: 1.2rem; text-align: left; align-items: center; }
-  #roadmap .step-circle { grid-row: 1 / span 2; margin-bottom: 0; }
-  #roadmap .step-label { margin-bottom: .2rem; }
-  #roadmap .step-title { max-width: none; font-size: 1.3rem; }
-  #roadmap .timeline-step:not(:last-child)::after { top: calc(100% + .25rem); left: 35px; right: auto; width: 2px; height: 1rem; }
-  #deck .layout-cover { justify-content: flex-start; padding-top: 12vh; }
-  #deck .layout-cover h1 { max-width: none; font-size: clamp(2.3rem,7.5vw,3rem); }
-  #deck .layout-closing { justify-content: flex-start; padding-top: 3rem; }
-  #deck .layout-closing h1 { max-width: none; }
-  #deck .closing-grid { grid-template-columns: 1fr; width: 100%; }
-  #deck .layout-cover > .source, #deck .layout-closing > .source { position: static; margin-top: 1rem; }
+#deck,
+#deck * {
+  animation: none !important;
+  transition: none !important;
 }
 
+  /* Lesson layouts only. Colours, type and navigation come from shared/. */
+  #deck .lede { max-width: 76vw; }
+  .lesson-label { margin-bottom: 1.2rem; }
+  #roadmap .step-title { max-width: 19vw; }
+  #deck .layout-cover h1 { max-width: 72vw; }
+  #deck .layout-cover .cover-tags { flex-wrap: wrap; }
+  .bottom-highlight { margin-top: 1.1rem; }
+  .fine-print { margin-top: 0.85rem; padding-right: 7rem; font-family: 'Space Grotesk', sans-serif; font-size: clamp(0.85rem, 1vw, 0.95rem); line-height: 1.4; color: var(--text-muted); }
+  .col-label { font: 600 clamp(0.85rem, 1vw, 1rem)/1.3 'Space Grotesk', sans-serif; letter-spacing: 0.08em; text-transform: uppercase; color: var(--text-muted); }
+  .col-label--on { color: var(--primary); }
+  .flow-arrow { align-self: center; color: var(--text-light); font: 400 1.6rem 'Space Grotesk', sans-serif; text-align: center; }
+  .say { padding: 0.9rem 1.2rem; border-radius: 10px; background: var(--accent-medium); font: 500 clamp(1rem, 1.3vw, 1.2rem)/1.45 'Space Grotesk', sans-serif; color: var(--text); }
+  .say-label { display: block; margin-bottom: 0.4rem; color: var(--primary); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
+  .claim-layout { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 3rem; align-items: center; }
+  .claim { border: 2px dashed var(--text-light); border-radius: 12px; padding: 2rem; }
+  .claim blockquote { margin-top: 0.9rem; font: 600 clamp(1.4rem, 2.2vw, 2rem)/1.3 'Space Grotesk', sans-serif; }
+  .fact-table, .check-table, .case-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
+  .fact-table th, .check-table th, .case-table th { padding: 0.65rem 1rem; font: 600 clamp(0.85rem, 1vw, 1rem)/1.35 'Space Grotesk', sans-serif; color: var(--primary); }
+  .fact-table td, .check-table td, .case-table td { padding: 0.8rem 1rem; border-top: 1px solid var(--border); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; vertical-align: middle; }
+  .fact-table tr:nth-child(even) td, .check-table tr:nth-child(even) td, .case-table tr:nth-child(even) td { background: var(--card-bg); }
+  .fact-table td:last-child { text-align: right; font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
+  .fact-table .row-key td { border-top: 2px solid var(--primary); color: var(--primary); }
+  .fact-table .row-wrong td { color: var(--text-muted); text-decoration: line-through; }
+  .check-table th:first-child { width: 34%; }
+  .check-table th:nth-child(2) { width: 46%; }
+  .case-table th:first-child { width: 44%; }
+  .case-table td:nth-child(2), .case-table td:nth-child(3) { color: var(--text-muted); }
+  .case-table td:last-child { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+  .verdict { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 6px; font: 700 clamp(0.8rem, 0.95vw, 0.9rem)/1.4 'Space Grotesk', sans-serif; letter-spacing: 0.06em; }
+  .verdict--pass { background: var(--accent-light); color: var(--primary); }
+  .verdict--fail { background: var(--text); color: var(--bg); }
+  .map { display: grid; grid-template-columns: 1fr auto 1.45fr; gap: 1.6rem; align-items: center; }
+  .map-col { display: grid; gap: 0.7rem; }
+  .map-step { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.1rem; border-radius: 12px; border: 2px solid var(--primary); background: var(--card-bg); }
+  .map-step--opt { border-style: dashed; }
+  .map-step strong { display: block; font: 600 clamp(1.1rem, 1.5vw, 1.4rem)/1.3 'Space Grotesk', sans-serif; color: var(--primary); }
+  .map-step p { font-size: clamp(0.95rem, 1.2vw, 1.1rem); color: var(--text-muted); line-height: 1.4; }
+  .map .step-circle { width: 44px; height: 44px; margin: 0; font-size: 1.1rem; }
+  .map-down { text-align: center; color: var(--text-muted); font: 500 clamp(0.9rem, 1.1vw, 1rem) 'Space Grotesk', sans-serif; }
+  .map-branch { display: grid; grid-template-columns: 1fr auto 1.25fr; gap: 0.8rem; align-items: center; }
+  .map-q { font: 600 clamp(1.05rem, 1.4vw, 1.3rem)/1.35 'Space Grotesk', sans-serif; color: var(--text); }
+  .map-yes { color: var(--primary); font: 600 clamp(0.9rem, 1.1vw, 1rem) 'Space Grotesk', sans-serif; white-space: nowrap; }
+  .evidence { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
+  .evidence .card-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
+  .evidence .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
+  .evidence + .say { margin-top: 1.2rem; }
+  .path { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; gap: 0.8rem; align-items: center; }
+  .path-stage { padding: 1rem 0.85rem; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); text-align: center; font: 600 clamp(1rem, 1.3vw, 1.2rem)/1.4 'Space Grotesk', sans-serif; }
+  .path-stage span { display: block; margin-bottom: 0.2rem; font-size: 0.75em; font-weight: 500; color: var(--text-muted); }
+  .path-stage--result { border: 2px solid var(--primary); color: var(--primary); }
+  .ask-layout { display: grid; grid-template-columns: 0.9fr 1.2fr; gap: 2rem; align-items: center; }
+  .questions { display: grid; gap: 0.7rem; }
+  .question { padding: 0.85rem 1.2rem; border-left: 3px solid var(--primary); background: var(--card-bg); border-radius: 0 10px 10px 0; font-size: clamp(1rem, 1.35vw, 1.25rem); color: var(--text); line-height: 1.4; }
+  .questions .col-label { margin-top: 0.4rem; }
+  .ask-layout .say + .say { margin-top: 1rem; }
+  #deck .layout-closing h1 { max-width: 80vw; font-size: clamp(2rem, 3.6vw, 3.2rem); }
+  #deck .closing-grid { width: 84vw; grid-template-columns: repeat(4, 1fr); }
+  #deck .closing-grid .card-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
+  #deck .closing-grid .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); }
+  .closing-note { margin-top: 1.6rem; font: 500 clamp(1.05rem, 1.4vw, 1.3rem)/1.4 'Space Grotesk', sans-serif; color: var(--primary); }
+  @media (max-width: 760px) {
+    #roadmap .timeline-track { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; gap: 1.5rem; margin-top: 1.2rem; }
+    #roadmap .timeline-step { display: grid; grid-template-columns: 72px 1fr; column-gap: 1.2rem; text-align: left; align-items: center; }
+    #roadmap .step-circle { grid-row: 1 / span 2; margin-bottom: 0; }
+    #roadmap .step-label { margin-bottom: 0.2rem; }
+    #roadmap .step-title { max-width: none; font-size: 1.3rem; }
+    #roadmap .timeline-step:not(:last-child)::after { top: calc(100% + 0.25rem); left: 35px; right: auto; width: 2px; height: 1rem; }
+    #deck .slide { overflow-x: hidden; overflow-y: auto; padding-bottom: 6rem; }
+    #deck .slide-content, #deck .body-center { flex: none; }
+    #deck .lede { max-width: none; }
+    #deck .layout-cover { justify-content: flex-start; padding-top: 12vh; }
+    #deck .layout-cover h1 { max-width: none; font-size: clamp(2.3rem, 7.5vw, 3rem); }
+    .fine-print { padding-right: 0; }
+    .claim-layout, .map, .map-branch, .evidence, .path, .ask-layout { grid-template-columns: 1fr; gap: 0.8rem; }
+    .claim { padding: 1.2rem; }
+    .map > .flow-arrow, .path .flow-arrow { transform: rotate(90deg); }
+    .map-yes { text-align: center; }
+    .check-table, .case-table, .check-table tbody, .case-table tbody { display: block; }
+    .check-table thead, .case-table thead { display: none; }
+    .check-table tr, .case-table tr { display: block; margin-bottom: 0.8rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .check-table td, .case-table td { display: block; padding: 0.65rem 0.9rem; }
+    .check-table td:first-child, .case-table td:first-child { border-top: none; background: var(--accent-light); font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
+    .check-table td[data-mobile-label]::before, .case-table td[data-mobile-label]::before { content: attr(data-mobile-label); display: block; font: 600 0.75rem 'Space Grotesk', sans-serif; color: var(--text-muted); margin-bottom: 0.2rem; }
+    #deck .layout-closing { justify-content: flex-start; padding-top: 3rem; }
+    #deck .layout-closing h1 { max-width: none; }
+    #deck .closing-grid { grid-template-columns: 1fr; width: 100%; }
+  }
+  @media (min-width: 761px) and (max-height: 650px) {
+    #deck .slide { overflow-y: auto; padding-bottom: 5rem; }
+    #deck .slide-content, #deck .body-center { flex: none; }
+  }
 </style>
-</head>
-<body><div id="deck">
-<section class="slide layout-cover" id="cover" data-label="Checking and Fixing">
+
+<!-- 1 · Cover -->
+<section class="slide layout-cover" data-label="Checking and Fixing">
   <div class="cover-decoration"></div>
   <div class="cover-dots"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
-  <h4 class="lesson-label enter" style="--i: 0;">Module 6 &middot; Preview</h4>
+  <h4 class="lesson-label enter" style="--i: 0;">Module 5 &middot; Preview</h4>
   <div class="accent-line enter" style="--i: 1;"></div>
   <h1 class="enter" style="--i: 2;">Checking and Fixing</h1>
   <div class="cover-tags enter" style="--i: 3;">
-    <span class="tag">Check against a list</span><span class="tag">Get a second look</span><span class="tag">Fix the cause</span><span class="tag">Add it to the list</span>
+    <span class="tag">Check it</span><span class="tag">Point at it</span><span class="tag">Anywhere else?</span><span class="tag">Will it come back?</span>
   </div>
-  <p class="source">Sources: <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>; <a href="https://github.com/cursor/plugins/tree/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills" target="_blank" rel="noopener noreferrer">pstack</a>.</p>
 </section>
 
+<!-- 2 · Overview: the same roadmap layout as earlier modules -->
 <section class="slide" id="roadmap" data-label="Roadmap">
   <div class="slide-header">
-    <h4>Module 6 &middot; Preview</h4>
+    <h4>Module 5 &middot; Preview</h4>
     <span class="tag">Overview</span>
   </div>
   <div class="slide-content">
     <h2>Roadmap</h2>
     <div class="timeline-track timeline-track--even">
-      <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">WHY</div><div class="step-title">Why “done” can be wrong</div></div>
-      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">HOW</div><div class="step-title">Four rules</div></div>
-      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">Takeaway</div><div class="step-title">Recap</div></div>
+      <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">WHY</div><div class="step-title">Why &ldquo;done&rdquo; can be wrong</div></div>
+      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">HOW</div><div class="step-title">Four steps</div></div>
+      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">WHEN</div><div class="step-title">Which steps you need</div></div>
+      <div class="timeline-step enter" style="--i: 4;"><div class="step-circle">4</div><div class="step-label">Takeaway</div><div class="step-title">Recap</div></div>
     </div>
-    <p class="source">Sources: <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>; <a href="https://github.com/cursor/plugins/tree/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills" target="_blank" rel="noopener noreferrer">pstack</a>.</p>
   </div>
 </section>
 
-<section class="slide" id="why-3"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Why · The Problem</span></div><div class="slide-content"><h2>“Done” still needs checking.</h2><p class="lede">Each Monday, your manager compares two weeks of sales to decide which regions need follow-up. The agent had both source sheets.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="Compare the East sales figure of 48,200 in the report with the source calculation: orders 48,200 minus returns 2,300 equals sales 45,900. Other report values are omitted." style="font-family:Inter,Arial,sans-serif"><rect x="140" y="32" width="320" height="270" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="162" y="66" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Sales report · last week</text><text x="164" y="112" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">North</text><path d="M376 107 h62" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><text x="164" y="155" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">South</text><path d="M376 150 h62" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><rect x="152" y="171" width="296" height="37" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--accent-light)"/><text x="164" y="198" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">East</text><text x="438" y="198" font-size="21" fill="var(--primary)" text-anchor="end" font-weight="400">$48,200</text><text x="164" y="241" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">West</text><path d="M376 236 h62" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><path d="M500 187 h80 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><rect x="620" y="32" width="320" height="270" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="642" y="66" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">East · source records</text><text x="644" y="112" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Orders</text><text x="918" y="112" font-size="21" fill="var(--text)" text-anchor="end" font-weight="400">$48,200</text><text x="644" y="155" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Returns</text><text x="918" y="155" font-size="21" fill="var(--text)" text-anchor="end" font-weight="400">− $2,300</text><path d="M642 177 h276" stroke="var(--text-light)" stroke-width="1" stroke-linecap="round"/><rect x="632" y="195" width="296" height="43" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--accent-light)"/><text x="644" y="224" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Sales</text><text x="918" y="224" font-size="21" fill="var(--primary)" text-anchor="end" font-weight="400">$45,900</text><text x="300" y="347" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">What it reported</text><text x="780" y="347" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">Orders minus returns</text></svg></div><p class="source">Sources: <a href="https://openai.com/index/why-language-models-hallucinate/" target="_blank" rel="noopener noreferrer">OpenAI: Hallucinations</a> (2025); <a href="https://arxiv.org/abs/2509.04664" target="_blank" rel="noopener noreferrer">Kalai et al. (2025)</a>; <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>. Fictional sales example.</p></div></section>
+<!-- 3 · WHY: a confident claim against the source -->
+<section class="slide" data-label="Why done can be wrong">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Why &middot; The problem</span></div>
+  <div class="slide-content">
+    <h2>&ldquo;Done&rdquo; is where checking starts.</h2>
+    <p class="lede">The Monday sales report again. In the brief, you agreed that returns reduce sales.</p>
+    <div class="body-center">
+      <div class="claim-layout">
+        <div class="claim"><div class="col-label">The agent says</div><blockquote>&ldquo;Done. All regions checked.&rdquo;</blockquote></div>
+        <table class="fact-table" aria-label="East, last week: orders 48,200 dollars, returns 2,300 dollars, so sales should be 45,900 dollars. The report says 48,200 dollars.">
+          <thead><tr><th scope="col">East &middot; last week</th><th scope="col"></th></tr></thead>
+          <tbody>
+            <tr><td>Orders (source)</td><td>$48,200</td></tr>
+            <tr><td>Returns (source)</td><td>&minus; $2,300</td></tr>
+            <tr class="row-key"><td>Sales should be</td><td>$45,900</td></tr>
+            <tr class="row-wrong"><td>The report says</td><td>$48,200</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="split-highlight bottom-highlight">The agent sounded sure, and it was still wrong. A confident &ldquo;done&rdquo; is not evidence.</p>
+      <p class="fine-print">One reason agents sound sure: many tests used to score AI models give points for a right guess and nothing for &ldquo;I don&rsquo;t know.&rdquo;</p>
+    </div>
+  </div>
+</section>
 
-<section class="slide" id="why-confidence"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Why · Confidence</span></div><div class="slide-content"><h2>Confidence does not prove correctness.</h2><p class="lede">Some tests reward correct guesses and give no credit for admitting uncertainty.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="Two identical multiple-choice answer sheets show the incentive: a guess selects an answer and can earn credit; an unanswered sheet earns none. This incentive can encourage confident guessing." style="font-family:Inter,Arial,sans-serif"><rect x="140" y="35" width="320" height="260" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="162" y="69" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">A guess</text><rect x="620" y="35" width="320" height="260" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="642" y="69" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">“I don’t know”</text><path d="M164 103 h240" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><circle cx="176" cy="137" r="9" fill="var(--bg)" stroke="var(--primary)" stroke-width="1.5"/><text x="202" y="143" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">A</text><path d="M240 138 h147" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><circle cx="176" cy="172" r="9" fill="var(--primary)" stroke="var(--primary)" stroke-width="1.5"/><text x="202" y="178" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">B</text><path d="M240 173 h147" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><circle cx="176" cy="207" r="9" fill="var(--bg)" stroke="var(--primary)" stroke-width="1.5"/><text x="202" y="213" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">C</text><path d="M240 208 h147" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><circle cx="176" cy="242" r="9" fill="var(--bg)" stroke="var(--primary)" stroke-width="1.5"/><text x="202" y="248" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">D</text><path d="M240 243 h147" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><path d="M644 103 h240" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><circle cx="656" cy="137" r="9" fill="var(--bg)" stroke="var(--primary)" stroke-width="1.5"/><text x="682" y="143" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">A</text><path d="M720 138 h147" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><circle cx="656" cy="172" r="9" fill="var(--bg)" stroke="var(--primary)" stroke-width="1.5"/><text x="682" y="178" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">B</text><path d="M720 173 h147" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><circle cx="656" cy="207" r="9" fill="var(--bg)" stroke="var(--primary)" stroke-width="1.5"/><text x="682" y="213" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">C</text><path d="M720 208 h147" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><circle cx="656" cy="242" r="9" fill="var(--bg)" stroke="var(--primary)" stroke-width="1.5"/><text x="682" y="248" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">D</text><path d="M720 243 h147" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><text x="300" y="347" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">A chance to earn a point</text><text x="780" y="347" font-size="23" fill="var(--text-muted)" text-anchor="middle" font-weight="400">No points</text></svg></div><p class="readout">This is one reason models can sound sure. It does not establish the cause of this report’s error.</p><p class="source">Sources: <a href="https://openai.com/index/why-language-models-hallucinate/" target="_blank" rel="noopener noreferrer">OpenAI: Hallucinations</a> (2025); <a href="https://arxiv.org/abs/2509.04664" target="_blank" rel="noopener noreferrer">Kalai et al. (2025)</a>; <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>. Fictional sales example.</p></div></section>
+<!-- 4 · The map: two steps always, two only when needed -->
+<section class="slide" id="map" data-label="The four steps">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">How &middot; The four steps</span></div>
+  <div class="slide-content">
+    <h2>Two steps every time. Two more only when you need them.</h2>
+    <div class="body-center">
+      <div class="map">
+        <div class="map-col">
+          <div class="col-label col-label--on">Every time</div>
+          <div class="map-step"><span class="step-circle">1</span><div><strong>Check it</strong><p>Compare with the source.</p></div></div>
+          <span class="map-down" aria-hidden="true">&darr; if it&rsquo;s wrong</span>
+          <div class="map-step"><span class="step-circle">2</span><div><strong>Point at it</strong><p>Expected, got, evidence.</p></div></div>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="map-col">
+          <div class="col-label">Then ask two questions</div>
+          <div class="map-branch">
+            <p class="map-q">Could it be anywhere else?</p><span class="map-yes">Yes &rarr;</span>
+            <div class="map-step map-step--opt"><span class="step-circle">3</span><div><strong>Fix the cause</strong><p>Recheck all it affects.</p></div></div>
+          </div>
+          <div class="map-branch">
+            <p class="map-q">Will it come back next time?</p><span class="map-yes">Yes &rarr;</span>
+            <div class="map-step map-step--opt"><span class="step-circle">4</span><div><strong>Add a check</strong><p>Save it to your checklist.</p></div></div>
+          </div>
+        </div>
+      </div>
+      <p class="split-highlight bottom-highlight">Both answers are no? You&rsquo;re done after step 2.</p>
+    </div>
+  </div>
+</section>
 
-<section class="slide" id="why-4"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Why · Where to Start</span></div><div class="slide-content"><h2>First, check whether it had the right information.</h2><p class="lede">Having a file does not mean the agent read or used it correctly.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="The missing-source tray has orders but a dashed gap for returns. The complete tray has both sheets; the next step is to inspect which rows and calculation were used." style="font-family:Inter,Arial,sans-serif"><text x="300" y="34" font-size="20" fill="var(--text-muted)" text-anchor="middle" font-weight="400">Source missing</text><text x="780" y="34" font-size="20" fill="var(--text-muted)" text-anchor="middle" font-weight="400">Source available</text><rect x="150" y="66" width="300" height="154" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><rect x="170" y="82" width="112" height="119" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="192" y="116" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Orders</text><rect x="300" y="82" width="130" height="119" rx="5" fill="none" stroke="var(--text-light)" stroke-width="1.5" stroke-dasharray="6 6"/><text x="365" y="151" font-size="18" fill="var(--text-muted)" text-anchor="middle" font-weight="400">Returns?</text><rect x="630" y="66" width="300" height="154" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><rect x="650" y="82" width="112" height="119" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="672" y="116" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Orders</text><rect x="780" y="82" width="130" height="119" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="802" y="116" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Returns</text><path d="M300 233 v35 m-8 -10 l8 11 8 -11" fill="none" stroke="var(--primary)" stroke-width="2"/><path d="M780 233 v35 m-8 -10 l8 11 8 -11" fill="none" stroke="var(--primary)" stroke-width="2"/><text x="300" y="311" font-size="19" fill="var(--primary)" text-anchor="middle" font-weight="400">Provide it and ask the agent to read it.</text><text x="780" y="311" font-size="19" fill="var(--primary)" text-anchor="middle" font-weight="400">Ask which rows and calculation it used.</text></svg></div><p class="readout">If a source is unavailable, ask the agent to say what is missing rather than fill the gap.</p><p class="source">Sources: <a href="https://arxiv.org/abs/2311.05232v2" target="_blank" rel="noopener noreferrer">Huang et al.</a>; <a href="https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations" target="_blank" rel="noopener noreferrer">Anthropic: Reduce hallucinations</a>; Matt Pocock: Hallucination.</p></div></section>
+<!-- 5 · Step 1: check against the source -->
+<section class="slide" id="step-1" data-label="Step 1: Check it">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Step 1 &middot; Every time</span></div>
+  <div class="slide-content">
+    <h2>Step 1: Check it against the source, not the agent&rsquo;s word.</h2>
+    <div class="body-center">
+      <table class="check-table">
+        <thead><tr><th scope="col">What must be true</th><th scope="col">Compare with</th><th scope="col">Result</th></tr></thead>
+        <tbody>
+          <tr><td>One page</td><td data-mobile-label="Compare with">The report itself</td><td data-mobile-label="Result"><span class="verdict verdict--pass">PASS</span></td></tr>
+          <tr><td>Four regions, both weeks</td><td data-mobile-label="Compare with">The report&rsquo;s rows and dates</td><td data-mobile-label="Result"><span class="verdict verdict--pass">PASS</span></td></tr>
+          <tr><td>East sales = orders &minus; returns</td><td data-mobile-label="Compare with">Both source sheets: $45,900, not $48,200</td><td data-mobile-label="Result"><span class="verdict verdict--fail">FAIL</span></td></tr>
+        </tbody>
+      </table>
+      <blockquote class="say bottom-highlight"><span class="say-label">You say</span>&ldquo;Compare the report with the source sheets. Show each comparison. Mark each item pass, fail, or couldn&rsquo;t check, and say why.&rdquo;</blockquote>
+      <p class="fine-print">Can&rsquo;t check it yourself, or it really matters? Open a fresh conversation, give it the brief, the result, and the sources, and ask it to check. Look at its evidence: it can be wrong too.</p>
+    </div>
+  </div>
+</section>
 
-<section class="slide" id="rule-1"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Rule 1 · Check Against a List</span></div><div class="slide-content"><h2>Turn the requirements into checks.</h2><p class="lede">Save CHECKLIST.md in your project folder. Each item says what must be true and what to compare it with.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="The task brief says one page, all four regions and subtract returns. The saved checklist turns these into checks for one page, all four regions present and sales matching the original records." style="font-family:Inter,Arial,sans-serif"><rect x="140" y="32" width="320" height="270" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="162" y="66" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Task brief</text><text x="164" y="87" font-size="18" fill="var(--primary)" text-anchor="start" font-weight="600">Done</text><text x="164" y="132" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">One page</text><text x="164" y="178" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">All four regions</text><text x="164" y="224" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Subtract returns</text><path d="M500 167 h80 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><rect x="620" y="32" width="320" height="270" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="642" y="66" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">CHECKLIST.md</text><rect x="642" y="98" width="18" height="18" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="674" y="115" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">One page</text><rect x="642" y="152" width="18" height="18" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="674" y="169" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">Four regions present</text><rect x="642" y="206" width="18" height="18" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="674" y="223" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">Sales match sources</text><text x="300" y="347" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">What counts as done</text><text x="780" y="347" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">What you will check</text></svg></div><p class="readout">At each delivery: ask the agent to read the checklist, run saved checks and show evidence. Saving the file does not run it.</p><p class="source">Sources: Matt Pocock: Standards; <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/principle-prove-it-works/SKILL.md" target="_blank" rel="noopener noreferrer">pstack: Prove It Works</a> and <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/create-verification-skill/SKILL.md" target="_blank" rel="noopener noreferrer">Verification</a>. <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>. Course adaptation.</p></div></section>
+<!-- 6 · Step 2: point at the failure -->
+<section class="slide" id="step-2" data-label="Step 2: Point at it">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Step 2 &middot; Every time</span></div>
+  <div class="slide-content">
+    <h2>Step 2: Point at it. Say what you expected, what you got, and why.</h2>
+    <div class="body-center">
+      <div class="evidence">
+        <div class="card"><div class="card-name">Expected</div><p class="card-body">East sales of $45,900: orders minus returns.</p></div>
+        <div class="card"><div class="card-name">Got</div><p class="card-body">$48,200 in the report.</p></div>
+        <div class="card"><div class="card-name">Evidence</div><p class="card-body">The East rows in both source sheets.</p></div>
+      </div>
+      <blockquote class="say"><span class="say-label">You say</span>&ldquo;Expected East sales of $45,900, orders minus returns. Got $48,200. Here are the source rows. Fix it and show me the check again.&rdquo;</blockquote>
+      <p class="split-highlight bottom-highlight">A one-off slip, like a typo in a title? You&rsquo;re done here.</p>
+    </div>
+  </div>
+</section>
 
-<section class="slide" id="saved-check"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Rule 1 · Check Against a List</span></div><div class="slide-content"><h2>A saved check repeats the same comparison.</h2><p class="lede">A script is a small program. Ask the agent to save and run one for repeated number checks.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="Source records and a report feed a saved comparison. The result shows report 48,200, source 45,900, difference 2,300 and fail." style="font-family:Inter,Arial,sans-serif"><rect x="70" y="45" width="245" height="110" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="92" y="79" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Source sheets</text><text x="92" y="117" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Orders − returns</text><rect x="70" y="215" width="245" height="110" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="92" y="249" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Report</text><text x="92" y="287" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Reported sales</text><path d="M330 100 H390 V185 H435 M330 270 H390 V185" fill="none" stroke="var(--primary)" stroke-width="2"/><rect x="435" y="118" width="240" height="134" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--bg)"/><text x="555" y="163" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">Saved script</text><text x="555" y="205" font-size="17" fill="var(--text)" text-anchor="middle" font-weight="400">Repeat the comparison</text><path d="M700 185 h60 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><rect x="790" y="70" width="245" height="235" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="812" y="104" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">East · last week</text><text x="812" y="142" font-size="19" fill="var(--text)" text-anchor="start" font-weight="400">Report</text><text x="1012" y="142" font-size="19" fill="var(--primary)" text-anchor="end" font-weight="400">48,200</text><text x="812" y="184" font-size="19" fill="var(--text)" text-anchor="start" font-weight="400">Source</text><text x="1012" y="184" font-size="19" fill="var(--primary)" text-anchor="end" font-weight="400">45,900</text><text x="812" y="226" font-size="19" fill="var(--text)" text-anchor="start" font-weight="400">Difference</text><text x="1012" y="226" font-size="19" fill="var(--primary)" text-anchor="end" font-weight="400">2,300</text><text x="912" y="282" font-size="18" fill="var(--primary)" text-anchor="middle" font-weight="400">FAIL</text></svg></div><p class="readout">Read its inputs, coverage and results. Ask for pass, fail or unable to check, with the reason.</p><p class="source">Sources: Matt Pocock: Standards; <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/principle-prove-it-works/SKILL.md" target="_blank" rel="noopener noreferrer">pstack: Prove It Works</a> and <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/create-verification-skill/SKILL.md" target="_blank" rel="noopener noreferrer">Verification</a>. <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>. Course adaptation.</p></div></section>
+<!-- 7 · Step 3: fix the cause when the mistake can spread -->
+<section class="slide" id="step-3" data-label="Step 3: Fix the cause">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Step 3 &middot; If it could be anywhere else</span></div>
+  <div class="slide-content">
+    <h2>Step 3: If it could be anywhere else, fix the cause.</h2>
+    <blockquote class="say"><span class="say-label">You ask</span>&ldquo;Where did this first go wrong, and what else uses that step?&rdquo;</blockquote>
+    <div class="body-center">
+      <div class="path" aria-label="East is wrong. The first wrong step is a calculation that skips returns. Every region uses it. Fix the calculation and recheck all regions in both weeks.">
+        <div class="path-stage"><span>You saw</span>East is wrong</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage"><span>First wrong step</span>The calculation skips returns</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage"><span>What else uses it</span>Every region</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage path-stage--result"><span>Fix and recheck</span>All regions, both weeks</div>
+      </div>
+      <p class="split-highlight bottom-highlight">Fix where it started, not just where you saw it.</p>
+      <p class="fine-print">Don&rsquo;t loosen a check just to get a pass.</p>
+    </div>
+  </div>
+</section>
 
-<section class="slide" id="check-other-work"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Rule 1 · Check Against a List</span></div><div class="slide-content"><h2>Choose a check that matches the requirement.</h2><p class="lede">Use the real result and the relevant source or action.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="On the left, clicking the Contact button leads to the contact page. On the right, an email company name is compared with the application target and corrected to Acme." style="font-family:Inter,Arial,sans-serif"><text x="300" y="28" font-size="20" fill="var(--text-muted)" text-anchor="middle" font-weight="400">Website</text><rect x="140" y="55" width="320" height="232" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><path d="M160 86 h280" stroke="var(--border)" stroke-width="1" stroke-linecap="round"/><rect x="175" y="131" width="150" height="48" rx="8" stroke="var(--primary)" stroke-width="1.5" fill="var(--accent-light)"/><text x="250" y="161" font-size="20" fill="var(--primary)" text-anchor="middle" font-weight="400">Contact</text><path d="M270 203 h35 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><text x="355" y="211" font-size="19" fill="var(--primary)" text-anchor="middle" font-weight="400">/contact</text><text x="300" y="333" font-size="20" fill="var(--primary)" text-anchor="middle" font-weight="400">Click it. Inspect the destination.</text><text x="780" y="28" font-size="20" fill="var(--text-muted)" text-anchor="middle" font-weight="400">Job email</text><rect x="620" y="55" width="320" height="232" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="642" y="89" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Application target: Acme</text><text x="644" y="147" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Dear Beta team,</text><path d="M698 139 h52" stroke="var(--text-muted)" stroke-width="1.5" stroke-linecap="round"/><text x="644" y="198" font-size="21" fill="var(--primary)" text-anchor="start" font-weight="400">Dear Acme team,</text><text x="780" y="333" font-size="19" fill="var(--primary)" text-anchor="middle" font-weight="400">Compare company and role with the job list.</text></svg></div><p class="source">Sources: Matt Pocock: Standards; <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/principle-prove-it-works/SKILL.md" target="_blank" rel="noopener noreferrer">pstack: Prove It Works</a> and <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/create-verification-skill/SKILL.md" target="_blank" rel="noopener noreferrer">Verification</a>. <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>. Course adaptation.</p></div></section>
+<!-- 8 · Step 4: add a check when the mistake can return -->
+<section class="slide" id="step-4" data-label="Step 4: Add a check">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Step 4 &middot; If it could come back</span></div>
+  <div class="slide-content">
+    <h2>Step 4: If it could come back, add a check.</h2>
+    <div class="body-center">
+      <div class="ask-layout">
+        <div class="questions">
+          <div class="col-label col-label--on">Ask yourself</div>
+          <p class="question">Will I run this task again?</p>
+          <p class="question">Have I seen this mistake before?</p>
+          <div class="col-label">Either answer yes? Write it down.</div>
+        </div>
+        <div>
+          <blockquote class="say"><span class="say-label">Add to CHECKLIST.md</span>&ldquo;Every region&rsquo;s sales equal orders minus returns, in both weeks.&rdquo;</blockquote>
+          <blockquote class="say"><span class="say-label">At each delivery, you say</span>&ldquo;Read CHECKLIST.md, run every check, and show me the results.&rdquo;</blockquote>
+        </div>
+      </div>
+      <p class="split-highlight bottom-highlight">Test the new check once: run it on the old wrong report. It should fail.</p>
+      <p class="fine-print">You can also add a rule to your instruction file so the agent gets it right the first time. The checklist catches it if it doesn&rsquo;t.</p>
+    </div>
+  </div>
+</section>
 
-<section class="slide" id="rule-2"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Rule 2 · Get a Second Look</span></div><div class="slide-content"><h2>Open a fresh conversation to check the work.</h2><p class="lede">Provide the requirements, result, checklist and original sources.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="Move from a conversation that produced the report to a fresh review conversation. Give the reviewer four files: brief, result, checklist and sources." style="font-family:Inter,Arial,sans-serif"><text x="300" y="15" font-size="19" fill="var(--text-muted)" text-anchor="middle" font-weight="400">Work conversation</text><rect x="125" y="32" width="350" height="270" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><path d="M141 66 h318" stroke="var(--border)" stroke-width="1" stroke-linecap="round"/><rect x="146" y="94" width="175" height="48" rx="12" stroke="var(--border)" stroke-width="1.5" fill="var(--card-bg)"/><text x="166" y="124" font-size="19" fill="var(--text)" text-anchor="start" font-weight="400">Make the report.</text><rect x="236" y="159" width="217" height="48" rx="12" stroke="var(--primary)" stroke-width="1.5" fill="var(--accent-light)"/><text x="256" y="189" font-size="19" fill="var(--primary)" text-anchor="start" font-weight="400">Done.</text><rect x="259" y="223" width="154" height="57" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="281" y="257" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Report</text><path d="M500 176 h80 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><text x="780" y="15" font-size="19" fill="var(--text-muted)" text-anchor="middle" font-weight="400">New conversation</text><rect x="605" y="32" width="350" height="270" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><path d="M621 66 h318" stroke="var(--border)" stroke-width="1" stroke-linecap="round"/><rect x="626" y="94" width="307" height="76" rx="12" stroke="var(--border)" stroke-width="1.5" fill="var(--card-bg)"/><text x="643" y="123" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Check these files against</text><text x="643" y="148" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">the requirements.</text><rect x="632" y="192" width="137" height="40" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--bg)"/><text x="644" y="218" font-size="17" fill="var(--primary)" text-anchor="start" font-weight="400">Brief</text><rect x="790" y="192" width="137" height="40" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--bg)"/><text x="802" y="218" font-size="17" fill="var(--primary)" text-anchor="start" font-weight="400">Result</text><rect x="632" y="246" width="137" height="40" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--bg)"/><text x="644" y="272" font-size="17" fill="var(--primary)" text-anchor="start" font-weight="400">Checklist</text><rect x="790" y="246" width="137" height="40" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--bg)"/><text x="802" y="272" font-size="17" fill="var(--primary)" text-anchor="start" font-weight="400">Sources</text><text x="300" y="347" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">Make the work</text><text x="780" y="347" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">Check the work</text></svg></div><p class="readout">Ask for evidence. Allow “all pass” or “unable to check”. A second opinion can be wrong too.</p><p class="source">Sources: <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>; <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/interrogate/SKILL.md" target="_blank" rel="noopener noreferrer">pstack: Interrogate</a>; <a href="https://learn.chatgpt.com/docs/codex/cli" target="_blank" rel="noopener noreferrer">OpenAI: Codex CLI</a>.</p></div></section>
+<!-- 9 · Practice: which steps does each mistake need -->
+<section class="slide" id="practice" data-label="Which steps you need">
+  <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">When &middot; Practice</span></div>
+  <div class="slide-content">
+    <h2>Which steps does this mistake need?</h2>
+    <div class="body-center">
+      <table class="case-table">
+        <thead><tr><th scope="col">The mistake</th><th scope="col">Anywhere else?</th><th scope="col">Come back?</th><th scope="col">Steps</th></tr></thead>
+        <tbody>
+          <tr><td>A typo in the report title</td><td data-mobile-label="Anywhere else?">No</td><td data-mobile-label="Come back?">No</td><td data-mobile-label="Steps">1 &rarr; 2</td></tr>
+          <tr><td>East is wrong because the calculation skips returns, in a one-time report</td><td data-mobile-label="Anywhere else?">Yes</td><td data-mobile-label="Come back?">No</td><td data-mobile-label="Steps">1 &rarr; 2 &rarr; 3</td></tr>
+          <tr><td>The same mistake in the weekly report</td><td data-mobile-label="Anywhere else?">Yes</td><td data-mobile-label="Come back?">Yes</td><td data-mobile-label="Steps">1 &rarr; 2 &rarr; 3 &rarr; 4</td></tr>
+        </tbody>
+      </table>
+      <p class="split-highlight bottom-highlight">Steps 1 and 2 every time. Each yes adds one step.</p>
+    </div>
+  </div>
+</section>
 
-<section class="slide" id="describe-failure"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Rule 3 · Fix the Cause</span></div><div class="slide-content"><h2>Show the failure before asking for a fix.</h2><p class="lede">Expected: what should happen. Got: what happened. Evidence: what shows the difference.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="Two documents show the expected East sales of 45,900 from the source rows and the reported East sales of 48,200. Both are attached as evidence." style="font-family:Inter,Arial,sans-serif"><rect x="140" y="48" width="320" height="245" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="162" y="82" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Expected · source records</text><text x="164" y="128" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Orders</text><text x="438" y="128" font-size="21" fill="var(--text)" text-anchor="end" font-weight="400">48,200</text><text x="164" y="173" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Returns</text><text x="438" y="173" font-size="21" fill="var(--text)" text-anchor="end" font-weight="400">− 2,300</text><path d="M164 194 h272" stroke="var(--border)" stroke-width="1" stroke-linecap="round"/><text x="164" y="239" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Sales</text><text x="438" y="239" font-size="21" fill="var(--primary)" text-anchor="end" font-weight="400">45,900</text><rect x="620" y="48" width="320" height="245" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="642" y="82" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Got · report</text><text x="644" y="128" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">East · last week</text><rect x="632" y="205" width="296" height="48" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--accent-light)"/><text x="644" y="239" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Sales</text><text x="918" y="239" font-size="21" fill="var(--primary)" text-anchor="end" font-weight="400">48,200</text><text x="540" y="348" font-size="22" fill="var(--primary)" text-anchor="middle" font-weight="400">Evidence: attach the source rows and the report.</text></svg></div><p class="readout">Ask where the first wrong step occurred. Confirm the explanation using data or actual actions.</p><p class="source">Sources: <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/principle-fix-root-causes/SKILL.md" target="_blank" rel="noopener noreferrer">pstack: Fix Root Causes</a>, <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/poteto-mode/playbooks/bug-fix.md" target="_blank" rel="noopener noreferrer">Bug Fix</a>, and <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/create-verification-skill/SKILL.md" target="_blank" rel="noopener noreferrer">Verification</a>; <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>.</p></div></section>
-
-<section class="slide" id="rule-3"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Rule 3 · Fix the Cause</span></div><div class="slide-content"><h2>Fix the cause, then check again.</h2><p class="lede">In this example, inspecting the calculation confirms that it never subtracted returns.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="The orders and returns feed one shared calculation, which feeds all four report regions. Replace the confirmed faulty orders-only calculation with orders minus returns, then check every affected region." style="font-family:Inter,Arial,sans-serif"><rect x="55" y="93" width="225" height="170" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="77" y="127" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Original records</text><text x="78" y="166" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Orders</text><text x="78" y="216" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Returns</text><path d="M308 178 h60 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><rect x="399" y="93" width="287" height="170" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--bg)"/><text x="421" y="130" font-size="18" fill="var(--text-muted)" text-anchor="start" font-weight="400">Calculation</text><text x="421" y="171" font-size="21" fill="var(--text-light)" text-anchor="start" font-weight="400">Sales = orders</text><path d="M420 164 h189" stroke="var(--text-muted)" stroke-width="1.4" stroke-linecap="round"/><text x="421" y="229" font-size="23" fill="var(--primary)" text-anchor="start" font-weight="400">Orders − returns</text><path d="M712 178 h60 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><rect x="801" y="32" width="245" height="270" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="823" y="66" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Sales report</text><text x="825" y="112" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">North</text><path d="M951 107 h68" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/><text x="825" y="155" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">South</text><path d="M951 150 h68" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/><text x="825" y="198" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">East</text><path d="M951 193 h68" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/><text x="825" y="241" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">West</text><path d="M951 236 h68" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/><text x="542" y="323" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">Fix the shared calculation</text></svg></div><p class="readout">Recheck every region in both weeks, then the other requirements. Keep the checklist just as strict.</p><p class="source">Sources: <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/principle-fix-root-causes/SKILL.md" target="_blank" rel="noopener noreferrer">pstack: Fix Root Causes</a>, <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/poteto-mode/playbooks/bug-fix.md" target="_blank" rel="noopener noreferrer">Bug Fix</a>, and <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/create-verification-skill/SKILL.md" target="_blank" rel="noopener noreferrer">Verification</a>; <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>.</p></div></section>
-
-<section class="slide" id="rule-4"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Rule 4 · Add It to the List</span></div><div class="slide-content"><h2>The check must cover the whole report.</h2><p class="lede">Next week, West is wrong. The checklist said “every region,” but the saved check only tested East.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="The old check covers only the East row. The improved check covers all four regions in both weeks. The blue outline shows the scope of the check, not whether the numbers are correct." style="font-family:Inter,Arial,sans-serif"><text x="300" y="15" font-size="19" fill="var(--text-muted)" text-anchor="middle">Old check</text><g transform="translate(140 32)"><rect x="0" y="0" width="320" height="270" rx="5" fill="var(--bg)" stroke="var(--text-light)" stroke-width="1.4"/><text x="22" y="34" font-size="18" fill="var(--text)" text-anchor="start">Sales report</text><text x="214" y="66" font-size="12" fill="var(--text-muted)" text-anchor="middle">Previous</text><text x="279" y="66" font-size="12" fill="var(--text-muted)" text-anchor="middle">Last</text><rect x="12" y="163" width="296" height="38" rx="3" fill="var(--accent-light)" stroke="var(--primary)" stroke-width="2.5"/><text x="24" y="103" font-size="21" fill="var(--text)" text-anchor="start">North</text><line x1="193" y1="98" x2="236" y2="98" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><line x1="258" y1="98" x2="301" y2="98" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><text x="24" y="146" font-size="21" fill="var(--text)" text-anchor="start">South</text><line x1="193" y1="141" x2="236" y2="141" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><line x1="258" y1="141" x2="301" y2="141" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><text x="24" y="189" font-size="21" fill="var(--text)" text-anchor="start">East</text><line x1="193" y1="184" x2="236" y2="184" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><line x1="258" y1="184" x2="301" y2="184" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><text x="24" y="232" font-size="21" fill="var(--text)" text-anchor="start">West</text><line x1="193" y1="227" x2="236" y2="227" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><line x1="258" y1="227" x2="301" y2="227" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/></g><path d="M500 167 H580 M569 158 L581 167 L569 176" fill="none" stroke="var(--primary)" stroke-width="2.5"/><text x="780" y="15" font-size="19" fill="var(--text-muted)" text-anchor="middle">Improved check</text><g transform="translate(620 32)"><rect x="0" y="0" width="320" height="270" rx="5" fill="var(--bg)" stroke="var(--text-light)" stroke-width="1.4"/><text x="22" y="34" font-size="18" fill="var(--text)" text-anchor="start">Sales report</text><text x="214" y="66" font-size="12" fill="var(--text-muted)" text-anchor="middle">Previous</text><text x="279" y="66" font-size="12" fill="var(--text-muted)" text-anchor="middle">Last</text><rect x="12" y="77" width="296" height="172" rx="3" fill="var(--accent-light)" stroke="var(--primary)" stroke-width="2.5"/><text x="24" y="103" font-size="21" fill="var(--text)" text-anchor="start">North</text><line x1="193" y1="98" x2="236" y2="98" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><line x1="258" y1="98" x2="301" y2="98" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><text x="24" y="146" font-size="21" fill="var(--text)" text-anchor="start">South</text><line x1="193" y1="141" x2="236" y2="141" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><line x1="258" y1="141" x2="301" y2="141" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><text x="24" y="189" font-size="21" fill="var(--text)" text-anchor="start">East</text><line x1="193" y1="184" x2="236" y2="184" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><line x1="258" y1="184" x2="301" y2="184" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><text x="24" y="232" font-size="21" fill="var(--text)" text-anchor="start">West</text><line x1="193" y1="227" x2="236" y2="227" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><line x1="258" y1="227" x2="301" y2="227" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/></g><text x="300" y="347" font-size="24" fill="var(--primary)" text-anchor="middle">Only East</text><text x="780" y="347" font-size="24" fill="var(--primary)" text-anchor="middle">Every region, both weeks</text></svg></div><p class="readout">Strengthen the saved check and update the checklist. Save both, then ask the agent to run them at each delivery.</p><p class="source">Sources: <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/correct/SKILL.md" target="_blank" rel="noopener noreferrer">pstack: Correct</a>. Course adaptation.</p></div></section>
-
-<section class="slide" id="check-the-check"><div class="slide-header"><h4>Module 6 · Checking and Fixing</h4><span class="tag">Rule 4 · Add It to the List</span></div><div class="slide-content"><h2>Prove that the improved check catches the mistake.</h2><p class="lede">Keep a wrong version. The same check must reject it and accept the corrected version.</p><div class="focus-figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="The saved wrong report and the corrected report enter identical improved checks. The wrong report fails and the corrected report passes." style="font-family:Inter,Arial,sans-serif"><rect x="90" y="25" width="220" height="145" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="112" y="59" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Saved wrong report</text><path d="M112 90 h145" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><path d="M112 115 h145" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><path d="M112 140 h145" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><path d="M260 120 l20 20 m0 -20 l-20 20" stroke="var(--text-muted)" stroke-width="2.5"/><rect x="90" y="220" width="220" height="145" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="112" y="254" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Corrected report</text><path d="M112 285 h145" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><path d="M112 310 h145" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><path d="M112 335 h145" stroke="var(--text-light)" stroke-width="3" stroke-linecap="round"/><path d="M263 339 l8 8 17 -22" fill="none" stroke="var(--primary)" stroke-width="3"/><path d="M338 98 h85 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><rect x="460" y="56" width="245" height="85" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--bg)"/><text x="582" y="106" font-size="19" fill="var(--primary)" text-anchor="middle" font-weight="400">Same improved check</text><path d="M735 98 h85 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><path d="M338 293 h85 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><rect x="460" y="251" width="245" height="85" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--bg)"/><text x="582" y="301" font-size="19" fill="var(--primary)" text-anchor="middle" font-weight="400">Same improved check</text><path d="M735 293 h85 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><text x="920" y="106" font-size="26" fill="var(--primary)" text-anchor="middle" font-weight="400">FAIL</text><text x="920" y="301" font-size="26" fill="var(--primary)" text-anchor="middle" font-weight="400">PASS</text></svg></div><p class="readout">Rule 3 repairs the current result. Rule 4 improves the check you will reuse next time.</p><p class="source">Sources: <a href="https://github.com/cursor/plugins/blob/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills/correct/SKILL.md" target="_blank" rel="noopener noreferrer">pstack: Correct</a>. Course adaptation.</p></div></section>
-
-<section class="slide layout-closing" id="takeaway" data-label="Takeaway">
+<!-- 10 · Takeaway -->
+<section class="slide layout-closing" data-label="Takeaway">
   <div class="closing-decoration"></div><div class="closing-decoration-2"></div>
   <h4 class="lesson-label enter" style="--i: 0;">Takeaway</h4>
   <div class="accent-line enter" style="--i: 1; margin: 0 auto 1.5rem;"></div>
-  <h1 class="enter" style="--i: 2;">Use these four rules before you accept “done”.</h1>
+  <h1 class="enter" style="--i: 2;">Check it. Point at it. Then ask two questions.</h1>
   <div class="closing-grid">
-    <div class="card" data-step="1"><span class="step-circle">1</span><div class="card-name">Check against a list</div><p class="card-body">Compare the result with the requirements and sources.</p></div>
-    <div class="card" data-step="2"><span class="step-circle">2</span><div class="card-name">Get a second look</div><p class="card-body">Give a fresh conversation the files it needs to check.</p></div>
-    <div class="card" data-step="3"><span class="step-circle">3</span><div class="card-name">Fix the cause</div><p class="card-body">Confirm the cause, fix it, then check again.</p></div>
-    <div class="card" data-step="4"><span class="step-circle">4</span><div class="card-name">Add it to the list</div><p class="card-body">Improve and save the check for next time.</p></div>
+    <div class="card"><span class="step-circle">1</span><div class="card-name">Check it</div><p class="card-body">Compare with the source, not the agent&rsquo;s word.</p></div>
+    <div class="card"><span class="step-circle">2</span><div class="card-name">Point at it</div><p class="card-body">Expected, got, evidence. Then check again.</p></div>
+    <div class="card"><span class="step-circle">3</span><div class="card-name">Fix the cause</div><p class="card-body">If it could be anywhere else.</p></div>
+    <div class="card"><span class="step-circle">4</span><div class="card-name">Add a check</div><p class="card-body">If it could come back.</p></div>
   </div>
-  <p class="source">Sources: <a href="https://code.claude.com/docs/en/best-practices" target="_blank" rel="noopener noreferrer">Anthropic: Best practices</a>; <a href="https://github.com/cursor/plugins/tree/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills" target="_blank" rel="noopener noreferrer">pstack</a>; Matt Pocock: Standards.</p>
+  <p class="closing-note">You still make the final call.</p>
 </section>
-</div></body>
+</div>
+<!-- Instructor references (not student-facing):
+  https://code.claude.com/docs/en/best-practices
+  https://platform.claude.com/docs/en/test-and-evaluate/strengthen-guardrails/reduce-hallucinations
+  https://openai.com/index/why-language-models-hallucinate/ (2025); Kalai et al., arXiv:2509.04664
+  https://github.com/cursor/plugins/tree/190d28736eff128ec94f502a22c7fe0c4b56cd37/pstack/skills
+    (principle-prove-it-works, create-verification-skill, interrogate, principle-fix-root-causes, correct)
+  Matt Pocock, Enforcing Your Coding Standards.
+  The four-step triage (check, point, fix the cause, add a check) is a teaching synthesis,
+  not a vendor-defined standard. Sales figures are fictional.
+-->
+</body>
 </html>
