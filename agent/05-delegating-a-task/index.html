@@ -33,40 +33,44 @@
   .cmp-cell { display: flex; align-items: center; padding: 0.85rem 1.2rem; border-radius: 12px; font-size: clamp(1.05rem, 1.45vw, 1.35rem); line-height: 1.4; }
   .cmp-cell--needed { border: 2px solid var(--primary); background: var(--card-bg); color: var(--text); }
   .cmp-cell--got { border: 2px dashed var(--text-light); color: var(--text-muted); }
-  .request-layout { display: grid; grid-template-columns: 1fr 1.1fr; gap: 3rem; align-items: center; }
-  .request-focus { border: 2px dashed var(--text-light); border-radius: 12px; padding: 2rem; }
-  .request-focus blockquote { margin-top: 0.9rem; font: 600 clamp(1.4rem, 2.2vw, 2rem)/1.3 'Space Grotesk', sans-serif; }
+  .brief-table, .case-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
+  .brief-table th, .case-table th { padding: 0.65rem 1rem; font: 600 clamp(0.85rem, 1vw, 1rem)/1.35 'Space Grotesk', sans-serif; color: var(--primary); }
+  .brief-table td, .case-table td { padding: 0.75rem 1rem; border-top: 1px solid var(--border); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; vertical-align: top; }
+  .brief-table tr:nth-child(even) td, .case-table tr:nth-child(even) td { background: var(--card-bg); }
+  .brief-table td:first-child { width: 18%; font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+  .case-table th:first-child { width: 48%; }
+  .case-table td:nth-child(2), .case-table td:nth-child(3) { color: var(--text-muted); }
+  .case-table td:last-child { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+  .say + .brief-table { margin-top: 1rem; }
+  .map { display: grid; grid-template-columns: 1fr auto 1.45fr; gap: 1.6rem; align-items: center; }
+  .map-col { display: grid; gap: 0.7rem; }
+  .map-step { display: flex; align-items: center; gap: 1rem; padding: 0.9rem 1.1rem; border-radius: 12px; border: 2px solid var(--primary); background: var(--card-bg); }
+  .map-step--opt { border-style: dashed; }
+  .map-step strong { display: block; font: 600 clamp(1.1rem, 1.5vw, 1.4rem)/1.3 'Space Grotesk', sans-serif; color: var(--primary); }
+  .map-step p { font-size: clamp(0.95rem, 1.2vw, 1.1rem); color: var(--text-muted); line-height: 1.4; }
+  .map .step-circle { width: 44px; height: 44px; margin: 0; font-size: 1.1rem; }
+  .map-down { text-align: center; color: var(--text-muted); font: 500 clamp(0.9rem, 1.1vw, 1rem) 'Space Grotesk', sans-serif; }
+  .map-branch { display: grid; grid-template-columns: 1fr auto 1.25fr; gap: 0.8rem; align-items: center; }
+  .map-q { font: 600 clamp(1.05rem, 1.4vw, 1.3rem)/1.35 'Space Grotesk', sans-serif; color: var(--text); }
+  .map-yes { color: var(--primary); font: 600 clamp(0.9rem, 1.1vw, 1rem) 'Space Grotesk', sans-serif; white-space: nowrap; }
+  .ask-layout { display: grid; grid-template-columns: 0.9fr 1.2fr; gap: 2rem; align-items: center; }
   .questions { display: grid; gap: 0.7rem; }
   .question { padding: 0.85rem 1.2rem; border-left: 3px solid var(--primary); background: var(--card-bg); border-radius: 0 10px 10px 0; font-size: clamp(1rem, 1.35vw, 1.25rem); color: var(--text); line-height: 1.4; }
-  .role-table, .brief-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
-  .role-table th, .brief-table th { padding: 0.65rem 1rem; font: 600 clamp(0.85rem, 1vw, 1rem)/1.35 'Space Grotesk', sans-serif; color: var(--primary); }
-  .role-table td, .brief-table td { padding: 0.9rem 1rem; border-top: 1px solid var(--border); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; vertical-align: top; }
-  .role-table td:first-child, .brief-table td:first-child { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
-  .role-table th:first-child { width: 17%; }
-  .role-table th:nth-child(2) { width: 40%; }
-  .role-table .stage-meta { display: block; margin-top: 0.15rem; font-size: 0.8em; font-weight: 500; color: var(--text-muted); }
-  .brief-table th:first-child { width: 17%; }
-  .brief-table th:nth-child(2) { width: 29%; }
-  .role-table tr:nth-child(even) td, .brief-table tr:nth-child(even) td { background: var(--card-bg); }
-  .return-line { margin-top: 0.8rem; font: 500 clamp(1rem, 1.3vw, 1.2rem)/1.4 'Space Grotesk', sans-serif; color: var(--primary); }
-  .principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.2rem; }
-  .principles .card-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
-  .principles .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
-  .example { display: block; margin-top: 0.65rem; color: var(--text-muted); font-size: clamp(0.95rem, 1.2vw, 1.1rem); line-height: 1.45; }
-  .clarify-layout { display: grid; grid-template-columns: 0.9fr 1.2fr; gap: 2rem; align-items: center; }
-  .clarify-layout .say { margin-bottom: 1rem; }
-  .plan-steps { display: grid; grid-template-columns: 1fr auto 1fr; gap: 0.7rem; align-items: center; }
-  .plan-steps p { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
-  .plan-steps strong { display: block; color: var(--primary); font-family: 'Space Grotesk', sans-serif; margin-bottom: 0.15rem; }
+  .ask-layout .say + .say { margin-top: 1rem; }
   .path { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; gap: 0.8rem; align-items: center; }
   .path-stage { padding: 1rem 0.85rem; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); text-align: center; font: 600 clamp(1rem, 1.3vw, 1.2rem)/1.4 'Space Grotesk', sans-serif; }
+  .path-stage span { display: block; margin-top: 0.2rem; font-size: 0.8em; font-weight: 500; color: var(--text-muted); }
   .path-stage--result { border: 2px solid var(--primary); color: var(--primary); }
-  .slice-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-top: 1.4rem; }
-  .slice-pair .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
+  .path + .say { margin-top: 1.2rem; }
+  .pair { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; }
+  .pair .card-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
+  .pair .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
+  .pair .example { display: block; margin-top: 0.65rem; color: var(--text-muted); font-size: clamp(0.95rem, 1.2vw, 1.1rem); line-height: 1.45; }
   #deck .layout-closing h1 { max-width: 80vw; font-size: clamp(2rem, 3.6vw, 3.2rem); }
   #deck .closing-grid { width: 84vw; grid-template-columns: repeat(4, 1fr); }
   #deck .closing-grid .card-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
   #deck .closing-grid .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); }
+  .closing-note { margin-top: 1.6rem; font: 500 clamp(1.05rem, 1.4vw, 1.3rem)/1.4 'Space Grotesk', sans-serif; color: var(--primary); }
   @media (max-width: 760px) {
     #roadmap .timeline-track { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; gap: 1.5rem; margin-top: 1.2rem; }
     #roadmap .timeline-step { display: grid; grid-template-columns: 72px 1fr; column-gap: 1.2rem; text-align: left; align-items: center; }
@@ -80,22 +84,21 @@
     #deck .layout-cover { justify-content: flex-start; padding-top: 12vh; }
     #deck .layout-cover h1 { max-width: none; font-size: clamp(2.3rem, 7.5vw, 3rem); }
     .fine-print { padding-right: 0; }
-    .cmp, .request-layout, .principles, .clarify-layout, .slice-pair, .plan-steps, .path { grid-template-columns: 1fr; gap: 0.8rem; }
+    .cmp, .map, .map-branch, .ask-layout, .path, .pair { grid-template-columns: 1fr; gap: 0.8rem; }
     .cmp .flow-arrow, .cmp-head { display: none; }
     .cmp-cell { flex-direction: column; align-items: flex-start; gap: 0.2rem; }
     .cmp-cell::before { font: 600 0.75rem 'Space Grotesk', sans-serif; text-transform: uppercase; letter-spacing: 0.06em; }
     .cmp-cell--needed::before { content: 'Needed'; color: var(--primary); }
     .cmp-cell--got::before { content: 'Produced'; }
     .cmp-cell--needed:not(:first-of-type) { margin-top: 0.4rem; }
-    .request-focus { padding: 1.2rem; }
-    .request-layout { gap: 1.1rem; }
-    .role-table, .brief-table, .role-table tbody, .brief-table tbody { display: block; }
-    .role-table thead, .brief-table thead { display: none; }
-    .role-table tr, .brief-table tr { display: block; margin-bottom: 0.8rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-    .role-table td, .brief-table td { display: block; padding: 0.65rem 0.9rem; }
-    .role-table td:first-child, .brief-table td:first-child { border-top: none; background: var(--accent-light); }
-    .role-table td[data-mobile-label]::before, .brief-table td[data-mobile-label]::before { content: attr(data-mobile-label); display: block; font: 600 0.75rem 'Space Grotesk', sans-serif; color: var(--text-muted); margin-bottom: 0.2rem; }
-    .plan-steps .flow-arrow, .path .flow-arrow { transform: rotate(90deg); }
+    .map > .flow-arrow, .path .flow-arrow { transform: rotate(90deg); }
+    .map-yes { text-align: center; }
+    .brief-table, .case-table, .brief-table tbody, .case-table tbody { display: block; }
+    .case-table thead { display: none; }
+    .brief-table tr, .case-table tr { display: block; margin-bottom: 0.8rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
+    .brief-table td, .case-table td { display: block; width: auto; padding: 0.65rem 0.9rem; }
+    .brief-table td:first-child, .case-table td:first-child { border-top: none; background: var(--accent-light); font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
+    .case-table td[data-mobile-label]::before { content: attr(data-mobile-label); display: block; font: 600 0.75rem 'Space Grotesk', sans-serif; color: var(--text-muted); margin-bottom: 0.2rem; }
     #deck .layout-closing { justify-content: flex-start; padding-top: 3rem; }
     #deck .layout-closing h1 { max-width: none; }
     #deck .closing-grid { grid-template-columns: 1fr; width: 100%; }
@@ -114,11 +117,11 @@
   <div class="accent-line enter" style="--i: 1;"></div>
   <h1 class="enter" style="--i: 2;">Delegating a Task</h1>
   <div class="cover-tags enter" style="--i: 3;">
-    <span class="tag">Choose the task</span><span class="tag">Write the brief</span><span class="tag">Clarify and plan</span><span class="tag">Start small</span>
+    <span class="tag">Say what done looks like</span><span class="tag">Ask, don&rsquo;t guess</span><span class="tag">Big? Start small</span><span class="tag">Risky? Use a copy</span>
   </div>
 </section>
 
-<!-- 2 · Overview: the same roadmap layout as lessons 01 and 02 -->
+<!-- 2 · Overview: the same roadmap layout as earlier modules -->
 <section class="slide" id="roadmap" data-label="Roadmap">
   <div class="slide-header">
     <h4>Module 4 &middot; Preview</h4>
@@ -128,14 +131,14 @@
     <h2>Roadmap</h2>
     <div class="timeline-track timeline-track--even">
       <div class="timeline-step enter" style="--i: 1;"><div class="step-circle">1</div><div class="step-label">WHY</div><div class="step-title">Why results miss</div></div>
-      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">Your responsibility</div><div class="step-title">Define the task.<br>Approve the result.</div></div>
-      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">HOW</div><div class="step-title">Four rules</div></div>
+      <div class="timeline-step enter" style="--i: 2;"><div class="step-circle">2</div><div class="step-label">HOW</div><div class="step-title">Four steps</div></div>
+      <div class="timeline-step enter" style="--i: 3;"><div class="step-circle">3</div><div class="step-label">WHEN</div><div class="step-title">Which steps you need</div></div>
       <div class="timeline-step enter" style="--i: 4;"><div class="step-circle">4</div><div class="step-label">Takeaway</div><div class="step-title">Recap</div></div>
     </div>
   </div>
 </section>
 
-<!-- 3 · WHY: result and intent -->
+<!-- 3 · WHY: the gaps in a short request -->
 <section class="slide" data-label="Why the result misses">
   <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Why &middot; The problem</span></div>
   <div class="slide-content">
@@ -149,131 +152,133 @@
         <div class="cmp-cell cmp-cell--needed">Compared with the previous week</div><span class="flow-arrow">&rarr;</span><div class="cmp-cell cmp-cell--got">A forecast for next month</div>
         <div class="cmp-cell cmp-cell--needed">Last Monday&rsquo;s layout</div><span class="flow-arrow">&rarr;</span><div class="cmp-cell cmp-cell--got">A new layout</div>
       </div>
-      <p class="split-highlight bottom-highlight">Even if the numbers are correct, this report does not meet your needs.</p>
+      <p class="split-highlight bottom-highlight">The request left these choices open, so the agent filled them in with its own guesses.</p>
     </div>
   </div>
 </section>
 
-<!-- 4 · WHY: assumptions -->
-<section class="slide" data-label="Why missing context matters">
-  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Why &middot; The cause</span></div>
+<!-- 4 · The map: two steps always, two only when needed -->
+<section class="slide" id="map" data-label="The four steps">
+  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">How &middot; The four steps</span></div>
   <div class="slide-content">
-    <h2>Missing context can lead the agent to make the wrong assumptions.</h2>
-    <p class="lede">The agent works from the instructions and information available to it. It cannot reliably know the requirements you left unstated.</p>
+    <h2>Two steps every time. Two more only when you need them.</h2>
     <div class="body-center">
-      <div class="request-layout">
-        <div class="request-focus"><div class="col-label">Your request</div><blockquote>&ldquo;Make the weekly sales report.&rdquo;</blockquote></div>
-        <div class="questions">
-          <p class="question">Which regions should it include?</p>
-          <p class="question">Which weeks should it compare?</p>
-          <p class="question">Should sales include or exclude returns?</p>
-          <p class="question">Which layout should it follow?</p>
+      <div class="map">
+        <div class="map-col">
+          <div class="col-label col-label--on">Every time</div>
+          <div class="map-step"><span class="step-circle">1</span><div><strong>Say what done looks like</strong><p>What you want, and when it&rsquo;s finished.</p></div></div>
+          <span class="map-down" aria-hidden="true">&darr;</span>
+          <div class="map-step"><span class="step-circle">2</span><div><strong>Ask, don&rsquo;t guess</strong><p>It asks about unclear choices first.</p></div></div>
+        </div>
+        <span class="flow-arrow" aria-hidden="true">&rarr;</span>
+        <div class="map-col">
+          <div class="col-label">Then ask two questions</div>
+          <div class="map-branch">
+            <p class="map-q">Is the task big?</p><span class="map-yes">Yes &rarr;</span>
+            <div class="map-step map-step--opt"><span class="step-circle">3</span><div><strong>Plan and start small</strong><p>Check one piece first.</p></div></div>
+          </div>
+          <div class="map-branch">
+            <p class="map-q">Could it do damage?</p><span class="map-yes">Yes &rarr;</span>
+            <div class="map-step map-step--opt"><span class="step-circle">4</span><div><strong>Work on a copy</strong><p>And keep it asking you.</p></div></div>
+          </div>
         </div>
       </div>
-      <p class="split-highlight bottom-highlight">The agent may ask, or it may choose an answer and continue. Make important requirements explicit, and ask it to state assumptions that could change the result.</p>
-      <p class="fine-print">Clear instructions help, but the agent can still make mistakes.</p>
+      <p class="split-highlight bottom-highlight">Both answers are no? Steps 1 and 2 are enough.</p>
     </div>
   </div>
 </section>
 
-<!-- 5 · Your responsibility, with an iterative return -->
-<section class="slide" data-label="Your responsibility">
-  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Your responsibility</span></div>
+<!-- 5 · Step 1: say what done looks like -->
+<section class="slide" id="step-1" data-label="Step 1: Say what done looks like">
+  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Step 1 &middot; Every time</span></div>
   <div class="slide-content">
-    <h2>You define the task and approve the result.</h2>
+    <h2>Step 1: Say what you want and what done looks like.</h2>
     <div class="body-center">
-      <table class="role-table">
-        <thead><tr><th scope="col">Stage</th><th scope="col">Your responsibility</th><th scope="col">The agent can help by</th></tr></thead>
+      <blockquote class="say"><span class="say-label">Fill in the blanks</span>&ldquo;Make ___ for ___. Use ___. Done means: ___.&rdquo;</blockquote>
+      <table class="brief-table" aria-label="Example for the Monday report">
         <tbody>
-          <tr><td>01 &nbsp; Define<span class="stage-meta">Before &middot; Rules 1&ndash;3</span></td><td data-mobile-label="You">Decide what you want, what the agent shouldn&rsquo;t do, and what counts as done.</td><td data-mobile-label="Agent">Ask questions and draft the brief.</td></tr>
-          <tr><td>02 &nbsp; Do<span class="stage-meta">During &middot; Rule 4</span></td><td data-mobile-label="You">Approve the plan and actions that need your permission.</td><td data-mobile-label="Agent">Carry out the work, check it, and report problems.</td></tr>
-          <tr><td>03 &nbsp; Check<span class="stage-meta">After &middot; Next module</span></td><td data-mobile-label="You">Decide whether the result meets your needs.</td><td data-mobile-label="Agent">Show evidence and fix the issues you identify.</td></tr>
+          <tr><td>Make</td><td>A one-page sales report</td></tr>
+          <tr><td>For</td><td>The sales lead, to decide which regions need follow-up</td></tr>
+          <tr><td>Use</td><td>The two weekly sales sheets, and last Monday&rsquo;s report for the layout</td></tr>
+          <tr><td>Done means</td><td>One row per region. Last week next to the week before. Same layout as last Monday&rsquo;s.</td></tr>
         </tbody>
       </table>
-      <p class="return-line">Check &rarr; revise the definition or the work &rarr; check again.</p>
-      <p class="split-highlight bottom-highlight">You keep responsibility for what you accept and approve.</p>
-      <p class="fine-print">This module takes you from an idea to a first version. The next module develops checking and iteration.</p>
+      <p class="fine-print">Can&rsquo;t fill in &ldquo;Done means&rdquo;? The task probably isn&rsquo;t ready to hand off. Work that out first; the agent can help. The next module checks the result against this line.</p>
     </div>
   </div>
 </section>
 
-<!-- 6 · HOW: choose appropriate work -->
-<section class="slide" id="rule-1" data-label="Rule 1: Choose the task">
-  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Rule 1 &middot; Choose the task</span></div>
+<!-- 6 · Step 2: ask before guessing -->
+<section class="slide" id="step-2" data-label="Step 2: Ask, don't guess">
+  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Step 2 &middot; Every time</span></div>
   <div class="slide-content">
-    <h2>Rule 1: Choose work you can describe, check, and recover from.</h2>
-    <p class="lede">To delegate is to hand a task to an agent to carry out for you.</p>
+    <h2>Step 2: Tell it to ask, not guess.</h2>
     <div class="body-center">
-      <div class="principles">
-        <div class="card"><div class="card-name">Describe it.</div><p class="card-body">State the result you want.<span class="example">&ldquo;A one-page sales report by region.&rdquo;</span></p></div>
-        <div class="card"><div class="card-name">Check it.</div><p class="card-body">Know how you will judge the result.<span class="example">&ldquo;Each region&rsquo;s sales must match the source records.&rdquo;</span></p></div>
-        <div class="card"><div class="card-name">Recover from it.</div><p class="card-body">Limit the damage if something goes wrong.<span class="example">&ldquo;Create a separate draft and keep the source files unchanged.&rdquo;</span></p></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- 7 · HOW: the task contract -->
-<section class="slide" id="rule-2" data-label="Rule 2: Write the brief">
-  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Rule 2 &middot; Write the brief</span></div>
-  <div class="slide-content">
-    <h2>Rule 2: Write a brief with four parts.</h2>
-    <p class="lede">A brief is a written description of the task. It states what you want and what counts as done.</p>
-    <div class="body-center">
-      <table class="brief-table">
-        <thead><tr><th scope="col">Part</th><th scope="col">What it defines</th><th scope="col">For the Monday report</th></tr></thead>
-        <tbody>
-          <tr><td>Goal</td><td data-mobile-label="Meaning">Who needs the result and why.</td><td data-mobile-label="Example">Help the sales lead decide which regions need follow-up.</td></tr>
-          <tr><td>Materials</td><td data-mobile-label="Meaning">The inputs and references.</td><td data-mobile-label="Example">Sales sheets for both weeks. Last Monday&rsquo;s report as the layout reference.</td></tr>
-          <tr><td>Limits</td><td data-mobile-label="Meaning">What the agent can do, and what it shouldn&rsquo;t do.</td><td data-mobile-label="Example">Create a separate draft. No forecasts, source edits, or sending.</td></tr>
-          <tr><td>Done</td><td data-mobile-label="Meaning">What must be true when the task is finished.</td><td data-mobile-label="Example">One page. One row per region. Correct dates and amounts. Show both weeks and the change in sales amount. Label missing data.</td></tr>
-        </tbody>
-      </table>
-      <p class="split-highlight bottom-highlight">Decide what counts as done before work starts.</p>
-      <p class="fine-print">The instruction file holds rules for every task. The brief holds the details for this task. Permissions set the hard limits.</p>
-    </div>
-  </div>
-</section>
-
-<!-- 8 · HOW: important questions, then an observable plan -->
-<section class="slide" id="rule-3" data-label="Rule 3: Clarify and plan">
-  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Rule 3 &middot; Clarify and plan</span></div>
-  <div class="slide-content">
-    <h2>Rule 3: Clarify important choices, then review the plan.</h2>
-    <p class="lede">For an unclear task, ask the agent to read the materials and identify choices that could change the result.</p>
-    <div class="body-center">
-      <div class="clarify-layout">
+      <div class="ask-layout">
         <div class="questions">
+          <div class="col-label">It might ask</div>
           <p class="question">&ldquo;Which dates count as a week?&rdquo;</p>
-          <p class="question">&ldquo;Should returns reduce the sales amount?&rdquo;</p>
-          <p class="question">&ldquo;Is West&rsquo;s missing entry missing data, or a confirmed zero?&rdquo;</p>
+          <p class="question">&ldquo;Should returns reduce sales?&rdquo;</p>
+          <p class="question">&ldquo;Is West&rsquo;s blank a zero, or missing data?&rdquo;</p>
         </div>
         <div>
-          <blockquote class="say"><span class="say-label">You say</span>&ldquo;Before making changes, ask me about choices that affect the result. State your proposed assumptions and any missing information. Then draft the brief and a short plan for me to review.&rdquo;</blockquote>
-          <div class="plan-steps"><p><strong>Brief</strong>What are we building?</p><span class="flow-arrow">&rarr;</span><p><strong>Plan</strong>How will you build and check it?</p></div>
+          <blockquote class="say"><span class="say-label">Before it starts, you say</span>&ldquo;Before you start, ask me about anything unclear that could change the result.&rdquo;</blockquote>
+          <blockquote class="say"><span class="say-label">And add</span>&ldquo;If a new choice like this comes up later, stop and ask me.&rdquo;</blockquote>
         </div>
       </div>
-      <p class="split-highlight bottom-highlight">New questions may appear during execution. Agree when the agent should pause and ask you.</p>
+      <p class="split-highlight bottom-highlight">Answer its questions, and add the answers to your request.</p>
     </div>
   </div>
 </section>
 
-<!-- 9 · HOW: one complete slice -->
-<section class="slide" id="rule-4" data-label="Rule 4: Start small">
-  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Rule 4 &middot; Start small</span></div>
+<!-- 7 · Step 3: plan and start small when the task is big -->
+<section class="slide" id="step-3" data-label="Step 3: Plan and start small">
+  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Step 3 &middot; If it&rsquo;s big</span></div>
   <div class="slide-content">
-    <h2>Rule 4: Build and check one complete path before expanding.</h2>
-    <p class="lede">For the Monday report, start with one region.</p>
+    <h2>Step 3: If it&rsquo;s big, plan first and start small.</h2>
+    <p class="lede">A simple test: could you check the whole result in a few minutes? If not, treat it as big.</p>
     <div class="body-center">
-      <div class="path" aria-label="One complete path: source records for both weeks, sales totals, comparison, and a report row.">
-        <div class="path-stage">Both weeks&rsquo;<br>source records</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage">Sales totals</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage">Comparison</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage path-stage--result">One report row</div>
+      <div class="path" aria-label="Read a short plan, build one region from start to finish, check it, then do the rest.">
+        <div class="path-stage">A short plan<span>You read it first</span></div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage">One region<span>Start to finish</span></div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage">Check it<span>Records and totals</span></div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage path-stage--result">The rest<span>After it passes</span></div>
       </div>
-      <div class="slice-pair">
-        <div class="card"><div class="card-name">First version</div><p class="card-body">Read one region&rsquo;s records. Calculate its sales and the change. Put the result in the agreed layout.</p></div>
-        <div class="card"><div class="card-name">After it passes</div><p class="card-body">Add the other regions. Check every region and the full-report totals. Finish the one-page report.</p></div>
+      <blockquote class="say"><span class="say-label">You say</span>&ldquo;Show me a short plan first. Then do one region from start to finish, and show me what you checked.&rdquo;</blockquote>
+      <p class="fine-print">In Claude Code, Plan mode lets the agent read your files and plan without editing them.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · Step 4: limits when the task can do damage -->
+<section class="slide" id="step-4" data-label="Step 4: Work on a copy">
+  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Step 4 &middot; If it could do damage</span></div>
+  <div class="slide-content">
+    <h2>Step 4: If it could do damage, work on a copy and keep it asking.</h2>
+    <p class="lede">Could it change, delete, or send something that&rsquo;s hard to undo? If so, do both.</p>
+    <div class="body-center">
+      <div class="pair">
+        <div class="card"><div class="card-name">Say it: in your request</div><p class="card-body">&ldquo;Work on a copy. Don&rsquo;t edit the original files. Don&rsquo;t send anything.&rdquo;<span class="example">This guides the agent. It usually follows it, but the tool doesn&rsquo;t enforce it.</span></p></div>
+        <div class="card"><div class="card-name">Set it: in permissions</div><p class="card-body">Keep Manual mode on, so the agent asks you before most edits and commands.<span class="example">Claude Code enforces this, not the agent. See Module 2b.</span></p></div>
       </div>
-      <p class="split-highlight bottom-highlight">Ask the agent to show which records it used and what it checked. Verify the result before expanding.</p>
-      <p class="fine-print">A layout with invented numbers does not test the calculation. If you notice a wrong assumption, correct it early rather than waiting for the finished report.</p>
+      <p class="split-highlight bottom-highlight">Permissions lower the risk. Still read what the agent asks before you approve it.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 9 · Practice: which steps does each task need -->
+<section class="slide" id="practice" data-label="Which steps you need">
+  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">When &middot; Practice</span></div>
+  <div class="slide-content">
+    <h2>Which steps does this task need?</h2>
+    <div class="body-center">
+      <table class="case-table">
+        <thead><tr><th scope="col">The task</th><th scope="col">Big?</th><th scope="col">Could do damage?</th><th scope="col">Steps</th></tr></thead>
+        <tbody>
+          <tr><td>Summarize an article in five bullets</td><td data-mobile-label="Big?">No</td><td data-mobile-label="Could do damage?">No</td><td data-mobile-label="Steps">1 &rarr; 2</td></tr>
+          <tr><td>Build the Monday report for the first time</td><td data-mobile-label="Big?">Yes</td><td data-mobile-label="Could do damage?">No</td><td data-mobile-label="Steps">1 &rarr; 2 &rarr; 3</td></tr>
+          <tr><td>Remove duplicate rows from the shared customer list</td><td data-mobile-label="Big?">No</td><td data-mobile-label="Could do damage?">Yes</td><td data-mobile-label="Steps">1 &rarr; 2 &rarr; 4</td></tr>
+          <tr><td>Reorganize the whole sales folder</td><td data-mobile-label="Big?">Yes</td><td data-mobile-label="Could do damage?">Yes</td><td data-mobile-label="Steps">1 &rarr; 2 &rarr; 3 &rarr; 4</td></tr>
+        </tbody>
+      </table>
+      <p class="split-highlight bottom-highlight">Steps 1 and 2 every time. Each yes adds one step.</p>
     </div>
   </div>
 </section>
@@ -283,22 +288,27 @@
   <div class="closing-decoration"></div><div class="closing-decoration-2"></div>
   <h4 class="lesson-label enter" style="--i: 0;">Takeaway</h4>
   <div class="accent-line enter" style="--i: 1; margin: 0 auto 1.5rem;"></div>
-  <h1 class="enter" style="--i: 2;">Use these four rules to delegate a task.</h1>
+  <h1 class="enter" style="--i: 2;">Say what done looks like. Ask, don&rsquo;t guess. Then ask two questions.</h1>
   <div class="closing-grid">
-    <div class="card"><span class="step-circle">1</span><div class="card-name">Choose the task</div><p class="card-body">Describe the result, decide how to check it, and limit the damage.</p></div>
-    <div class="card"><span class="step-circle">2</span><div class="card-name">Write the brief</div><p class="card-body">State the goal, materials, limits, and what counts as done.</p></div>
-    <div class="card"><span class="step-circle">3</span><div class="card-name">Clarify and plan</div><p class="card-body">Resolve important choices and review the plan before work starts.</p></div>
-    <div class="card"><span class="step-circle">4</span><div class="card-name">Start small</div><p class="card-body">Check one complete path, then expand after it passes.</p></div>
+    <div class="card"><span class="step-circle">1</span><div class="card-name">Say what done looks like</div><p class="card-body">Make, for, use, done means.</p></div>
+    <div class="card"><span class="step-circle">2</span><div class="card-name">Ask, don&rsquo;t guess</div><p class="card-body">Unclear choices get asked, not guessed.</p></div>
+    <div class="card"><span class="step-circle">3</span><div class="card-name">Plan and start small</div><p class="card-body">If it&rsquo;s big.</p></div>
+    <div class="card"><span class="step-circle">4</span><div class="card-name">Work on a copy</div><p class="card-body">If it could do damage. Keep it asking.</p></div>
   </div>
+  <p class="closing-note">Next: checking what comes back.</p>
 </section>
 </div>
 <!-- Instructor references (not student-facing):
   https://code.claude.com/docs/en/best-practices
+  https://code.claude.com/docs/en/permissions
+    "Permission rules are enforced by Claude Code, not by the model. Instructions in your prompt or
+    CLAUDE.md shape what Claude tries to do, but they don't change what Claude Code allows."
+    The same page notes that rules can miss a command written another way (e.g. git -C . push),
+    so the slide avoids calling permissions a guarantee.
   https://developers.openai.com/cookbook/articles/codex_exec_plans
-  https://developers.openai.com/blog/run-long-horizon-tasks-with-codex
   https://developers.openai.com/api/docs/guides/agents/guardrails-approvals
-  The three-stage responsibility model and four principles are a teaching synthesis,
-  not a vendor-defined standard. Permissions and approval controls depend on the agent system.
+  The four-step triage and the "check it in a few minutes" test for a big task are a teaching
+  synthesis, not a vendor-defined standard. Permission modes differ between agent tools.
 -->
 </body>
 </html>
