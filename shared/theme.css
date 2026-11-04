@@ -557,7 +557,13 @@ svg [data-step] {
 }
 
 /* ---------- Catalog pages (site index + module indexes) ---------- */
-/* Directory pages scroll like normal web pages, unlike the fixed slide canvas. */
+/* Directory pages scroll like normal web pages, unlike the fixed slide canvas.
+   html must be unlocked too, or it clips the body at one screen. */
+
+html:has(> body.catalog) {
+  height: auto;
+  overflow: auto;
+}
 
 body.catalog {
   height: auto;
