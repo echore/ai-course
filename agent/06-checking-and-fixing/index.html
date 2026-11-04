@@ -29,16 +29,10 @@
   .flow-arrow { align-self: center; color: var(--text-light); font: 400 1.6rem 'Space Grotesk', sans-serif; text-align: center; }
   .say { padding: 0.9rem 1.2rem; border-radius: 10px; background: var(--accent-medium); font: 500 clamp(1rem, 1.3vw, 1.2rem)/1.45 'Space Grotesk', sans-serif; color: var(--text); }
   .say-label { display: block; margin-bottom: 0.4rem; color: var(--primary); font-size: 0.85rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; }
-  .claim-layout { display: grid; grid-template-columns: 0.8fr 1.2fr; gap: 3rem; align-items: center; }
-  .claim { border: 2px dashed var(--text-light); border-radius: 12px; padding: 2rem; }
-  .claim blockquote { margin-top: 0.9rem; font: 600 clamp(1.4rem, 2.2vw, 2rem)/1.3 'Space Grotesk', sans-serif; }
-  .fact-table, .check-table, .case-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
-  .fact-table th, .check-table th, .case-table th { padding: 0.65rem 1rem; font: 600 clamp(0.85rem, 1vw, 1rem)/1.35 'Space Grotesk', sans-serif; color: var(--primary); }
-  .fact-table td, .check-table td, .case-table td { padding: 0.8rem 1rem; border-top: 1px solid var(--border); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; vertical-align: middle; }
-  .fact-table tr:nth-child(even) td, .check-table tr:nth-child(even) td, .case-table tr:nth-child(even) td { background: var(--card-bg); }
-  .fact-table td:last-child { text-align: right; font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
-  .fact-table .row-key td { border-top: 2px solid var(--primary); color: var(--primary); }
-  .fact-table .row-wrong td { color: var(--text-muted); text-decoration: line-through; }
+  .check-table, .case-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
+  .check-table th, .case-table th { padding: 0.65rem 1rem; font: 600 clamp(0.85rem, 1vw, 1rem)/1.35 'Space Grotesk', sans-serif; color: var(--primary); }
+  .check-table td, .case-table td { padding: 0.8rem 1rem; border-top: 1px solid var(--border); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; vertical-align: middle; }
+  .check-table tr:nth-child(even) td, .case-table tr:nth-child(even) td { background: var(--card-bg); }
   .check-table th:first-child { width: 34%; }
   .check-table th:nth-child(2) { width: 46%; }
   .case-table th:first-child { width: 44%; }
@@ -62,10 +56,6 @@
   .evidence .card-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
   .evidence .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); color: var(--text); }
   .evidence + .say { margin-top: 1.2rem; }
-  .path { display: grid; grid-template-columns: 1fr auto 1fr auto 1fr auto 1fr; gap: 0.8rem; align-items: center; }
-  .path-stage { padding: 1rem 0.85rem; border-radius: 12px; border: 1px solid var(--border); background: var(--card-bg); text-align: center; font: 600 clamp(1rem, 1.3vw, 1.2rem)/1.4 'Space Grotesk', sans-serif; }
-  .path-stage span { display: block; margin-bottom: 0.2rem; font-size: 0.75em; font-weight: 500; color: var(--text-muted); }
-  .path-stage--result { border: 2px solid var(--primary); color: var(--primary); }
   .ask-layout { display: grid; grid-template-columns: 0.9fr 1.2fr; gap: 2rem; align-items: center; }
   .questions { display: grid; gap: 0.7rem; }
   .question { padding: 0.85rem 1.2rem; border-left: 3px solid var(--primary); background: var(--card-bg); border-radius: 0 10px 10px 0; font-size: clamp(1rem, 1.35vw, 1.25rem); color: var(--text); line-height: 1.4; }
@@ -76,7 +66,13 @@
   #deck .closing-grid .card-name { font-size: clamp(1.15rem, 1.6vw, 1.5rem); }
   #deck .closing-grid .card-body { font-size: clamp(1rem, 1.3vw, 1.2rem); }
   .closing-note { margin-top: 1.6rem; font: 500 clamp(1.05rem, 1.4vw, 1.3rem)/1.4 'Space Grotesk', sans-serif; color: var(--primary); }
+  /* Wide line drawings; on phones they scroll sideways so the labels stay readable */
+  .figure { display: flex; justify-content: center; }
+  .figure svg { width: 100%; max-height: 44vh; }
+  .figure + .split-highlight { margin-top: 1.1rem; }
   @media (max-width: 760px) {
+    .figure { justify-content: flex-start; overflow-x: auto; }
+    .figure svg { min-width: 680px; max-height: none; }
     #roadmap .timeline-track { grid-auto-flow: row; grid-template-columns: 1fr; grid-auto-columns: auto; gap: 1.5rem; margin-top: 1.2rem; }
     #roadmap .timeline-step { display: grid; grid-template-columns: 72px 1fr; column-gap: 1.2rem; text-align: left; align-items: center; }
     #roadmap .step-circle { grid-row: 1 / span 2; margin-bottom: 0; }
@@ -89,9 +85,8 @@
     #deck .layout-cover { justify-content: flex-start; padding-top: 12vh; }
     #deck .layout-cover h1 { max-width: none; font-size: clamp(2.3rem, 7.5vw, 3rem); }
     .fine-print { padding-right: 0; }
-    .claim-layout, .map, .map-branch, .evidence, .path, .ask-layout { grid-template-columns: 1fr; gap: 0.8rem; }
-    .claim { padding: 1.2rem; }
-    .map > .flow-arrow, .path .flow-arrow { transform: rotate(90deg); }
+    .map, .map-branch, .evidence, .ask-layout { grid-template-columns: 1fr; gap: 0.8rem; }
+    .map > .flow-arrow { transform: rotate(90deg); }
     .map-yes { text-align: center; }
     .check-table, .case-table, .check-table tbody, .case-table tbody { display: block; }
     .check-table thead, .case-table thead { display: none; }
@@ -143,20 +138,9 @@
   <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">Why &middot; The problem</span></div>
   <div class="slide-content">
     <h2>&ldquo;Done&rdquo; is where checking starts.</h2>
-    <p class="lede">The Monday sales report again. In the brief, you agreed that returns reduce sales.</p>
+    <p class="lede">The Monday sales report again. In the brief, you agreed that returns reduce sales. The agent says: &ldquo;Done. All regions checked.&rdquo;</p>
     <div class="body-center">
-      <div class="claim-layout">
-        <div class="claim"><div class="col-label">The agent says</div><blockquote>&ldquo;Done. All regions checked.&rdquo;</blockquote></div>
-        <table class="fact-table" aria-label="East, last week: orders 48,200 dollars, returns 2,300 dollars, so sales should be 45,900 dollars. The report says 48,200 dollars.">
-          <thead><tr><th scope="col">East &middot; last week</th><th scope="col"></th></tr></thead>
-          <tbody>
-            <tr><td>Orders (source)</td><td>$48,200</td></tr>
-            <tr><td>Returns (source)</td><td>&minus; $2,300</td></tr>
-            <tr class="row-key"><td>Sales should be</td><td>$45,900</td></tr>
-            <tr class="row-wrong"><td>The report says</td><td>$48,200</td></tr>
-          </tbody>
-        </table>
-      </div>
+      <div class="figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="Compare the East sales figure of 48,200 in the report with the source calculation: orders 48,200 minus returns 2,300 equals sales 45,900. Other report values are omitted." style="font-family:Inter,Arial,sans-serif"><rect x="140" y="32" width="320" height="270" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="162" y="66" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Sales report · last week</text><text x="164" y="112" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">North</text><path d="M376 107 h62" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><text x="164" y="155" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">South</text><path d="M376 150 h62" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><rect x="152" y="171" width="296" height="37" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--accent-light)"/><text x="164" y="198" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">East</text><text x="438" y="198" font-size="21" fill="var(--primary)" text-anchor="end" font-weight="400">$48,200</text><text x="164" y="241" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">West</text><path d="M376 236 h62" stroke="var(--text-light)" stroke-width="4" stroke-linecap="round"/><path d="M500 187 h80 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><rect x="620" y="32" width="320" height="270" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="642" y="66" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">East · source records</text><text x="644" y="112" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Orders</text><text x="918" y="112" font-size="21" fill="var(--text)" text-anchor="end" font-weight="400">$48,200</text><text x="644" y="155" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Returns</text><text x="918" y="155" font-size="21" fill="var(--text)" text-anchor="end" font-weight="400">− $2,300</text><path d="M642 177 h276" stroke="var(--text-light)" stroke-width="1" stroke-linecap="round"/><rect x="632" y="195" width="296" height="43" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--accent-light)"/><text x="644" y="224" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Sales</text><text x="918" y="224" font-size="21" fill="var(--primary)" text-anchor="end" font-weight="400">$45,900</text><text x="300" y="347" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">What it reported</text><text x="780" y="347" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">Orders minus returns</text></svg></div>
       <p class="split-highlight bottom-highlight">The agent sounded sure, and it was still wrong. A confident &ldquo;done&rdquo; is not evidence.</p>
       <p class="fine-print">One reason agents sound sure: many tests used to score AI models give points for a right guess and nothing for &ldquo;I don&rsquo;t know.&rdquo;</p>
     </div>
@@ -238,9 +222,7 @@
     <h2>Step 3: If it could be anywhere else, fix the cause.</h2>
     <blockquote class="say"><span class="say-label">You ask</span>&ldquo;Where did this first go wrong, and what else uses that step?&rdquo;</blockquote>
     <div class="body-center">
-      <div class="path" aria-label="East is wrong. The first wrong step is a calculation that skips returns. Every region uses it. Fix the calculation and recheck all regions in both weeks.">
-        <div class="path-stage"><span>You saw</span>East is wrong</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage"><span>First wrong step</span>The calculation skips returns</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage"><span>What else uses it</span>Every region</div><span class="flow-arrow" aria-hidden="true">&rarr;</span><div class="path-stage path-stage--result"><span>Fix and recheck</span>All regions, both weeks</div>
-      </div>
+      <div class="figure"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1080 390" role="img" aria-label="The orders and returns feed one shared calculation, the first wrong step, which feeds all four report regions. Replace the faulty orders-only calculation with orders minus returns, then recheck every region." style="font-family:Inter,Arial,sans-serif"><text x="55" y="76" font-size="15" fill="var(--text-muted)" font-weight="600" letter-spacing="1.2">SOURCE</text><rect x="55" y="93" width="225" height="170" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="77" y="127" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Original records</text><text x="78" y="166" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Orders</text><text x="78" y="216" font-size="21" fill="var(--text)" text-anchor="start" font-weight="400">Returns</text><path d="M308 178 h60 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><text x="399" y="76" font-size="15" fill="var(--primary)" font-weight="600" letter-spacing="1.2">FIRST WRONG STEP</text><rect x="399" y="93" width="287" height="170" rx="5" stroke="var(--primary)" stroke-width="1.5" fill="var(--bg)"/><text x="421" y="130" font-size="18" fill="var(--text-muted)" text-anchor="start" font-weight="400">Calculation</text><text x="421" y="171" font-size="21" fill="var(--text-light)" text-anchor="start" font-weight="400">Sales = orders</text><path d="M420 164 h145" stroke="var(--text-muted)" stroke-width="1.4" stroke-linecap="round"/><text x="421" y="229" font-size="23" fill="var(--primary)" text-anchor="start" font-weight="400">Orders − returns</text><path d="M712 178 h60 m-10 -8 l11 8 -11 8" fill="none" stroke="var(--primary)" stroke-width="2"/><text x="801" y="20" font-size="15" fill="var(--text-muted)" font-weight="600" letter-spacing="1.2">EVERY REGION USES IT</text><rect x="801" y="32" width="245" height="270" rx="5" stroke="var(--text-light)" stroke-width="1.5" fill="var(--bg)"/><text x="823" y="66" font-size="18" fill="var(--text)" text-anchor="start" font-weight="400">Sales report</text><text x="825" y="112" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">North</text><path d="M951 107 h68" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/><text x="825" y="155" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">South</text><path d="M951 150 h68" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/><text x="825" y="198" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">East</text><path d="M951 193 h68" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/><text x="825" y="241" font-size="20" fill="var(--text)" text-anchor="start" font-weight="400">West</text><path d="M951 236 h68" stroke="var(--primary)" stroke-width="3" stroke-linecap="round"/><text x="542" y="323" font-size="23" fill="var(--primary)" text-anchor="middle" font-weight="400">Fix the shared calculation, then recheck all regions</text></svg></div>
       <p class="split-highlight bottom-highlight">Fix where it started, not just where you saw it.</p>
       <p class="fine-print">Don&rsquo;t loosen a check just to get a pass.</p>
     </div>
