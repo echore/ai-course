@@ -38,7 +38,7 @@
   .brief-table td, .case-table td { padding: 0.75rem 1rem; border-top: 1px solid var(--border); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.45; vertical-align: top; }
   .brief-table tr:nth-child(even) td, .case-table tr:nth-child(even) td { background: var(--card-bg); }
   .brief-table td:first-child { width: 18%; font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
-  .case-table th:first-child { width: 48%; }
+  .case-table th:first-child { width: 28%; }
   .case-table td:nth-child(2), .case-table td:nth-child(3) { color: var(--text-muted); }
   .case-table td:last-child { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
   .say + .brief-table { margin-top: 1rem; }
@@ -204,7 +204,7 @@
           </div>
           <div class="map-branch">
             <p class="map-q">Could it do damage?</p><span class="map-yes">Yes &rarr;</span>
-            <div class="map-step map-step--opt"><span class="step-circle">4</span><div><strong>Work on a copy</strong><p>And keep it asking you.</p></div></div>
+            <div class="map-step map-step--opt"><span class="step-circle">4</span><div><strong>Keep a saved version</strong><p>A document copy or a Git commit.</p></div></div>
           </div>
         </div>
       </div>
@@ -304,74 +304,61 @@
   </div>
 </section>
 
-<!-- 8 · Step 4: limits when the task can do damage -->
-<section class="slide" id="step-4" data-label="Step 4: Work on a copy">
-  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Step 4 &middot; If it could do damage</span></div>
+<!-- 8 · Step 4: keep a version you can return to -->
+<section class="slide" id="step-4" data-label="Step 4: Keep a saved version">
+  <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">Step 4 &middot; Before editing</span></div>
   <div class="slide-content">
-    <h2>Step 4: If it could do damage, work on a copy and keep it asking.</h2>
-    <p class="lede">Could it change, delete, or send something that&rsquo;s hard to undo? If so, do both.</p>
+    <h2>Keep a version you can return to.</h2>
     <div class="split-body">
       <div class="split-left">
-        <svg viewBox="0 0 460 290" role="img" aria-label="The original file is left as it was. The agent makes its changes, shown as blue lines, on a copy. Before an edit, a permission box asks: allow this edit? Yes or No.">
-          <defs>
-            <marker id="s4-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="head"/></marker>
-          </defs>
-          <!-- original -->
-          <text x="20" y="22" font-size="13.5" class="label label--dim">ORIGINAL</text>
-          <path d="M 20 34 L 150 34 L 170 54 L 170 224 L 20 224 Z" class="paper"/>
-          <g class="ln">
-            <rect x="36" y="66" width="110" height="6" rx="3"/><rect x="36" y="84" width="96" height="6" rx="3"/>
-            <rect x="36" y="102" width="118" height="6" rx="3"/><rect x="36" y="120" width="88" height="6" rx="3"/>
-            <rect x="36" y="138" width="112" height="6" rx="3"/><rect x="36" y="156" width="100" height="6" rx="3"/>
-            <rect x="36" y="174" width="116" height="6" rx="3"/><rect x="36" y="192" width="92" height="6" rx="3"/>
-          </g>
-          <text x="95" y="252" text-anchor="middle" font-size="15" class="body-text">Left as it was</text>
-          <!-- copy -->
-          <line x1="178" y1="128" x2="204" y2="128" class="flow" marker-end="url(#s4-head)"/>
-          <text x="212" y="22" font-size="13.5" class="label">COPY</text>
-          <path d="M 212 34 L 342 34 L 362 54 L 362 224 L 212 224 Z" class="paper paper--on"/>
-          <path d="M 342 34 L 342 54 L 362 54" class="fold"/>
-          <g class="ln">
-            <rect x="228" y="66" width="110" height="6" rx="3"/><rect x="228" y="102" width="118" height="6" rx="3"/>
-            <rect x="228" y="120" width="88" height="6" rx="3"/>
-          </g>
-          <rect x="228" y="84" width="96" height="6" rx="3" class="ln-on"/>
-          <rect x="228" y="138" width="80" height="6" rx="3" class="ln-on"/>
-          <!-- permission prompt -->
-          <rect x="268" y="152" width="182" height="96" rx="10" class="dialog"/>
-          <text x="284" y="180" font-size="15" font-weight="600">Allow this edit?</text>
-          <rect x="284" y="196" width="70" height="34" rx="8" class="btn"/>
-          <text x="319" y="218" text-anchor="middle" font-size="15" class="btn-text">Yes</text>
-          <rect x="366" y="196" width="70" height="34" rx="8" class="btn--ghost"/>
-          <text x="401" y="218" text-anchor="middle" font-size="15">No</text>
-          <text x="359" y="272" text-anchor="middle" font-size="15" class="body-text">The tool asks you first</text>
+        <svg viewBox="0 0 460 320" role="img" aria-label="Documents: keep the original and edit a working copy. Code: commit the current version in Git, make edits, then compare the changes with the saved version.">
+          <defs><marker id="s4-head" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M0 0 L10 5 L0 10 z" class="head"/></marker></defs>
+          <text x="20" y="22" font-size="13.5" class="label">DOCUMENTS</text>
+          <rect x="20" y="40" width="150" height="120" rx="10" class="paper"/>
+          <text x="95" y="68" text-anchor="middle" font-size="16" font-weight="600">Original</text>
+          <g class="ln"><rect x="40" y="86" width="110" height="6" rx="3"/><rect x="40" y="104" width="90" height="6" rx="3"/><rect x="40" y="122" width="100" height="6" rx="3"/></g>
+          <line x1="184" y1="100" x2="264" y2="100" class="flow" marker-end="url(#s4-head)"/>
+          <rect x="280" y="40" width="160" height="120" rx="10" class="paper paper--on"/>
+          <text x="360" y="68" text-anchor="middle" font-size="16" font-weight="600">Working copy</text>
+          <g class="ln"><rect x="300" y="86" width="110" height="6" rx="3"/><rect x="300" y="122" width="100" height="6" rx="3"/></g>
+          <rect x="300" y="104" width="120" height="6" rx="3" class="ln-on"/>
+          <text x="95" y="184" text-anchor="middle" font-size="14" class="body-text">Keep unchanged</text>
+          <text x="360" y="184" text-anchor="middle" font-size="14" class="body-text">Edit this copy</text>
+          <text x="20" y="224" font-size="13.5" class="label">CODE</text>
+          <rect x="20" y="242" width="116" height="56" rx="10" class="paper paper--on"/>
+          <text x="78" y="276" text-anchor="middle" font-size="16" font-weight="600">Git commit</text>
+          <line x1="146" y1="270" x2="178" y2="270" class="flow" marker-end="url(#s4-head)"/>
+          <rect x="188" y="242" width="100" height="56" rx="10" class="paper"/>
+          <text x="238" y="276" text-anchor="middle" font-size="16">Edit</text>
+          <line x1="298" y1="270" x2="330" y2="270" class="flow" marker-end="url(#s4-head)"/>
+          <rect x="340" y="242" width="100" height="56" rx="10" class="paper paper--on"/>
+          <text x="390" y="276" text-anchor="middle" font-size="16" font-weight="600">Compare</text>
         </svg>
       </div>
       <div class="split-right">
-        <div class="card"><div class="card-name">Say it: in your request</div><p class="card-body">&ldquo;Work on a copy. Don&rsquo;t edit the original files. Don&rsquo;t send anything.&rdquo;<span class="example">This guides the agent. It usually follows it, but the tool doesn&rsquo;t enforce it.</span></p></div>
-        <div class="card"><div class="card-name">Set it: in permissions</div><p class="card-body">Keep Manual mode on, so the agent asks you before most edits and commands.<span class="example">Claude Code enforces this, not the agent. See Module 2b.</span></p></div>
+        <div class="card"><div class="card-name">Documents and spreadsheets</div><p class="card-body">Make a copy first. Have the agent edit the copy.</p></div>
+        <div class="card"><div class="card-name">Code</div><p class="card-body">Commit the current version in Git before the agent edits it. Review the changes before committing again.</p></div>
       </div>
     </div>
-    <p class="split-highlight">Permissions lower the risk. Still read what the agent asks before you approve it.</p>
+    <p class="split-highlight">Compare the result with the saved version before using it.</p>
   </div>
 </section>
 
-<!-- 9 · Practice: which steps does each task need -->
-<section class="slide" id="practice" data-label="Which steps you need">
+<!-- 9 · Practice: concrete requests for each task -->
+<section class="slide" id="practice" data-label="What to ask the agent">
   <div class="slide-header"><h4>Module 4 &middot; Preview</h4><span class="tag">When &middot; Practice</span></div>
   <div class="slide-content">
-    <h2>Which steps does this task need?</h2>
+    <h2>What would you ask the agent to do?</h2>
     <div class="body-center">
       <table class="case-table">
-        <thead><tr><th scope="col">The task</th><th scope="col">Big?</th><th scope="col">Could do damage?</th><th scope="col">Steps</th></tr></thead>
+        <thead><tr><th scope="col">The Task</th><th scope="col">What to Say</th></tr></thead>
         <tbody>
-          <tr><td>Summarize an article in five bullets</td><td data-mobile-label="Big?">No</td><td data-mobile-label="Could do damage?">No</td><td data-mobile-label="Steps">1 &rarr; 2</td></tr>
-          <tr><td>Build the Monday report for the first time</td><td data-mobile-label="Big?">Yes</td><td data-mobile-label="Could do damage?">No</td><td data-mobile-label="Steps">1 &rarr; 2 &rarr; 3</td></tr>
-          <tr><td>Remove duplicate rows from the shared customer list</td><td data-mobile-label="Big?">No</td><td data-mobile-label="Could do damage?">Yes</td><td data-mobile-label="Steps">1 &rarr; 2 &rarr; 4</td></tr>
-          <tr><td>Reorganize the whole sales folder</td><td data-mobile-label="Big?">Yes</td><td data-mobile-label="Could do damage?">Yes</td><td data-mobile-label="Steps">1 &rarr; 2 &rarr; 3 &rarr; 4</td></tr>
+          <tr><td>Summarize an article</td><td data-mobile-label="What to Say">&ldquo;Summarize this article in five bullets. Ask me if the audience is unclear.&rdquo;</td></tr>
+          <tr><td>Build the first Monday report</td><td data-mobile-label="What to Say">&ldquo;Make a one-page report for the sales team. Ask which figures matter, then propose a plan and draft one section.&rdquo;</td></tr>
+          <tr><td>Remove duplicate customer rows</td><td data-mobile-label="What to Say">&ldquo;Make a copy of the customer list. Find rows with the same email address and show them to me before removing any.&rdquo;</td></tr>
+          <tr><td>Reorganize the sales folder</td><td data-mobile-label="What to Say">&ldquo;Copy the folder first. Ask how I want it organized, propose a structure, and try it on one subfolder.&rdquo;</td></tr>
         </tbody>
       </table>
-      <p class="split-highlight bottom-highlight">Steps 1 and 2 every time. Each yes adds one step.</p>
     </div>
   </div>
 </section>
@@ -386,22 +373,18 @@
     <div class="card"><span class="step-circle">1</span><div class="card-name">Say what done looks like</div><p class="card-body">Make, for, use, done means.</p></div>
     <div class="card"><span class="step-circle">2</span><div class="card-name">Ask, don&rsquo;t guess</div><p class="card-body">Unclear choices get asked, not guessed.</p></div>
     <div class="card"><span class="step-circle">3</span><div class="card-name">Plan and start small</div><p class="card-body">If it&rsquo;s big.</p></div>
-    <div class="card"><span class="step-circle">4</span><div class="card-name">Work on a copy</div><p class="card-body">If it could do damage. Keep it asking.</p></div>
+    <div class="card"><span class="step-circle">4</span><div class="card-name">Keep a saved version</div><p class="card-body">Copy documents. Commit code in Git before editing.</p></div>
   </div>
   <p class="closing-note">Next: checking what comes back.</p>
 </section>
 </div>
 <!-- Instructor references (not student-facing):
   https://code.claude.com/docs/en/best-practices
-  https://code.claude.com/docs/en/permissions
-    "Permission rules are enforced by Claude Code, not by the model. Instructions in your prompt or
-    CLAUDE.md shape what Claude tries to do, but they don't change what Claude Code allows."
-    The same page notes that rules can miss a command written another way (e.g. git -C . push),
-    so the slide avoids calling permissions a guarantee.
+  https://support.google.com/docs/answer/49114?hl=en (Make a copy)
+  https://git-scm.com/book/en/v2/Git-Basics-Recording-Changes-to-the-Repository (Commit snapshots)
   https://developers.openai.com/cookbook/articles/codex_exec_plans
-  https://developers.openai.com/api/docs/guides/agents/guardrails-approvals
   The four-step triage and the "check it in a few minutes" test for a big task are a teaching
-  synthesis, not a vendor-defined standard. Permission modes differ between agent tools.
+  synthesis, not a vendor-defined standard.
 -->
 </body>
 </html>
