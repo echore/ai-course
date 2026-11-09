@@ -39,9 +39,7 @@
   .case-table th:nth-child(2), .case-table th:nth-child(3) { width: 14%; }
   .case-table td:nth-child(2), .case-table td:nth-child(3) { color: var(--text-muted); }
   .do-list { margin: 0; padding-left: 2.2em; }
-  .do-list li { margin: 0.15rem 0; font-size: inherit; line-height: inherit; color: inherit; }
-  .do-list .do-range { list-style-type: "1\2013 3.  "; }
-  .do-list li::marker { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+  .do-list li { margin: 0.15rem 0; font-size: inherit; line-height: inherit; color: inherit; }  .do-list li::marker { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
   .verdict { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 6px; font: 700 clamp(0.8rem, 0.95vw, 0.9rem)/1.4 'Space Grotesk', sans-serif; letter-spacing: 0.06em; }
   .verdict--pass { background: var(--accent-light); color: var(--primary); }
   .verdict--fail { background: var(--text); color: var(--bg); }
@@ -266,12 +264,12 @@
       <table class="case-table">
         <thead><tr><th scope="col">The mistake</th><th scope="col">Could it be anywhere else?</th><th scope="col">Will it come back next time?</th><th scope="col">What you do</th></tr></thead>
         <tbody>
-          <tr><td>A typo in the report title</td><td data-mobile-label="Could it be anywhere else?">No</td><td data-mobile-label="Will it come back next time?">No</td><td data-mobile-label="What you do"><ol class="do-list"><li>Check the report against the source sheets.</li><li>Tell the agent what the title should say.</li></ol></td></tr>
-          <tr><td>East is wrong because the calculation skips returns, in a one-time report</td><td data-mobile-label="Could it be anywhere else?">Yes</td><td data-mobile-label="Will it come back next time?">No</td><td data-mobile-label="What you do"><ol class="do-list"><li>Check the report against the source sheets.</li><li>Tell the agent: expected $45,900, got $48,200, here are the source rows.</li><li>Fix the sales calculation, then recheck every region.</li></ol></td></tr>
-          <tr><td>The same mistake in the weekly report</td><td data-mobile-label="Could it be anywhere else?">Yes</td><td data-mobile-label="Will it come back next time?">Yes</td><td data-mobile-label="What you do"><ol class="do-list"><li class="do-range">Do everything in the row above.</li><li value="4">Add to CHECKLIST.md: &ldquo;Every region&rsquo;s sales equal orders minus returns.&rdquo;</li></ol></td></tr>
+          <tr><td>A typo in the report title</td><td data-mobile-label="Could it be anywhere else?">No</td><td data-mobile-label="Will it come back next time?">No</td><td data-mobile-label="What you do"><ol class="do-list"><li>Tell the agent to fix it.</li></ol></td></tr>
+          <tr><td>East is wrong because the calculation skips returns, in a one-time report</td><td data-mobile-label="Could it be anywhere else?">Yes</td><td data-mobile-label="Will it come back next time?">No</td><td data-mobile-label="What you do"><ol class="do-list"><li>Tell the agent where it&rsquo;s wrong.</li><li>Have it recheck every region.</li></ol></td></tr>
+          <tr><td>The same mistake in the weekly report</td><td data-mobile-label="Could it be anywhere else?">Yes</td><td data-mobile-label="Will it come back next time?">Yes</td><td data-mobile-label="What you do"><ol class="do-list"><li>Do the same as the row above.</li><li value="4">Add to CHECKLIST.md: &ldquo;Every region&rsquo;s sales equal orders minus returns.&rdquo;</li></ol></td></tr>
         </tbody>
       </table>
-      <p class="split-highlight bottom-highlight">Always check it and say what&rsquo;s wrong. Each yes adds one more thing to do.</p>
+      <p class="split-highlight bottom-highlight">Always tell it what&rsquo;s wrong. Each yes adds one more thing to do.</p>
     </div>
   </div>
 </section>
