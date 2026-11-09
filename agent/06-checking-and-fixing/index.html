@@ -35,9 +35,13 @@
   .check-table tr:nth-child(even) td, .case-table tr:nth-child(even) td { background: var(--card-bg); }
   .check-table th:first-child { width: 34%; }
   .check-table th:nth-child(2) { width: 46%; }
-  .case-table th:first-child { width: 44%; }
+  .case-table th:first-child { width: 26%; }
+  .case-table th:nth-child(2), .case-table th:nth-child(3) { width: 14%; }
   .case-table td:nth-child(2), .case-table td:nth-child(3) { color: var(--text-muted); }
-  .case-table td:last-child { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
+  .do-list { margin: 0; padding-left: 1.4em; }
+  .do-list li { margin: 0.15rem 0; }
+  .do-list .do-range { list-style-type: "1\2013 3.  "; }
+  .do-list li::marker { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
   .verdict { display: inline-block; padding: 0.15rem 0.6rem; border-radius: 6px; font: 700 clamp(0.8rem, 0.95vw, 0.9rem)/1.4 'Space Grotesk', sans-serif; letter-spacing: 0.06em; }
   .verdict--pass { background: var(--accent-light); color: var(--primary); }
   .verdict--fail { background: var(--text); color: var(--bg); }
@@ -257,17 +261,17 @@
 <section class="slide" id="practice" data-label="Which steps you need">
   <div class="slide-header"><h4>Module 5 &middot; Preview</h4><span class="tag">When &middot; Practice</span></div>
   <div class="slide-content">
-    <h2>Which steps does this mistake need?</h2>
+    <h2>What do you do about this mistake?</h2>
     <div class="body-center">
       <table class="case-table">
-        <thead><tr><th scope="col">The mistake</th><th scope="col">Anywhere else?</th><th scope="col">Come back?</th><th scope="col">Steps</th></tr></thead>
+        <thead><tr><th scope="col">The mistake</th><th scope="col">Could it be anywhere else?</th><th scope="col">Will it come back next time?</th><th scope="col">What you do</th></tr></thead>
         <tbody>
-          <tr><td>A typo in the report title</td><td data-mobile-label="Anywhere else?">No</td><td data-mobile-label="Come back?">No</td><td data-mobile-label="Steps">1 &rarr; 2</td></tr>
-          <tr><td>East is wrong because the calculation skips returns, in a one-time report</td><td data-mobile-label="Anywhere else?">Yes</td><td data-mobile-label="Come back?">No</td><td data-mobile-label="Steps">1 &rarr; 2 &rarr; 3</td></tr>
-          <tr><td>The same mistake in the weekly report</td><td data-mobile-label="Anywhere else?">Yes</td><td data-mobile-label="Come back?">Yes</td><td data-mobile-label="Steps">1 &rarr; 2 &rarr; 3 &rarr; 4</td></tr>
+          <tr><td>A typo in the report title</td><td data-mobile-label="Could it be anywhere else?">No</td><td data-mobile-label="Will it come back next time?">No</td><td data-mobile-label="What you do"><ol class="do-list"><li>Check the report against the source sheets.</li><li>Tell the agent what the title should say.</li></ol></td></tr>
+          <tr><td>East is wrong because the calculation skips returns, in a one-time report</td><td data-mobile-label="Could it be anywhere else?">Yes</td><td data-mobile-label="Will it come back next time?">No</td><td data-mobile-label="What you do"><ol class="do-list"><li>Check the report against the source sheets.</li><li>Tell the agent: expected $45,900, got $48,200, here are the source rows.</li><li>Fix the sales calculation, then recheck every region.</li></ol></td></tr>
+          <tr><td>The same mistake in the weekly report</td><td data-mobile-label="Could it be anywhere else?">Yes</td><td data-mobile-label="Will it come back next time?">Yes</td><td data-mobile-label="What you do"><ol class="do-list"><li class="do-range">Do everything in the row above.</li><li value="4">Add to CHECKLIST.md: &ldquo;Every region&rsquo;s sales equal orders minus returns.&rdquo;</li></ol></td></tr>
         </tbody>
       </table>
-      <p class="split-highlight bottom-highlight">Steps 1 and 2 every time. Each yes adds one step.</p>
+      <p class="split-highlight bottom-highlight">Always check it and say what&rsquo;s wrong. Each yes adds one more thing to do.</p>
     </div>
   </div>
 </section>
