@@ -68,15 +68,14 @@
   .blank small { font-size: clamp(0.95rem, 1.15vw, 1.05rem); color: var(--text-muted); }
 
   /* When: practice */
-  .two-q { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
-  .two-q .question { margin: 0; }
-  .case-table { width: 100%; border-collapse: separate; border-spacing: 0; text-align: left; }
-  .case-table th { padding: 0.55rem 1rem; font: 600 clamp(0.85rem, 1vw, 1rem)/1.35 'Space Grotesk', sans-serif; color: var(--primary); }
-  .case-table td { padding: 0.65rem 1rem; border-top: 1px solid var(--border); font-size: clamp(1rem, 1.25vw, 1.15rem); line-height: 1.4; vertical-align: top; }
-  .case-table tr:nth-child(even) td { background: var(--card-bg); }
-  .case-table td:last-child { font-family: 'Space Grotesk', sans-serif; font-weight: 600; color: var(--primary); }
-  .case-table td.no-fit { color: var(--text-muted); }
-  .case-table th:first-child { width: 55%; }
+  .spectrum-bar { height: 10px; border-radius: 5px; background: linear-gradient(90deg, var(--accent-light), var(--primary)); margin: 0.2rem 0 1rem; }
+  .spectrum { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.3rem; }
+  .zone { display: flex; flex-direction: column; }
+  .zone .card-name { font-size: clamp(1.1rem, 1.5vw, 1.4rem); }
+  .zone-note { margin: 0.25rem 0 0.7rem; font-size: clamp(0.95rem, 1.15vw, 1.05rem); line-height: 1.4; color: var(--text-muted); }
+  .zone ul { list-style: none; margin: 0; padding: 0; }
+  .zone li { padding: 0.55rem 0; border-top: 1px solid var(--border); font-size: clamp(1rem, 1.3vw, 1.2rem); line-height: 1.4; color: var(--text); }
+  .zone--on { border: 2px solid var(--primary); }
 
   /* Takeaway */
   #deck .layout-closing h1 { max-width: 80vw; font-size: clamp(2rem, 3.6vw, 3.2rem); }
@@ -102,14 +101,9 @@
     #deck .split-left { height: auto; }
     #deck .split-left svg { max-height: none; }
     #deck .split-right { padding-left: 0; border-left: none; }
-    .jobs, .map, .two-q, .blanks { grid-template-columns: 1fr; gap: 0.8rem; }
+    .jobs, .map, .spectrum, .blanks { grid-template-columns: 1fr; gap: 0.8rem; }
     .map > .flow-arrow { transform: rotate(90deg); }
-    .case-table, .case-table tbody { display: block; }
-    .case-table thead { display: none; }
-    .case-table tr { display: block; margin-bottom: 0.8rem; border: 1px solid var(--border); border-radius: 12px; overflow: hidden; }
-    .case-table td { display: block; padding: 0.65rem 0.9rem; }
-    .case-table td:first-child { border-top: none; background: var(--accent-light); font-family: 'Space Grotesk', sans-serif; font-weight: 600; }
-    .case-table td[data-mobile-label]::before { content: attr(data-mobile-label); display: block; font: 600 0.75rem 'Space Grotesk', sans-serif; color: var(--text-muted); margin-bottom: 0.2rem; }
+    .spectrum-bar { display: none; }
     #deck .layout-closing { justify-content: flex-start; padding-top: 3rem; }
     #deck .layout-closing h1 { max-width: none; }
     #deck .closing-grid { grid-template-columns: 1fr; width: 100%; }
@@ -404,22 +398,27 @@
 <section class="slide" id="practice" data-label="Which agent fits">
   <div class="slide-header"><h4>Module 6 &middot; Preview</h4><span class="tag">When &middot; Practice</span></div>
   <div class="slide-content">
-    <h2>Which agent fits?</h2>
-    <div class="two-q">
-      <p class="question">Does it need to happen when you&rsquo;re not there?<small>No? A regular agent is enough.</small></p>
-      <p class="question">Is it low-risk enough to run without you watching?<small>No? Let it prepare the work, and do the last step yourself.</small></p>
+    <h2>There&rsquo;s no hard line between them.</h2>
+    <p class="lede">The more a job repeats, and the more it should happen while you&rsquo;re away, the further right it goes.</p>
+    <div class="spectrum-bar" aria-hidden="true"></div>
+    <div class="spectrum">
+      <div class="card zone">
+        <div class="card-name">Regular agent</div>
+        <p class="zone-note">You&rsquo;re there. It&rsquo;s a one-off.</p>
+        <ul><li>Rewrite this email</li><li>Explain this error message</li><li>Plan a trip with me</li></ul>
+      </div>
+      <div class="card zone">
+        <div class="card-name">Either works</div>
+        <p class="zone-note">Ask when you sit down, or have it ready every weekday at 8.</p>
+        <ul><li>Summarize my inbox</li><li>Prep me for today&rsquo;s meetings</li><li>Catch me up on AI news</li></ul>
+      </div>
+      <div class="card zone zone--on">
+        <div class="card-name">Always-on</div>
+        <p class="zone-note">It keeps watching while you&rsquo;re away.</p>
+        <ul><li>Tell me when this flight&rsquo;s price drops</li><li>When my manager emails me a to-do, draft a reply</li></ul>
+      </div>
     </div>
-    <table class="case-table">
-      <thead><tr><th scope="col">Task</th><th scope="col">Use</th></tr></thead>
-      <tbody>
-        <tr><td>Summarize an article</td><td data-mobile-label="Use">Regular agent</td></tr>
-        <tr><td>Build the Monday report for the first time</td><td data-mobile-label="Use">Regular agent: get it right by hand first</td></tr>
-        <tr><td>Draft the report every Monday</td><td data-mobile-label="Use">Always-on</td></tr>
-        <tr><td>Tell me when the sales lead asks for a change</td><td data-mobile-label="Use">Always-on</td></tr>
-        <tr><td>Email the report to every client each Monday</td><td data-mobile-label="Use">Always-on drafts it. You send it.</td></tr>
-        <tr><td>Tell me the moment tickets go on sale</td><td data-mobile-label="Use" class="no-fit">Neither fits well: a run can start late</td></tr>
-      </tbody>
-    </table>
+    <p class="fine-print">Neither fits: &ldquo;Tell me the moment tickets go on sale.&rdquo; A run can start a little late.</p>
   </div>
 </section>
 
