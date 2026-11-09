@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="AI Foundations Week 3 pre-class: run and understand your first Python Resume Analyzer.">
+  <title>Week 3 Pre-class · Your First Python Project — AI Foundations</title>
+  <link rel="stylesheet" href="../../shared/theme.css">
+  <style>
+    /* Page-local styles only. Uses the shared course design tokens. */
+    body.catalog { min-height:100vh; }
+    .guide {max-width:940px; margin:0 auto; padding:48px 22px 96px;}
+    .eyebrow {font:600 .8rem 'Space Grotesk',sans-serif;letter-spacing:.11em;text-transform:uppercase;color:var(--primary);}
+    .hero {padding:38px 0 26px;border-bottom:1px solid var(--border);}
+    .hero h1 {font-size:clamp(2.3rem,5vw,4rem); max-width:760px;margin:14px 0;}
+    .hero p {font-size:1.08rem;max-width:760px;}
+    .pill-row {display:flex;gap:8px;flex-wrap:wrap;margin:20px 0 8px;}
+    .pill {display:inline-block;border:1px solid var(--border);color:var(--primary);background:var(--accent-light);padding:7px 12px;border-radius:100px;font:600 .77rem 'Space Grotesk',sans-serif;}
+    .intro-grid {display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:25px;}
+    .intro-grid .card {padding:18px;}
+    .intro-grid strong {display:block;color:var(--primary);margin-bottom:7px;font:600 1rem 'Space Grotesk',sans-serif;}
+    .intro-grid p {font-size:.9rem;}
+    .section {padding:32px 0;border-bottom:1px solid var(--border);scroll-margin-top:20px;}
+    .section h2 {font-size:clamp(1.6rem,3vw,2.3rem);margin:7px 0 12px;}
+    .section h3 {font-size:1.2rem;margin:25px 0 9px;}
+    .section p {margin:10px 0;}
+    .kicker {font:600 .79rem 'Space Grotesk',sans-serif;letter-spacing:.07em;text-transform:uppercase;color:var(--primary);}
+    .note {border-left:4px solid var(--primary);padding:13px 18px;background:var(--accent-light);margin:18px 0;border-radius:0 10px 10px 0;}
+    .note p {margin:0;color:var(--text);}
+    .steps {padding-left:1.4rem;margin:12px 0 18px;}
+    .steps li {padding:3px 0;}
+    .code-card {border:1px solid var(--border);border-radius:12px;overflow:hidden;margin:18px 0;background:var(--card-bg);}
+    .code-top {display:flex;justify-content:space-between;align-items:center;gap:10px;padding:11px 14px;border-bottom:1px solid var(--border);font:600 .86rem 'Space Grotesk',sans-serif;color:var(--primary);}
+    .copy-btn,.action {border:1px solid var(--primary);border-radius:8px;cursor:pointer;font:600 .86rem 'Space Grotesk',sans-serif;padding:8px 12px;background:var(--primary);color:var(--bg);}
+    .copy-btn:hover,.action:hover {opacity:.88;}
+    .copy-btn:focus-visible,.action:focus-visible,input:focus-visible {outline:3px solid var(--primary);outline-offset:3px;}
+    pre {padding:18px;overflow-x:auto;white-space:pre;font: .91rem/1.62 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text);tab-size:4;}
+    code {font: .94em ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;color:var(--text);}
+    p code,li code {background:var(--accent-light);padding:1px 5px;border-radius:4px;}
+    .files {display:flex;flex-direction:column;gap:9px;margin:15px 0;}
+    .file {border:1px solid var(--border);border-radius:9px;padding:12px 15px;display:flex;justify-content:space-between;gap:12px;background:var(--card-bg);font-family:ui-monospace,monospace;}
+    .file span {color:var(--text-muted);font: .83rem 'Inter',sans-serif;}
+    .checks {display:grid;gap:11px;margin:18px 0;}
+    .checks label {display:flex;gap:11px;align-items:flex-start;border:1px solid var(--border);border-radius:10px;padding:13px 14px;cursor:pointer;background:var(--card-bg);font-size:.95rem;line-height:1.5;}
+    .checks input {width:18px;height:18px;accent-color:var(--primary);flex-shrink:0;margin-top:2px;}
+    .quiz {display:grid;gap:14px;margin:18px 0;}
+    .question {border:1px solid var(--border);border-radius:10px;padding:18px;background:var(--card-bg);}
+    .question p {font-weight:600;color:var(--text);margin:0 0 12px;}
+    .question label {display:block;margin:9px 0;color:var(--text-muted);font-size:.95rem;}
+    .question input {margin-right:10px;accent-color:var(--primary);}
+    .feedback {margin-top:12px;font-size:.92rem;font-weight:500;color:var(--primary);min-height:1em;}
+    .footer-links {display:flex;gap:12px;flex-wrap:wrap;margin:25px 0;}
+    .footer-links a {color:var(--primary);font-weight:600;text-decoration:underline;text-underline-offset:3px;}
+    .status {font-size:.88rem;color:var(--text-muted);margin:10px 0;}
+    .hidden {display:none;}
+    @media(max-width:700px){.guide{padding:26px 15px 65px}.intro-grid{grid-template-columns:1fr}.file{flex-direction:column}.section{padding:26px 0} pre{font-size:.79rem;padding:13px}.hero{padding-top:15px}}
+    @media print {.copy-btn,.action{display:none}.guide{max-width:100%}.section{break-inside:avoid}.code-card{break-inside:avoid}}
+  </style>
+</head>
+<body class="catalog">
+<main class="guide">
+  <header class="hero">
+    <div class="eyebrow">AI Foundations · Week 03 · Pre-class lab</div>
+    <h1>Your First Python Resume Analyzer</h1>
+    <p>Open a real Python project, run it, change sample data, and learn to explain what the program does. No previous programming experience required.</p>
+    <div class="pill-row"><span class="pill">20–30 minutes</span><span class="pill">Hands-on</span><span class="pill">Copy-friendly instructions</span><span class="pill">Fictional data only</span></div>
+    <div class="intro-grid">
+      <div class="card"><strong>You will need</strong><p>VS Code, Python 3, and the ability to open a terminal. GitHub is <em>not</em> required yet.</p></div>
+      <div class="card"><strong>You'll create</strong><p>One Python script plus a JSON file. The program compares explicitly listed skills.</p></div>
+      <div class="card"><strong>Success looks like</strong><p>You can run the script, change an input, predict the output, and explain the files.</p></div>
+    </div>
+    <p class="status" id="progress-text" role="status">0 of 5 milestones complete</p>
+  </header>
+
+  <section class="section" id="prepare">
+    <div class="kicker">01 · Prepare · ~4 minutes</div>
+    <h2>Open your workspace</h2>
+    <ol class="steps">
+      <li>Open <strong>VS Code</strong>. Choose <strong>File → Open Folder</strong> and create/open a folder named <code>resume-analyzer-week3</code>.</li>
+      <li>In VS Code, choose <strong>Terminal → New Terminal</strong>.</li>
+      <li>Check Python by copying and running the appropriate command below.</li>
+    </ol>
+    <div class="code-card"><div class="code-top"><span>Mac terminal</span><button class="copy-btn" data-copy="mac-version">Copy</button></div><pre id="mac-version">python3 --version</pre></div>
+    <div class="code-card"><div class="code-top"><span>Windows terminal</span><button class="copy-btn" data-copy="win-version">Copy</button></div><pre id="win-version">py --version</pre></div>
+    <div class="note"><p><strong>Expected:</strong> a Python 3 version number. If Python isn't recognized, follow your course's environment setup instructions before continuing. The activity assumes Python and VS Code are installed.</p></div>
+    <div class="checks"><label><input type="checkbox" class="milestone" data-id="prepare"><span>I opened the correct folder and confirmed Python is available.</span></label></div>
+  </section>
+
+  <section class="section" id="create">
+    <div class="kicker">02 · Create files · ~7 minutes</div>
+    <h2>Create your project files</h2>
+    <p>In the VS Code Explorer, create the following two files <strong>in the same folder</strong>. File names must match exactly.</p>
+    <div class="files"><div class="file"><strong>resume_analyzer.py</strong><span>Python instructions</span></div><div class="file"><strong>sample_data.json</strong><span>Fictional candidate and job data</span></div></div>
+    <h3>A. Copy the fictional sample data</h3>
+    <p>Open <code>sample_data.json</code>. Copy and paste this entire example, then save it.</p>
+    <div class="code-card"><div class="code-top"><span>sample_data.json</span><button class="copy-btn" data-copy="json-data">Copy JSON</button></div><pre id="json-data">{
+  "candidate_name": "Alex",
+  "candidate_skills": ["python", "Excel", "Communication"],
+  "job_title": "Junior Data Analyst",
+  "required_skills": ["Python", "SQL", "Excel"]
+}</pre></div>
+    <h3>B. Copy the starter Python script</h3>
+    <p>Open <code>resume_analyzer.py</code>. Paste the following code and save it. You do <strong>not</strong> need to write the logic from memory — we'll build and explain it together in the live class.</p>
+    <div class="code-card"><div class="code-top"><span>resume_analyzer.py</span><button class="copy-btn" data-copy="python-starter">Copy Python</button></div><pre id="python-starter"># Mini Resume Analyzer — Week 3 pre-class
+# Uses fictional skills; this is rule-based, not AI.
+
+import json
+from pathlib import Path
+
+# Load data from a JSON file next to this script.
+data_file = Path(__file__).resolve().parent / "sample_data.json"
+with data_file.open("r", encoding="utf-8") as file:
+    data = json.load(file)
+
+candidate_name = data["candidate_name"]
+candidate_skills = data["candidate_skills"]
+required_skills = data["required_skills"]
+
+# A function for comparing skill names, ignoring capitalization.
+def check_skill(skill, listed_skills):
+    for listed_skill in listed_skills:
+        if skill.lower() == listed_skill.lower():
+            return True
+    return False
+
+print("=== MINI RESUME ANALYZER ===")
+print("Candidate:", candidate_name)
+
+# Loop through the job's required skills.
+for skill in required_skills:
+    if check_skill(skill, candidate_skills):
+        print(skill, ": Listed")
+    else:
+        print(skill, ": Not listed")</pre></div>
+    <div class="note"><p><strong>Why two files?</strong> JSON stores the <em>input data</em>; Python contains the <em>instructions</em>. You can change data without rewriting the program. The Python file uses built-in libraries, so no extra packages are required.</p></div>
+    <div class="checks"><label><input type="checkbox" class="milestone" data-id="create"><span>I created and saved both files in the same project folder.</span></label></div>
+  </section>
+
+  <section class="section" id="run">
+    <div class="kicker">03 · Run & observe · ~4 minutes</div>
+    <h2>Run your analyzer</h2>
+    <p>Return to the VS Code terminal. Make sure the terminal is inside your project folder. Run the appropriate command:</p>
+    <div class="code-card"><div class="code-top"><span>Mac</span><button class="copy-btn" data-copy="mac-run">Copy</button></div><pre id="mac-run">python3 resume_analyzer.py</pre></div>
+    <div class="code-card"><div class="code-top"><span>Windows</span><button class="copy-btn" data-copy="win-run">Copy</button></div><pre id="win-run">py resume_analyzer.py</pre></div>
+    <h3>Expected output</h3>
+    <div class="code-card"><div class="code-top"><span>Terminal output</span></div><pre>=== MINI RESUME ANALYZER ===
+Candidate: Alex
+Python : Listed
+SQL : Not listed
+Excel : Listed</pre></div>
+    <p><strong>Stop and think:</strong> The loop examines <em>job requirements</em>; the function checks whether each requirement appears in the candidate's listed skills.</p>
+    <div class="checks"><label><input type="checkbox" class="milestone" data-id="run"><span>The program runs successfully, and my output matches the example.</span></label></div>
+  </section>
+
+  <section class="section" id="experiment">
+    <div class="kicker">04 · Predict, change & test · ~5 minutes</div>
+    <h2>Change the input — not the Python</h2>
+    <p><strong>First predict:</strong> If you add <code>"SQL"</code> to the candidate's skills, what should happen to the SQL result?</p>
+    <p>Now open <code>sample_data.json</code> and make just two edits:</p>
+    <ol class="steps"><li>Change <code>"candidate_name"</code> from <code>"Alex"</code> to <code>"Jordan"</code>.</li><li>Add <code>"SQL"</code> as an additional item in <code>"candidate_skills"</code>. Remember the comma separating list items.</li><li>Save JSON and run the <strong>same</strong> Python command again.</li></ol>
+    <div class="code-card"><div class="code-top"><span>Expected changed output</span></div><pre>=== MINI RESUME ANALYZER ===
+Candidate: Jordan
+Python : Listed
+SQL : Listed
+Excel : Listed</pre></div>
+    <p>Notice that <code>"python"</code> in lowercase still matches the requirement <code>"Python"</code> because our function uses <code>.lower()</code>. This is still an exact skill-label check after lowercasing, not an assessment of skill proficiency.</p>
+    <div class="checks"><label><input type="checkbox" class="milestone" data-id="experiment"><span>I predicted the outcome, changed only the JSON, and verified the new result.</span></label></div>
+  </section>
+
+  <section class="section" id="debug">
+    <div class="kicker">05 · Debug & explain · ~5 minutes</div>
+    <h2>If something breaks, inspect the evidence</h2>
+    <p>In our course pilot, the script initially failed because it couldn't locate <code>sample_data.json</code>. This is a useful example of debugging: an error message often tells you <em>which assumption failed</em>.</p>
+    <div class="code-card"><div class="code-top"><span>Common file error</span></div><pre>FileNotFoundError: [Errno 2] No such file or directory: '.../sample_data.json'</pre></div>
+    <p><strong>Check these before rewriting code:</strong></p>
+    <ol class="steps"><li>Are <code>resume_analyzer.py</code> and <code>sample_data.json</code> in the <strong>same folder</strong>?</li><li>Is the filename spelled exactly <code>sample_data.json</code> (not <code>sample_data.json.txt</code>)?</li><li>Did you save both files before running the script?</li><li>Does the terminal error point to the file you actually created?</li></ol>
+    <div class="note"><p><strong>AI assistant tip:</strong> Copy the error message and ask: “Explain this error to a beginner. What is the most likely cause? Give me the smallest check to perform first. Do not rewrite my whole program.” Do not paste real resumes, secrets, or API keys into public tools.</p></div>
+    <h3>Quick comprehension check</h3>
+    <div class="quiz">
+      <div class="question" data-answer="json"><p>1. Where should you change the fictional candidate's name for this exercise?</p><label><input type="radio" name="q1" value="python"> In the Python function</label><label><input type="radio" name="q1" value="json"> In <code>sample_data.json</code></label><label><input type="radio" name="q1" value="terminal"> In the terminal command</label><div class="feedback" aria-live="polite"></div></div>
+      <div class="question" data-answer="requirements"><p>2. Why does the loop check SQL even if SQL is absent from Alex's resume?</p><label><input type="radio" name="q2" value="error"> It's a Python bug</label><label><input type="radio" name="q2" value="requirements"> SQL is in the job's required-skills list</label><label><input type="radio" name="q2" value="ai"> AI inferred SQL</label><div class="feedback" aria-live="polite"></div></div>
+      <div class="question" data-answer="limited"><p>3. What can our current skill checker conclude?</p><label><input type="radio" name="q3" value="qualified"> Whether the candidate is qualified to be hired</label><label><input type="radio" name="q3" value="limited"> Whether a skill label appears in the supplied list, ignoring case</label><label><input type="radio" name="q3" value="llm"> Whether an LLM agrees with the resume</label><div class="feedback" aria-live="polite"></div></div>
+    </div>
+    <button class="action" id="check-answers">Check my answers</button>
+    <p class="status" id="score" aria-live="polite"></p>
+    <div class="checks"><label><input type="checkbox" class="milestone" data-id="debug"><span>I checked my understanding and know where to look if the JSON file cannot be found.</span></label></div>
+  </section>
+
+  <section class="section" id="handoff">
+    <div class="kicker">Next · Live workshop</div>
+    <h2>You're ready for class</h2>
+    <p>Bring your working folder and one sentence describing how the input data, Python function, loop, and output fit together.</p>
+    <div class="intro-grid"><div class="card"><strong>Build</strong><p>We'll create and modify the checking logic together, instead of copying a complete solution.</p></div><div class="card"><strong>Debug</strong><p>We'll practice the cycle: predict → run → compare → improve → retest.</p></div><div class="card"><strong>Publish</strong><p>We'll configure Git if needed, make a commit, and publish to GitHub.</p></div></div>
+    <div class="note"><p><strong>Privacy:</strong> Use fictional data throughout class. A listed skill is not evidence of competence, and a missing label is not evidence that someone lacks the skill. The AI-powered interpretation arrives in a later week.</p></div>
+    <div class="footer-links"><a href="#prepare">Back to setup</a></div>
+    <p class="status">This activity runs entirely in your browser and in your local Python environment. The website itself does not upload your code or resume data.</p>
+  </section>
+</main>
+<script>
+  document.querySelectorAll('[data-copy]').forEach(button => {
+    button.addEventListener('click', async () => {
+      const text = document.getElementById(button.dataset.copy).textContent;
+      const previous = button.textContent;
+      try {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          const textarea = document.createElement('textarea');
+          textarea.value = text;
+          textarea.style.position='fixed'; textarea.style.opacity='0';
+          document.body.appendChild(textarea); textarea.select();
+          if (!document.execCommand('copy')) throw new Error('Copy unavailable');
+          textarea.remove();
+        }
+        button.textContent='Copied ✓';
+      } catch(e) { button.textContent='Select code manually'; }
+      window.setTimeout(()=>button.textContent=previous,2200);
+    });
+  });
+  const boxes=[...document.querySelectorAll('.milestone')];
+  const key='ai-foundations-week3-preclass-v1';
+  try { const saved=JSON.parse(localStorage.getItem(key)||'{}'); boxes.forEach(box=>box.checked=Boolean(saved[box.dataset.id])); } catch(e) {}
+  function updateProgress(){
+    const completed=boxes.filter(b=>b.checked).length;
+    document.getElementById('progress-text').textContent=`${completed} of ${boxes.length} milestones complete${completed===boxes.length?' — ready for the workshop!':''}`;
+    try {localStorage.setItem(key,JSON.stringify(Object.fromEntries(boxes.map(b=>[b.dataset.id,b.checked]))));}catch(e){}
+  }
+  boxes.forEach(box=>box.addEventListener('change',updateProgress));updateProgress();
+  document.getElementById('check-answers').addEventListener('click',()=>{
+    let correct=0;
+    document.querySelectorAll('.question').forEach(question=>{
+      const selected=question.querySelector('input:checked');
+      const ok=selected && selected.value===question.dataset.answer;
+      if(ok) correct++;
+      question.querySelector('.feedback').textContent=!selected?'Choose an answer first.':ok?'Correct!':'Try again: revisit the relevant step above.';
+    });
+    document.getElementById('score').textContent=`${correct} / 3 correct. ${correct===3?'Excellent — you can explain the key ideas.':'Review the explanations and try again.'}`;
+  });
+</script>
+</body>
+</html>
